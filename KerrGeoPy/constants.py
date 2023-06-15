@@ -1,5 +1,6 @@
 from numpy import sign
 from math import sqrt, pi, inf, nan
+from scipy.optimize import root_scalar
 
 def coefficients(r,a,x):
     """
@@ -163,3 +164,133 @@ def kerr_constants(a,p,e,x):
     :rtype: tuple(double, double, double)
     """
     return kerr_energy(a,p,e,x), kerr_angular_momentum(a,p,e,x), kerr_carter_constant(a,p,e,x)
+
+def S_polar(p,a,e):
+    """
+    Separatrix polynomial for a polar orbit from equation 37 in Stein and Warburton (arXiv:1912.07609)
+
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :type e: double
+    """
+    return      p**5*(-6 - 2*e + p) \
+                + a**2*p**3*(-4*(-1+e)*(1+e)**2 + (3 + e*(2 + 3*e))*p) \
+                - a**4*(1 + e)**2*p*(6 + 2*e**3 + 2*e*(-1 + p) - 3*p - 3*e**2*(2 + p)) \
+                + a**6*(-1 + e)**2*(1 + e)**4
+
+def S_equatorial(p,a,e):
+    """
+    Separatrix polynomial for an equatorial orbit from equation 23 in Stein and Warburton (arXiv:1912.07609)
+
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :type e: double
+    """
+    return      a**4*(-3 - 2*e + e**2)**2 \
+                + p**2*(-6 - 2*e + p)**2 \
+                - 2*a**2*(1 + e)*p*(14 + 2*e**2 + 3*p - e*p)
+
+def S(p,a,e,x):
+    """
+    Full separatrix polynomial from equation A1 in Stein and Warburton (arXiv:1912.07609)
+
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :type e: double
+    """
+    return -4*(3 + e)*p**11 + p**12 + \
+       a**12*(-1 + e)**4*(1 + e)**8*(-1 + x)**4*(1 + x)**4 - \
+       4*a**10*(-3 + e)*(-1 + e)**3*(1 + e)**7*p*(-1 + x**2)**4 - \
+       4*a**8*(-1 + e)*(1 + e)**5*p**3*(-1 + x)**3*(1 + x)**3* \
+        (7 - 7*x**2 - e**2*(-13 + x**2) + e**3*(-5 + x**2) + 7*e*(-1 + x**2)) + \
+       8*a**6*(-1 + e)*(1 + e)**3*p**5*(-1 + x**2)**2* \
+        (3 + e + 12*x**2 + 4*e*x**2 + e**3*(-5 + 2*x**2) + e**2*(1 + 2*x**2)) - \
+       8*a**4*(1 + e)**2*p**7*(-1 + x)*(1 + x)* \
+        (-3 + e + 15*x**2 - 5*e*x**2 + e**3*(-5 + 3*x**2) + e**2*(-1 + 3*x**2))\
+        + 4*a**2*p**9*(-7 - 7*e + e**3*(-5 + 4*x**2) + e**2*(-13 + 12*x**2)) + \
+       2*a**8*(-1 + e)**2*(1 + e)**6*p**2*(-1 + x**2)**3* \
+        (2*(-3 + e)**2*(-1 + x**2) + \
+          a**2*(e**2*(-3 + x**2) - 3*(1 + x**2) + 2*e*(1 + x**2))) - \
+       2*p**10*(-2*(3 + e)**2 + a**2* \
+           (-3 + 6*x**2 + e**2*(-3 + 2*x**2) + e*(-2 + 4*x**2))) + \
+       a**6*(1 + e)**4*p**4*(-1 + x**2)**2* \
+        (-16*(-1 + e)**2*(-3 - 2*e + e**2)*(-1 + x**2) + \
+          a**2*(15 + 6*x**2 + 9*x**4 + e**2*(26 + 20*x**2 - 2*x**4) + \
+             e**4*(15 - 10*x**2 + x**4) + 4*e**3*(-5 - 2*x**2 + x**4) - \
+             4*e*(5 + 2*x**2 + 3*x**4))) - \
+       4*a**4*(1 + e)**2*p**6*(-1 + x)*(1 + x)* \
+        (-2*(11 - 14*e**2 + 3*e**4)*(-1 + x**2) + \
+          a**2*(5 - 5*x**2 - 9*x**4 + 4*e**3*x**2*(-2 + x**2) + \
+             e**4*(5 - 5*x**2 + x**4) + e**2*(6 - 6*x**2 + 4*x**4))) + \
+       a**2*p**8*(-16*(1 + e)**2*(-3 + 2*e + e**2)*(-1 + x**2) + \
+          a**2*(15 - 36*x**2 + 30*x**4 + e**4*(15 - 20*x**2 + 6*x**4) + \
+             4*e**3*(5 - 12*x**2 + 6*x**4) + 4*e*(5 - 12*x**2 + 10*x**4) + \
+             e**2*(26 - 72*x**2 + 44*x**4)))
+
+def separatrix(a,e,x):
+    """
+    Returns the value of p at the separatrix for the given orbital parameters computed using the bracked root finding method described in Stein and Warburton (arXiv:1912.07609)
+    
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :type e: double
+    :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
+    :type x: double
+    
+    :rtype: double
+    """
+    if a == 0:
+        return 6+2*e
+    
+    polar_bracket = [1+sqrt(3)+sqrt(3+2*sqrt(3)), 8]
+    p_polar = root_scalar(S_polar, args=(a,e), bracket=polar_bracket)
+    
+    if x == 0:
+        return p_polar.root
+        
+    equatorial_prograde_bracket = [1+e, 6+2*e]
+    p_equatorial_prograde = root_scalar(S_equatorial,args=(a,e),bracket=equatorial_prograde_bracket)
+    
+    if x == 1: 
+        return p_equatorial_prograde.root
+    
+    if x == -1:
+        equatorial_retrograde_bracket = [6+2*e, 5+e+4*sqrt(1+e)]
+        p_equatorial_retrograde = root_scalar(S_equatorial,args=(a,e),bracket=equatorial_retrograde_bracket)
+    
+    if x > 0:
+        p = root_scalar(S,args=(a,e,x),bracket=[p_equatorial_prograde.root, p_polar.root])
+        return p.root
+    
+    if x < 0:
+        p = root_scalar(S,args=(a,e,x),bracket=[p_polar.root, 12])
+        return p.root
+    
+def is_stable(a,p,e,x):
+    """
+    Tests whether or not the given orbital parameters define a stable bound orbit
+    
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :type e: double
+    :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
+    :type x: double
+    
+    :rtype: boolean
+    """
+    if p > separatrix(a,e,x):
+        return True
+    return False

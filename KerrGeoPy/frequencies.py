@@ -1,5 +1,5 @@
 from scipy.special import ellipk, ellipe, elliprj, elliprf
-from KerrGeoPy.constants import *
+from kerrgeopy.constants import *
 
 def ellippi(n,k):
     """
