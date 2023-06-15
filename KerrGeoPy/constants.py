@@ -3,7 +3,7 @@ from math import sqrt, pi, inf, nan
 
 def coefficients(r,a,x):
     """
-    Computes the coefficients f, g, h and d from equation B.5 in Schmidt
+    Computes the coefficients f, g, h and d from equation B.5 in Schmidt (arXiv:gr-qc/0202090)
     
     :param r: dimensionless distance from the black hole
     :type r: double
@@ -25,7 +25,7 @@ def coefficients(r,a,x):
 
 def coefficients_derivative(r,a,x):
     """
-    Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in Schmidt
+    Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in Schmidt (arXiv:gr-qc/0202090)
     
     :param r: dimensionless distance from the black hole
     :type r: double
@@ -46,7 +46,7 @@ def coefficients_derivative(r,a,x):
 
 def kerr_energy(a,p,e,x):
     """
-    Computes the dimensionless energy of a bound orbit with the given parameters
+    Computes the dimensionless energy of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double
@@ -62,6 +62,7 @@ def kerr_energy(a,p,e,x):
     if e == 1:
         return 1
     if x == 0:
+        # expression from ConstantsOfMotion.m in the KerrGeodesics mathematica library
         return sqrt(-((p*(a**4*(-1 + e**2)**2 + (-4*e**2 + (-2 + p)**2)*p**2 + \
                 2*a**2*p*(-2 + p + e**2*(2 + p))))/ \
                 (a**4*(-1 + e**2)**2*(-1 + e**2 - p) + (3 + e**2 - p)*p**4 - \
@@ -76,12 +77,14 @@ def kerr_energy(a,p,e,x):
         f1, g1, h1, d1 = coefficients(r1,a,x)
         f2, g2, h2, d2 = coefficients(r2,a,x)
     
+    # equation B.19 - B.21
     kappa = d1*h2-h1*d2
     rho = f1*h2-h1*f2
     sigma = g1*h2-h1*g2
     epsilon = d1*g2-g1*d2
     eta = f1*g2-g1*f2
     
+    # equation B.22
     return sqrt(
                 (kappa*rho+2*epsilon*sigma-
                  sign(x)*2*sqrt(sigma*(sigma*epsilon**2+rho*epsilon*kappa-eta*kappa**2)))
@@ -90,7 +93,7 @@ def kerr_energy(a,p,e,x):
 
 def kerr_angular_momentum(a,p,e,x):
     """
-    Computes the dimensionless angular momentum of a bound orbit with the given parameters
+    Computes the dimensionless angular momentum of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double
@@ -110,15 +113,17 @@ def kerr_angular_momentum(a,p,e,x):
     if e == 1:
         r2 = p/(1+e)
         f2, g2, h2, d2 = coefficients(r2,a,x)
+        # obtained by solving equation B.17 for L
         return (-E*g2 + sqrt(-d2*h2 + E**2*(g2**2 + f2*h2)))/h2
     else:
         r1 = p/(1-e)
         f1, g1, h1, d1 = coefficients(r1,a,x)
+        # obtained by solving equation B.17 for L
         return (-E*g1 + sign(x)*sqrt(-d1*h1 + E**2*(g1**2 + f1*h1)))/h1
     
 def kerr_carter_constant(a,p,e,x):
     """
-    Computes the dimensionless carter constant of a bound orbit with the given parameters
+    Computes the dimensionless carter constant of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double
@@ -132,12 +137,14 @@ def kerr_carter_constant(a,p,e,x):
     :rtype: double
     """
     if x == 0:
+        # expression from ConstantsOfMotion.m in the KerrGeodesics mathematica library
         return -((p**2*(a**4*(-1+e**2)**2+p**4+2*a**2*p*(-2+p+e**2*(2+p)))) \
                  /(a**4*(-1+e**2)**2*(-1+e**2-p)+(3+e**2-p)*p**4-2*a**2*p**2*(-1-e**4+p+e**2*(2+p))))
     
     z = sqrt(1-x**2)
     E = kerr_energy(a,p,e,x)
     L = kerr_angular_momentum(a,p,e,x)
+    #  equation B.4
     return z**2 * (a**2 * (1 - E**2) + L**2/(1 - z**2))
 
 def kerr_constants(a,p,e,x):
