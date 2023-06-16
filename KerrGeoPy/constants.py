@@ -60,6 +60,10 @@ def energy(a,p,e,x):
     
     :rtype: double
     """
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     if e == 1:
         return 1
     if x == 0:
@@ -107,6 +111,10 @@ def angular_momentum(a,p,e,x,E=None):
     
     :rtype: double
     """
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     # compute energy if not given
     if E is None: E = energy(a,p,e,x)
 
@@ -139,6 +147,10 @@ def carter_constant(a,p,e,x,E=None,L=None):
     
     :rtype: double
     """
+    if a == 1:  raise ValueError("Extreme Kerr not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     if x == 0:
         # expression from ConstantsOfMotion.m in the KerrGeodesics mathematica library
         return -((p**2*(a**4*(-1+e**2)**2+p**4+2*a**2*p*(-2+p+e**2*(2+p)))) \
@@ -255,6 +267,10 @@ def separatrix(a,e,x):
     
     :rtype: double
     """
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     if a == 0:
         return 6+2*e
     
@@ -298,5 +314,22 @@ def is_stable(a,p,e,x):
     :rtype: boolean
     """
     if p > separatrix(a,e,x):
+        return True
+    return False
+
+def valid_params(a,e,x):
+    """
+    Tests whether the given parameters fall into the allowed ranges
+
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :type e: double
+    :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
+    :type x: double
+    
+    :rtype: boolean
+    """
+    if (0 <= a <= 1) and (0 <= e <= 1) and (-1 <= x <= 1):
         return True
     return False

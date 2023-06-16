@@ -71,6 +71,13 @@ def r_frequency(a,p,e,x,constants=None):
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
     """
+
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if x == 0: raise ValueError("Polar orbits not allowed")
+    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
 
@@ -95,6 +102,12 @@ def theta_frequency(a,p,e,x,constants=None):
     
     :rtype: double
     """
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if x == 0: raise ValueError("Polar orbits not allowed")
+    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     if a == 0:
         return p/sqrt(-3-e**2+p)*(sign(x) if e == 0 else 1)
     
@@ -125,6 +138,12 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     
     :rtype: double
     """
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if x == 0: raise ValueError("Polar orbits not allowed")
+    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+
     if a == 0:
         return sign(x)*p/sqrt(-3-e**2+p)
     
@@ -171,6 +190,12 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     
     :rtype: double
     """
+    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if x == 0: raise ValueError("Polar orbits not allowed")
+    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+    
     if e == 1:
         return inf
     
