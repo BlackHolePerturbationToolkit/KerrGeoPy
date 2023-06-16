@@ -10,7 +10,7 @@ def ellippi(n,k):
     """
     return elliprf(0,1-k**2,1)+1/3*n*elliprj(0,1-k**2,1,1-n)
 
-def radial_roots(a,p,e,x):
+def _radial_roots(a,p,e,x):
     """
     Computes r1, r2, r3 and r4 as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
@@ -23,7 +23,7 @@ def radial_roots(a,p,e,x):
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: tuple(double, double, double, double)
     """
-    E, L, Q = kerr_constants(a,p,e,x)
+    E, L, Q = constants_of_motion(a,p,e,x)
     
     r1 = p/(1-e)
     r2 = p/(1+e)
@@ -36,7 +36,7 @@ def radial_roots(a,p,e,x):
     
     return r1, r2, r3, r4
 
-def azimuthal_roots(a,p,e,x):
+def _azimuthal_roots(a,p,e,x):
     """
     Computes epsilon_0, z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
@@ -49,7 +49,7 @@ def azimuthal_roots(a,p,e,x):
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: tuple(double, double, double)
     """
-    E, L, Q = kerr_constants(a,p,e,x)
+    E, L, Q = constants_of_motion(a,p,e,x)
     epsilon0 = a**2*(1-E**2)/L**2
     z_minus = 1-x**2
     #z_plus = a**2*(1-E**2)/(L**2*epsilon0)+1/(epsilon0*(1-z_minus))
@@ -71,8 +71,8 @@ def r_frequency(a,p,e,x):
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
     """
-    E, L, Q = kerr_constants(a,p,e,x)
-    r1,r2,r3,r4 = radial_roots(a,p,e,x)
+    E = energy(a,p,e,x)
+    r1,r2,r3,r4 = _radial_roots(a,p,e,x)
     # equation 13
     k_r = sqrt((r1-r2)*(r3-r4)/((r1-r3)*(r2-r4)))
     # equation 15
@@ -96,8 +96,8 @@ def theta_frequency(a,p,e,x):
     if a == 0:
         return p/sqrt(-3-e**2+p)*(sign(x) if e == 0 else 1)
     
-    E, L, Q = kerr_constants(a,p,e,x)
-    epsilon0, z_minus, z_plus = azimuthal_roots(a,p,e,x)
+    E, L, Q = constants_of_motion(a,p,e,x)
+    epsilon0, z_minus, z_plus = _azimuthal_roots(a,p,e,x)
     
     # equation 13
     k_theta = sqrt(z_minus/z_plus)
@@ -125,9 +125,9 @@ def phi_frequency(a,p,e,x):
     if a == 0:
         return sign(x)*p/sqrt(-3-e**2+p)
     
-    E, L, Q = kerr_constants(a,p,e,x)
-    r1,r2,r3,r4 = radial_roots(a,p,e,x)
-    epsilon0, z_minus, z_plus = azimuthal_roots(a,p,e,x)
+    E, L, Q = constants_of_motion(a,p,e,x)
+    r1,r2,r3,r4 = _radial_roots(a,p,e,x)
+    epsilon0, z_minus, z_plus = _azimuthal_roots(a,p,e,x)
     
     upsilon_r = r_frequency(a,p,e,x)
     upsilon_theta = theta_frequency(a,p,e,x)
@@ -138,7 +138,6 @@ def phi_frequency(a,p,e,x):
     r_plus = 1+sqrt(1-a**2)
     r_minus = 1-sqrt(1-a**2)
     
-    h_r = (r1-r2)/(r1-r3)
     h_plus = (r1-r2)*(r3-r_plus)/((r1-r3)*(r2-r_plus))
     h_minus = (r1-r2)*(r3-r_minus)/((r1-r3)*(r2-r_minus))
     
@@ -171,9 +170,9 @@ def gamma(a,p,e,x):
     if e == 1:
         return inf
     
-    E, L, Q = kerr_constants(a,p,e,x)
-    r1,r2,r3,r4 = radial_roots(a,p,e,x)
-    epsilon0, z_minus, z_plus = azimuthal_roots(a,p,e,x)
+    E, L, Q = constants_of_motion(a,p,e,x)
+    r1,r2,r3,r4 = _radial_roots(a,p,e,x)
+    epsilon0, z_minus, z_plus = _azimuthal_roots(a,p,e,x)
     # simplified form of a**2*sqrt(z_plus/epsilon0)
     a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
     
@@ -201,7 +200,7 @@ def gamma(a,p,e,x):
                                    )
               )
 
-def kerr_frequencies(a,p,e,x,time="Mino"):
+def orbital_frequencies(a,p,e,x,time="Mino"):
     """
     Computes frequencies of orbital motion. Returns Mino frequencies by default.
 

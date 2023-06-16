@@ -1,8 +1,8 @@
-from numpy import sign
-from math import sqrt, pi, inf, nan
+from numpy import sign, sqrt, inf, nan
+from math import pi
 from scipy.optimize import root_scalar
 
-def coefficients(r,a,x):
+def _coefficients(r,a,x):
     """
     Computes the coefficients f, g, h and d from equation B.5 in Schmidt (arXiv:gr-qc/0202090)
     
@@ -24,7 +24,7 @@ def coefficients(r,a,x):
     
     return f(r), g(r), h(r), d(r)
 
-def coefficients_derivative(r,a,x):
+def _coefficients_derivative(r,a,x):
     """
     Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in Schmidt (arXiv:gr-qc/0202090)
     
@@ -45,7 +45,7 @@ def coefficients_derivative(r,a,x):
     
     return f_prime(r), g_prime(r), h_prime(r), d_prime(r)
 
-def kerr_energy(a,p,e,x):
+def energy(a,p,e,x):
     """
     Computes the dimensionless energy of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
@@ -70,13 +70,13 @@ def kerr_energy(a,p,e,x):
                 2*a**2*p**2*(-1 - e**4 + p + e**2*(2 + p)))))
     if e == 0:
         r0 = p
-        f1, g1, h1, d1 = coefficients(r0,a,x)
-        f2, g2, h2, d2 = coefficients_derivative(r0,a,x)
+        f1, g1, h1, d1 = _coefficients(r0,a,x)
+        f2, g2, h2, d2 = _coefficients_derivative(r0,a,x)
     else:
         r1 = p/(1-e)
         r2 = p/(1+e)
-        f1, g1, h1, d1 = coefficients(r1,a,x)
-        f2, g2, h2, d2 = coefficients(r2,a,x)
+        f1, g1, h1, d1 = _coefficients(r1,a,x)
+        f2, g2, h2, d2 = _coefficients(r2,a,x)
     
     # equation B.19 - B.21
     kappa = d1*h2-h1*d2
@@ -92,7 +92,7 @@ def kerr_energy(a,p,e,x):
                 /(rho**2+4*eta*sigma)
                )
 
-def kerr_angular_momentum(a,p,e,x):
+def angular_momentum(a,p,e,x):
     """
     Computes the dimensionless angular momentum of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
@@ -107,22 +107,22 @@ def kerr_angular_momentum(a,p,e,x):
     
     :rtype: double
     """
-    E = kerr_energy(a,p,e,x)
+    E = energy(a,p,e,x)
     # angular momentum is zero for polar orbits
     if x == 0:
         return 0
     if e == 1:
         r2 = p/(1+e)
-        f2, g2, h2, d2 = coefficients(r2,a,x)
+        f2, g2, h2, d2 = _coefficients(r2,a,x)
         # obtained by solving equation B.17 for L
         return (-E*g2 + sqrt(-d2*h2 + E**2*(g2**2 + f2*h2)))/h2
     else:
         r1 = p/(1-e)
-        f1, g1, h1, d1 = coefficients(r1,a,x)
+        f1, g1, h1, d1 = _coefficients(r1,a,x)
         # obtained by solving equation B.17 for L
         return (-E*g1 + sign(x)*sqrt(-d1*h1 + E**2*(g1**2 + f1*h1)))/h1
     
-def kerr_carter_constant(a,p,e,x):
+def carter_constant(a,p,e,x):
     """
     Computes the dimensionless carter constant of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
@@ -143,12 +143,12 @@ def kerr_carter_constant(a,p,e,x):
                  /(a**4*(-1+e**2)**2*(-1+e**2-p)+(3+e**2-p)*p**4-2*a**2*p**2*(-1-e**4+p+e**2*(2+p))))
     
     z = sqrt(1-x**2)
-    E = kerr_energy(a,p,e,x)
-    L = kerr_angular_momentum(a,p,e,x)
+    E = energy(a,p,e,x)
+    L = angular_momentum(a,p,e,x)
     #  equation B.4
     return z**2 * (a**2 * (1 - E**2) + L**2/(1 - z**2))
 
-def kerr_constants(a,p,e,x):
+def constants_of_motion(a,p,e,x):
     """
     Computes the dimensionless energy, angular momentum, and carter constant of a bound orbit with the given parameters. Returns a tuple of the form (E, L, Q)
     
@@ -163,9 +163,9 @@ def kerr_constants(a,p,e,x):
     
     :rtype: tuple(double, double, double)
     """
-    return kerr_energy(a,p,e,x), kerr_angular_momentum(a,p,e,x), kerr_carter_constant(a,p,e,x)
+    return energy(a,p,e,x), angular_momentum(a,p,e,x), carter_constant(a,p,e,x)
 
-def S_polar(p,a,e):
+def _S_polar(p,a,e):
     """
     Separatrix polynomial for a polar orbit from equation 37 in Stein and Warburton (arXiv:1912.07609)
 
@@ -181,7 +181,7 @@ def S_polar(p,a,e):
                 - a**4*(1 + e)**2*p*(6 + 2*e**3 + 2*e*(-1 + p) - 3*p - 3*e**2*(2 + p)) \
                 + a**6*(-1 + e)**2*(1 + e)**4
 
-def S_equatorial(p,a,e):
+def _S_equatorial(p,a,e):
     """
     Separatrix polynomial for an equatorial orbit from equation 23 in Stein and Warburton (arXiv:1912.07609)
 
@@ -196,7 +196,7 @@ def S_equatorial(p,a,e):
                 + p**2*(-6 - 2*e + p)**2 \
                 - 2*a**2*(1 + e)*p*(14 + 2*e**2 + 3*p - e*p)
 
-def S(p,a,e,x):
+def _S(p,a,e,x):
     """
     Full separatrix polynomial from equation A1 in Stein and Warburton (arXiv:1912.07609)
 
@@ -253,27 +253,27 @@ def separatrix(a,e,x):
         return 6+2*e
     
     polar_bracket = [1+sqrt(3)+sqrt(3+2*sqrt(3)), 8]
-    p_polar = root_scalar(S_polar, args=(a,e), bracket=polar_bracket)
+    p_polar = root_scalar(_S_polar, args=(a,e), bracket=polar_bracket)
     
     if x == 0:
         return p_polar.root
         
     equatorial_prograde_bracket = [1+e, 6+2*e]
-    p_equatorial_prograde = root_scalar(S_equatorial,args=(a,e),bracket=equatorial_prograde_bracket)
+    p_equatorial_prograde = root_scalar(_S_equatorial,args=(a,e),bracket=equatorial_prograde_bracket)
     
     if x == 1: 
         return p_equatorial_prograde.root
     
     if x == -1:
         equatorial_retrograde_bracket = [6+2*e, 5+e+4*sqrt(1+e)]
-        p_equatorial_retrograde = root_scalar(S_equatorial,args=(a,e),bracket=equatorial_retrograde_bracket)
+        p_equatorial_retrograde = root_scalar(_S_equatorial,args=(a,e),bracket=equatorial_retrograde_bracket)
     
     if x > 0:
-        p = root_scalar(S,args=(a,e,x),bracket=[p_equatorial_prograde.root, p_polar.root])
+        p = root_scalar(_S,args=(a,e,x),bracket=[p_equatorial_prograde.root, p_polar.root])
         return p.root
     
     if x < 0:
-        p = root_scalar(S,args=(a,e,x),bracket=[p_polar.root, 12])
+        p = root_scalar(_S,args=(a,e,x),bracket=[p_polar.root, 12])
         return p.root
     
 def is_stable(a,p,e,x):
