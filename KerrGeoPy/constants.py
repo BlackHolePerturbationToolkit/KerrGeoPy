@@ -92,7 +92,7 @@ def energy(a,p,e,x):
                 /(rho**2+4*eta*sigma)
                )
 
-def angular_momentum(a,p,e,x):
+def angular_momentum(a,p,e,x,E=None):
     """
     Computes the dimensionless angular momentum of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
@@ -107,7 +107,9 @@ def angular_momentum(a,p,e,x):
     
     :rtype: double
     """
-    E = energy(a,p,e,x)
+    # compute energy if not given
+    if E is None: E = energy(a,p,e,x)
+
     # angular momentum is zero for polar orbits
     if x == 0:
         return 0
@@ -122,7 +124,7 @@ def angular_momentum(a,p,e,x):
         # obtained by solving equation B.17 for L
         return (-E*g1 + sign(x)*sqrt(-d1*h1 + E**2*(g1**2 + f1*h1)))/h1
     
-def carter_constant(a,p,e,x):
+def carter_constant(a,p,e,x,E=None,L=None):
     """
     Computes the dimensionless carter constant of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
@@ -143,8 +145,9 @@ def carter_constant(a,p,e,x):
                  /(a**4*(-1+e**2)**2*(-1+e**2-p)+(3+e**2-p)*p**4-2*a**2*p**2*(-1-e**4+p+e**2*(2+p))))
     
     z = sqrt(1-x**2)
-    E = energy(a,p,e,x)
-    L = angular_momentum(a,p,e,x)
+    # compute energy and angular momentum if not given
+    if E is None: E = energy(a,p,e,x)
+    if L is None: L = angular_momentum(a,p,e,x,E)
     #  equation B.4
     return z**2 * (a**2 * (1 - E**2) + L**2/(1 - z**2))
 
@@ -163,7 +166,10 @@ def constants_of_motion(a,p,e,x):
     
     :rtype: tuple(double, double, double)
     """
-    return energy(a,p,e,x), angular_momentum(a,p,e,x), carter_constant(a,p,e,x)
+    E = energy(a,p,e,x)
+    L = angular_momentum(a,p,e,x,E)
+    Q = carter_constant(a,p,e,x,E,L)
+    return E, L, Q
 
 def _S_polar(p,a,e):
     """
