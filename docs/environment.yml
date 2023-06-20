@@ -1,0 +1,11 @@
+name: bhpwave-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - sphinx
+  - scipy
+  - numpy
+  - pip
+  - python=3.11
+  - sphinx-book-theme
