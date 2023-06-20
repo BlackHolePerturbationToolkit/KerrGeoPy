@@ -1,4 +1,4 @@
-name: bhpwave-env
+name: kerrgeopy-env
 channels:
   - defaults
   - conda-forge
