@@ -332,9 +332,24 @@ def valid_params(a,e,x):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
     :type x: double
-    
+
     :rtype: boolean
     """
     if (0 <= a <= 1) and (0 <= e <= 1) and (-1 <= x <= 1):
         return True
     return False
+
+def scale_constants(constants,M,mu):
+    """
+    Scales the constants in the equations of motion to the given mass parameters
+    
+    :param constants: dimensionless constants of motion in the form (E,L,Q)
+    :type constants: tuple
+    :param M: mass of the black hole
+    :type M: double
+    :param mu: mass ratio
+    :type mu: double
+    
+    :rtype: tuple
+    """
+    return constants[0]*mu, constants[1]*mu*M, constants[2]*mu**2*M**2
