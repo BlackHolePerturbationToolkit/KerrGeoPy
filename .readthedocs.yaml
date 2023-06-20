@@ -11,7 +11,9 @@ conda:
 # Set the version of Python and other tools you might need
 build:
    os: ubuntu-22.04
-   python: "mambaforge-4.10"
+   tools:
+      python: "mambaforge-4.10"
+      
 python:
    install:
       - method: pip
