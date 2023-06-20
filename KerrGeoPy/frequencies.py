@@ -7,6 +7,8 @@ def _ellippi(n,k):
     
     :type n: double
     :type k: double
+
+    :rtype: double
     """
     return elliprf(0,1-k**2,1)+1/3*n*elliprj(0,1-k**2,1,1-n)
 
@@ -22,6 +24,10 @@ def _radial_roots(a,p,e,constants):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: tuple(double, double, double, double)
+    :param constants: dimensionless constants of motion for the orbit
+    :type constants: tuple(double, double, double)
+
+    :rtype: tuple(double, double, double, double)
     """
     E, L, Q = constants
     
@@ -36,18 +42,18 @@ def _radial_roots(a,p,e,constants):
     
     return r1, r2, r3, r4
 
-def _azimuthal_roots(a,p,e,x,constants):
+def _azimuthal_roots(a,x,constants):
     """
     Computes epsilon_0, z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double
-    :param p: orbital semi-latus rectum
-    :type p: double
-    :param e: orbital eccentricity (must satisfy 0 <= e < 1)
-    :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: tuple(double, double, double)
+    :param constants: dimensionless constants of motion for the orbit
+    :type constants: tuple(double, double, double)
+
+    :rtype: tuple(double, double, double, double)
     """
     E, L, Q = constants
     epsilon0 = a**2*(1-E**2)/L**2
@@ -70,11 +76,15 @@ def r_frequency(a,p,e,x,constants=None):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
+    :param constants: dimensionless constants of motion for the orbit can be passed in to speed computation if they are already known
+    :type constants: tuple(double, double, double), optional
+
+    :rtype: double
     """
 
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
-    if x == 0: raise ValueError("Polar orbits not allowed")
-    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
+    if x == 0: raise ValueError("Polar orbits not supported")
+    if e == 1: raise ValueError("Marginally bound orbits not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
@@ -99,12 +109,14 @@ def theta_frequency(a,p,e,x,constants=None):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
+    :param constants: dimensionless constants of motion for the orbit can be passed in to speed computation if they are already known
+    :type constants: tuple(double, double, double), optional
     
     :rtype: double
     """
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
-    if x == 0: raise ValueError("Polar orbits not allowed")
-    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
+    if x == 0: raise ValueError("Polar orbits not supported")
+    if e == 1: raise ValueError("Marginally bound orbits not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
@@ -113,7 +125,7 @@ def theta_frequency(a,p,e,x,constants=None):
     
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
-    epsilon0, z_minus, z_plus = _azimuthal_roots(a,p,e,x,constants)
+    epsilon0, z_minus, z_plus = _azimuthal_roots(a,x,constants)
     
     # equation 13
     k_theta = sqrt(z_minus/z_plus)
@@ -135,12 +147,18 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
+    :param constants: dimensionless constants of motion for the orbit can be passed in to speed computation if they are already known
+    :type constants: tuple(double, double, double), optional
+    :param upsilon_r: Mino frequency of motion in r can be passed in to speed computation if it is already known
+    :type upsilon_r: double, optional
+    :param upsilon_theta: Mino frequency of motion in theta can be passed in to speed computation if it is already known
+    :type upsilon_theta: double, optional
     
     :rtype: double
     """
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
-    if x == 0: raise ValueError("Polar orbits not allowed")
-    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
+    if x == 0: raise ValueError("Polar orbits not supported")
+    if e == 1: raise ValueError("Marginally bound orbits not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
@@ -150,7 +168,7 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    epsilon0, z_minus, z_plus = _azimuthal_roots(a,p,e,x,constants)
+    epsilon0, z_minus, z_plus = _azimuthal_roots(a,x,constants)
     
     if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
     if upsilon_theta is None: upsilon_theta = theta_frequency(a,p,e,x,constants)
@@ -187,12 +205,18 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
+    :param constants: dimensionless constants of motion for the orbit can be passed in to speed computation if they are already known
+    :type constants: tuple(double, double, double), optional
+    :param upsilon_r: Mino frequency of motion in r can be passed in to speed computation if it is already known
+    :type upsilon_r: double, optional
+    :param upsilon_theta: Mino frequency of motion in theta can be passed in to speed computation if it is already known
+    :type upsilon_theta: double, optional
     
     :rtype: double
     """
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
-    if x == 0: raise ValueError("Polar orbits not allowed")
-    if e == 1: raise ValueError("Marginally bound orbits not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
+    if x == 0: raise ValueError("Polar orbits not supported")
+    if e == 1: raise ValueError("Marginally bound orbits not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
     
@@ -202,7 +226,7 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    epsilon0, z_minus, z_plus = _azimuthal_roots(a,p,e,x,constants)
+    epsilon0, z_minus, z_plus = _azimuthal_roots(a,x,constants)
     # simplified form of a**2*sqrt(z_plus/epsilon0)
     a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
     
@@ -243,7 +267,7 @@ def orbital_frequencies(a,p,e,x,time="Mino"):
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
     :param time: specifies the time in which to compute frequencies (options are "Mino" and "Boyer-Lindquist")
-    :type time: string
+    :type time: str, optional
 
     :rtype: tuple
     """

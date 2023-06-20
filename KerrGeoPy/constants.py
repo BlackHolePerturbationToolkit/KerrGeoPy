@@ -60,7 +60,7 @@ def energy(a,p,e,x):
     
     :rtype: double
     """
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
@@ -108,10 +108,12 @@ def angular_momentum(a,p,e,x,E=None):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
     :type x: double
+    :param E: dimensionless energy of the orbit can be passed in to speed computation if it is already known
+    :type E: double, optional
     
     :rtype: double
     """
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
@@ -144,10 +146,14 @@ def carter_constant(a,p,e,x,E=None,L=None):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
     :type x: double
+    :param E: dimensionless energy of the orbit can be passed in to speed computation if it is already known
+    :type E: double, optional
+    :param L: dimensionless angular momentum of the orbit can be passed in to speed computation if it is already known
+    :type L: double, optional
     
     :rtype: double
     """
-    if a == 1:  raise ValueError("Extreme Kerr not allowed")
+    if a == 1:  raise ValueError("Extreme Kerr not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
@@ -267,9 +273,8 @@ def separatrix(a,e,x):
     
     :rtype: double
     """
-    if a == 1: raise ValueError("Extreme Kerr not allowed")
+    if a == 1: raise ValueError("Extreme Kerr not supported")
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
-    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     if a == 0:
         return 6+2*e
