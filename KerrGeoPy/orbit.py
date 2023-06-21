@@ -1,5 +1,5 @@
-from kerrgeopy.constants import *
-from kerrgeopy.frequencies import *
+from constants import *
+from frequencies import *
 
 class Orbit:
     def __init__(self,p,e,x,mu):

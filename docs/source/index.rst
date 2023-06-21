@@ -14,6 +14,12 @@ Welcome to KerrGeoPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. autosummary::
+   :toctree: _autosummary
+
+   kerrgeopy.constants
+   kerrgeopy.frequencies
+   kerrgeopy.orbit
 
 
 Indices and tables
