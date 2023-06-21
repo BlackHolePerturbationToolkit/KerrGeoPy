@@ -33,11 +33,11 @@ release = '0.0.1'
 extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.autodoc",
-    # "autoapi.extension",
+    "autoapi.extension",
 ]
-# autoapi_type = 'python'
-# autoapi_dirs = ['../../kerrgeopy']
-autosummary_generate = True
+autoapi_type = 'python'
+autoapi_dirs = ['../../KerrGeoPy']
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
