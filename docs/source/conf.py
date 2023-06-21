@@ -32,8 +32,11 @@ release = '0.0.1'
 # ones.
 extensions = [
     "sphinx.ext.autosummary",
-    "sphinx.ext.autodoc"
+    "sphinx.ext.autodoc",
+    "autoapi.extension",
 ]
+autoapi_type = 'python'
+autoapi_dirs = ['../../kerrgeopy']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

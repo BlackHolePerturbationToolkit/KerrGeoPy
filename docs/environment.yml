@@ -9,3 +9,4 @@ dependencies:
   - pip
   - python=3.11
   - sphinx-book-theme
+  - sphinx-autoapi

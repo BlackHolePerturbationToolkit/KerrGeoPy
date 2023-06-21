@@ -6,6 +6,10 @@
 Welcome to KerrGeoPy's documentation!
 =====================================
 
+.. note::
+
+   This project is under active development. The documentation is not yet complete.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
