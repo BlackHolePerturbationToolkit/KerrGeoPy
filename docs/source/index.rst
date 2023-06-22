@@ -14,6 +14,11 @@ Welcome to KerrGeoPy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
+   
+   kerrgeopy
 
 Indices and tables
 ==================
