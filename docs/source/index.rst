@@ -16,8 +16,9 @@ Welcome to KerrGeoPy's documentation!
 
 .. autosummary::
    :toctree: _autosummary
+   :template: custom-module-template.rst
    :recursive:
-   
+
    kerrgeopy
 
 Indices and tables
