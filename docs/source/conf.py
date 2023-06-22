@@ -31,8 +31,6 @@ release = '0.0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autosummary",
-    "sphinx.ext.autodoc",
     "autoapi.extension",
 ]
 autoapi_type = 'python'

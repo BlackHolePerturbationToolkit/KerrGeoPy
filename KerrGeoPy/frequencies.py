@@ -1,5 +1,5 @@
 from scipy.special import ellipk, ellipe, elliprj, elliprf
-from constants import *
+from .constants import *
 
 def _ellippi(n,k):
     """
