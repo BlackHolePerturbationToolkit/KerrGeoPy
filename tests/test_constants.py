@@ -31,7 +31,9 @@ class TestConstants(unittest.TestCase):
         mathematica_const_output = np.genfromtxt(DATA_DIR / "mathematica_const_output.txt")
         python_const_output = np.apply_along_axis(lambda x: constants_of_motion(*x),1,values)
 
-        self.assertTrue(np.allclose(python_const_output,mathematica_const_output))
+        for i, case in enumerate(values):
+            with self.subTest(i=i,case=case):
+                self.assertTrue(np.allclose(mathematica_const_output[i],python_const_output[i]))
 
 
 class TestSeparatrix(unittest.TestCase):
