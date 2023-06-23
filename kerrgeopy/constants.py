@@ -127,7 +127,7 @@ def angular_momentum(a,p,e,x,E=None):
         r2 = p/(1+e)
         f2, g2, h2, d2 = _coefficients(r2,a,x)
         # obtained by solving equation B.17 for L
-        return (-E*g2 + sqrt(-d2*h2 + E**2*(g2**2 + f2*h2)))/h2
+        return (-E*g2 + (-1 if x == -1 else 1)*sqrt(-d2*h2 + E**2*(g2**2 + f2*h2)))/h2
     else:
         r1 = p/(1-e)
         f1, g1, h1, d1 = _coefficients(r1,a,x)

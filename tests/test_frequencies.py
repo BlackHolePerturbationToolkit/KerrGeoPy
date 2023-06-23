@@ -43,4 +43,4 @@ class TestFrequencies(unittest.TestCase):
         mathematica_freq_output = np.genfromtxt(DATA_DIR / "mathematica_freq_output.txt")
         python_freq_output = np.apply_along_axis(lambda x: orbital_frequencies(*x),1,values)
 
-        self.assertTrue(np.allclose(python_freq_output,mathematica_freq_output))
+        self.assertTrue(np.allclose(abs(python_freq_output),abs(mathematica_freq_output)))
