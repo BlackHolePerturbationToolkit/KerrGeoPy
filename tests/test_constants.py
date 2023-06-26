@@ -31,8 +31,8 @@ class TestConstants(unittest.TestCase):
         mathematica_const_output = np.genfromtxt(DATA_DIR / "mathematica_const_output.txt")
         python_const_output = np.apply_along_axis(lambda x: constants_of_motion(*x),1,values)
 
-        for i, case in enumerate(values):
-            with self.subTest(i=i,case=case):
+        for i, params in enumerate(values):
+            with self.subTest(i=i,params=params):
                 self.assertTrue(np.allclose(mathematica_const_output[i],python_const_output[i]))
 
 
@@ -47,5 +47,6 @@ class TestSeparatrix(unittest.TestCase):
         sep_values = np.genfromtxt(DATA_DIR / "sep_values.txt",delimiter=",")
         mathematica_separatrix_output = np.genfromtxt(DATA_DIR / "mathematica_sep_output.txt")
         python_separatrix_output = np.apply_along_axis(lambda x: separatrix(*x),1,sep_values)
-
-        self.assertTrue(np.allclose(python_separatrix_output,mathematica_separatrix_output))
+        for i, params in enumerate(sep_values):
+            with self.subTest(i=i,params=params):
+                self.assertTrue(np.allclose(python_separatrix_output[i],mathematica_separatrix_output[i]))
