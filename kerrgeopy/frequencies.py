@@ -10,6 +10,7 @@ def _ellippi(n,k):
 
     :rtype: double
     """
+    # formula from https://en.wikipedia.org/wiki/Carlson_symmetric_form
     return elliprf(0,1-k**2,1)+1/3*n*elliprj(0,1-k**2,1,1-n)
 
 def _radial_roots(a,p,e,constants):
@@ -42,7 +43,7 @@ def _radial_roots(a,p,e,constants):
     
     return r1, r2, r3, r4
 
-def _azimuthal_roots(a,x,constants):
+def _polar_roots(a,x,constants):
     """
     Computes epsilon_0, z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
@@ -125,7 +126,7 @@ def theta_frequency(a,p,e,x,constants=None):
     
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
-    epsilon0, z_minus, z_plus = _azimuthal_roots(a,x,constants)
+    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
     
     # equation 13
     k_theta = sqrt(z_minus/z_plus)
@@ -168,7 +169,7 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    epsilon0, z_minus, z_plus = _azimuthal_roots(a,x,constants)
+    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
     
     if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
     if upsilon_theta is None: upsilon_theta = theta_frequency(a,p,e,x,constants)
@@ -226,7 +227,7 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    epsilon0, z_minus, z_plus = _azimuthal_roots(a,x,constants)
+    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
     # simplified form of a**2*sqrt(z_plus/epsilon0)
     a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
     

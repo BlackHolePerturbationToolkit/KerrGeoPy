@@ -91,8 +91,7 @@ def energy(a,p,e,x):
     
     # equation B.22
     return sqrt(
-                (kappa*rho+2*epsilon*sigma-
-                 sign(x)*2*sqrt(sigma*(sigma*epsilon**2+rho*epsilon*kappa-eta*kappa**2)))
+                (kappa*rho+2*epsilon*sigma-sign(x)*2*sqrt(sigma*(sigma*epsilon**2+rho*epsilon*kappa-eta*kappa**2)))
                 /(rho**2+4*eta*sigma)
                )
 
@@ -294,6 +293,7 @@ def separatrix(a,e,x):
     if x == -1:
         equatorial_retrograde_bracket = [6+2*e, 5+e+4*sqrt(1+e)]
         p_equatorial_retrograde = root_scalar(_S_equatorial,args=(a,e),bracket=equatorial_retrograde_bracket)
+        return p_equatorial_retrograde.root
     
     if x > 0:
         p = root_scalar(_S,args=(a,e,x),bracket=[p_equatorial_prograde.root, p_polar.root])
@@ -341,7 +341,7 @@ def valid_params(a,e,x):
 
 def scale_constants(constants,M,mu):
     """
-    Scales the constants in the equations of motion to the given mass parameters
+    Scales the dimensionless constants of motion to the given mass parameters
     
     :param constants: dimensionless constants of motion in the form (E,L,Q)
     :type constants: tuple
