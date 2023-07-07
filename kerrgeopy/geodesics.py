@@ -6,7 +6,7 @@ from numpy import sin, cos, arcsin, arccos, floor, where
 
 def _ellippiinc(phi,n,k):
     """
-    Incomplete elliptic integral of the third kind.
+    Incomplete elliptic integral of the third kind defined as :math:`\Pi(\phi,n,k) = \int_0^{\phi} \frac{1}{1-n\sin^2\theta}\frac{1}{\sqrt{1-k^2\sin^2\theta}}d\theta`.
 
     :type phi: double
     :type n: double
@@ -14,6 +14,8 @@ def _ellippiinc(phi,n,k):
 
     :rtype: double
     """
+    # Note: sign of n is reversed from the definition in Fujita and Hikida
+
     # count the number of half periods
     num_cycles = floor(phi/(pi/2))
     # map phi to [0,pi/2]
@@ -24,6 +26,23 @@ def _ellippiinc(phi,n,k):
     return where(num_cycles % 2 == 0, num_cycles*_ellippi(n,k)+integral, (num_cycles+1)*_ellippi(n,k)-integral)
     
 def radial_solutions(a,p,e,x):
+    """
+    Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of Fujita and Hikida (arXiv:0906.1420). 
+    :math:`q_r` is defined as :math:`q_r = \upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`.
+    Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param p: orbital semilatus rectum
+    :type p: double
+    :param e: orbital eccentricity
+    :type e: double
+    :param x:  orbital inclination
+    :type x: double
+
+    :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`
+    :rtype: tuple
+    """
     constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1, r2, r3, r4 = _radial_roots(a,p,e,constants)
@@ -38,8 +57,6 @@ def radial_solutions(a,p,e,x):
     # equation 13
     k_r = sqrt((r1-r2)*(r3-r4)/((r1-r3)*(r2-r4)))
 
-    # Note: q_r = upsilon_r*lambda = 2pi*lambda/Lambda_r
-
     def r(q_r):
         # equation 27
         u_r = ellipk(k_r**2)*q_r/pi
@@ -48,7 +65,10 @@ def radial_solutions(a,p,e,x):
         return (r3*(r1-r2)*sn**2-r2*(r1-r3))/((r1-r2)*sn**2-(r1-r3))
     
     def t_r(q_r):
-        sn, cn, dn, psi_r = ellipj(ellipk(k_r**2)*q_r/pi,k_r**2)
+        # equation 27
+        u_r = ellipk(k_r**2)*q_r/pi
+        sn, cn, dn, psi_r = ellipj(u_r,k_r**2)
+        # equation 28
         return 2/sqrt((1-E**2)*(r1-r3)*(r2-r4))* \
         (
         E/2*(
@@ -64,8 +84,10 @@ def radial_solutions(a,p,e,x):
         )
     
     def phi_r(q_r):
+        # equation 27
         u_r = ellipk(k_r**2)*q_r/pi
         sn, cn, dn, psi_r = ellipj(u_r,k_r**2)
+        # equation 28
         return -2*a/((r_plus-r_minus)*sqrt((1-E**2)*(r1-r3)*(r2-r4))) * \
                 (
                 (2*E*r_plus-a*L)*(r2-r3)/((r3-r_plus)*(r2-r_plus))*(_ellippiinc(psi_r,h_plus,k_r)-q_r/pi*_ellippi(h_plus,k_r)) 
@@ -75,30 +97,50 @@ def radial_solutions(a,p,e,x):
     return r, t_r, phi_r
         
 def polar_solutions(a,p,e,x):
+    """
+    Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` from equation 6 of Fujita and Hikida (arXiv:0906.1420).
+    :math:`q_\theta` is defined as :math:`q_\theta = \upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
+    Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param p: orbital semilatus rectum
+    :type p: double
+    :param e: orbital eccentricity
+    :type e: double
+    :param x: orbital inclination
+    :type x: double
+
+    :return: tuple of functions in the form :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
+    :rtype: tuple
+    """
     constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
     # simplified form of epsilon0*z_plus
     e0zp = (a**2*(1-E**2)*(1-z_minus)+L**2)/(L**2*(1-z_minus))
+    # simplified form of a**2*sqrt(z_plus/epsilon0)
+    a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
 
     # equation 13
     k_theta = 0 if a == 0 else sqrt(z_minus/z_plus)
 
-    # Note: q_theta = upsilon_theta*lambda = 2pi*lambda/Lambda_theta
-
     def theta(q_theta):
         u_theta = 2/pi*ellipk(k_theta**2)*(q_theta+pi/2)
         sn, cn, dn, ph = ellipj(u_theta,k_theta**2)
+        # equation 38
         return arccos(sqrt(z_minus)*sn)
 
     def t_theta(q_theta):
         u_theta = 2/pi*ellipk(k_theta**2)*(q_theta+pi/2)
         sn, cn, dn, psi_theta = ellipj(u_theta,k_theta**2)
-        return a**2*E*z_plus/(L*sqrt(epsilon0*z_plus))*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-ellipeinc(psi_theta,k_theta**2))
+        # equation 39
+        return sign(x)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-ellipeinc(psi_theta,k_theta**2))
     
     def phi_theta(q_theta):
         sn, cn, dn, psi_theta = ellipj(2/pi*ellipk(k_theta**2)*(q_theta+pi/2),k_theta**2)
-        return 1/sqrt(e0zp)*(_ellippiinc(psi_theta,z_minus,k_theta)-2/pi*_ellippi(z_minus,k_theta)*(q_theta+pi/2))
+        # equation 39
+        return sign(x)*1/sqrt(e0zp)*(_ellippiinc(psi_theta,z_minus,k_theta)-2/pi*_ellippi(z_minus,k_theta)*(q_theta+pi/2))
     
     return theta, t_theta, phi_theta
 

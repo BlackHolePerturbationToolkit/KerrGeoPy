@@ -64,18 +64,24 @@ def energy(a,p,e,x):
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
+    # marginally bound case
     if e == 1:
         return 1
+    
+    # polar case
     if x == 0:
         # expression from ConstantsOfMotion.m in the KerrGeodesics mathematica library
         return sqrt(-((p*(a**4*(-1 + e**2)**2 + (-4*e**2 + (-2 + p)**2)*p**2 + \
                 2*a**2*p*(-2 + p + e**2*(2 + p))))/ \
                 (a**4*(-1 + e**2)**2*(-1 + e**2 - p) + (3 + e**2 - p)*p**4 - \
                 2*a**2*p**2*(-1 - e**4 + p + e**2*(2 + p)))))
+    
+    # spherical case
     if e == 0:
         r0 = p
         f1, g1, h1, d1 = _coefficients(r0,a,x)
         f2, g2, h2, d2 = _coefficients_derivative(r0,a,x)
+    # generic case
     else:
         r1 = p/(1-e)
         r2 = p/(1+e)
@@ -119,14 +125,18 @@ def angular_momentum(a,p,e,x,E=None):
     # compute energy if not given
     if E is None: E = energy(a,p,e,x)
 
-    # angular momentum is zero for polar orbits
+    # polar case
     if x == 0:
         return 0
+    
+    # marginally bound case
     if e == 1:
         r2 = p/(1+e)
         f2, g2, h2, d2 = _coefficients(r2,a,x)
         # obtained by solving equation B.17 for L
         return (-E*g2 + (-1 if x == -1 else 1)*sqrt(-d2*h2 + E**2*(g2**2 + f2*h2)))/h2
+    
+    # generic case
     else:
         r1 = p/(1-e)
         f1, g1, h1, d1 = _coefficients(r1,a,x)
@@ -156,6 +166,7 @@ def carter_constant(a,p,e,x,E=None,L=None):
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
+    # polar case
     if x == 0:
         # expression from ConstantsOfMotion.m in the KerrGeodesics mathematica library
         return -((p**2*(a**4*(-1+e**2)**2+p**4+2*a**2*p*(-2+p+e**2*(2+p)))) \

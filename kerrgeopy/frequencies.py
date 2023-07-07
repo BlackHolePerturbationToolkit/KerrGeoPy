@@ -10,6 +10,8 @@ def _ellippi(n,k):
 
     :rtype: double
     """
+    # Note: sign of n is reversed from the definition in Fujita and Hikida
+
     # formula from https://en.wikipedia.org/wiki/Carlson_symmetric_form
     return elliprf(0,1-k**2,1)+1/3*n*elliprj(0,1-k**2,1,1-n)
 
@@ -89,6 +91,7 @@ def r_frequency(a,p,e,x,constants=None):
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
+    # compute constants if not passed in
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
 
@@ -121,9 +124,11 @@ def theta_frequency(a,p,e,x,constants=None):
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
+    # Schwarzschild case
     if a == 0:
         return p/sqrt(-3-e**2+p)*(sign(x) if e == 0 else 1)
     
+    # compute constants if not provided
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
@@ -163,14 +168,17 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
+    # Schwarzschild case
     if a == 0:
         return sign(x)*p/sqrt(-3-e**2+p)
     
+    # compute constants if they are not passed in
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
     epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
     
+    # compute frequencies if they are not passed in
     if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
     if upsilon_theta is None: upsilon_theta = theta_frequency(a,p,e,x,constants)
     
@@ -221,9 +229,11 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
     
+    # marginally bound case
     if e == 1:
         return inf
     
+    # compute constants if they are not passed in
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
@@ -231,6 +241,7 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     # simplified form of a**2*sqrt(z_plus/epsilon0)
     a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
     
+    # compute frequencies if they are not passed in
     if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
     if upsilon_theta is None: upsilon_theta = theta_frequency(a,p,e,x,constants)
     
@@ -267,7 +278,7 @@ def orbital_frequencies(a,p,e,x,time="Mino"):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
-    :param time: specifies the time in which to compute frequencies (options are "Mino" and "Boyer-Lindquist")
+    :param time: specifies the time in which to compute frequencies (options are "Mino" and "Boyer-Lindquist"), defaults to "Mino"
     :type time: str, optional
 
     :rtype: tuple
