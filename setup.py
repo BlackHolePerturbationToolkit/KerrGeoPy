@@ -13,5 +13,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Natural Language :: English",
     ),
-    install_requires=["scipy","numpy"]
+    install_requires=["scipy","numpy","matplotlib"]
 )
