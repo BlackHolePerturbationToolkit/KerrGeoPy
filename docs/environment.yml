@@ -6,6 +6,7 @@ dependencies:
   - sphinx
   - scipy
   - numpy
+  - matplotlib
   - pip
   - python=3.11
   - sphinx-book-theme
