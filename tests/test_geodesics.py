@@ -1,0 +1,28 @@
+import unittest
+import numpy as np
+from kerrgeopy.geodesics import *
+from pathlib import Path
+
+THIS_DIR = Path(__file__).parent
+
+DATA_DIR = THIS_DIR.parent / "tests/data"
+
+class TestGeodesics(unittest.TestCase):
+    def test_random(self):
+        components = ["t_r","t_theta","phi_r","phi_theta"]
+        orbit_values = np.genfromtxt(DATA_DIR / "orbit_values.txt", delimiter=",")
+        orbit_times = np.genfromtxt(DATA_DIR / "orbit_times.txt", delimiter=",")
+
+        for i, orbit in enumerate(orbit_values):
+            mathematica_trajectory = np.genfromtxt(DATA_DIR / f"geodesics/trajectory{i}.txt", delimiter=",")
+            r, t_r, phi_r = radial_solutions(*orbit)
+            theta, t_theta, phi_theta = polar_solutions(*orbit)
+            python_trajectory = np.transpose(
+                np.apply_along_axis(lambda x: np.array([t_r(x),t_theta(x),phi_r(x),phi_theta(x)]),0,orbit_times)
+                )
+            
+            for j, component in enumerate(components):
+                with self.subTest(i=i,component=component,
+                                  params="a = {}, p = {}, e = {}, x = {}".format(*orbit)
+                                  ):
+                    self.assertTrue(np.allclose(mathematica_trajectory[:,j],python_trajectory[:,j]))

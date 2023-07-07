@@ -25,4 +25,21 @@ class TestOrbit(unittest.TestCase):
         with self.assertRaises(ValueError): Orbit(0.5,5,0.5,0.5)
 
     def test_random(self):
-        pass
+        components = ["t","r","theta","phi"]
+        orbit_values = np.genfromtxt(DATA_DIR / "orbit_values.txt", delimiter=",")
+        orbit_times = np.genfromtxt(DATA_DIR / "orbit_times.txt", delimiter=",")
+
+        for i, orbit in enumerate(orbit_values):
+            mathematica_trajectory = np.genfromtxt(DATA_DIR / f"orbits/trajectory{i}.txt", delimiter=",")
+            test_orbit = Orbit(*orbit)
+            t, r , theta, phi = test_orbit.trajectory()
+            python_trajectory = np.transpose(
+                np.apply_along_axis(lambda x: np.array([t(x),r(x),theta(x),phi(x)]),0,orbit_times)
+                )
+            
+            for j, component in enumerate(components):
+                with self.subTest(i=i,component=component,
+                                  params="a = {}, p = {}, e = {}, x = {}".format(*orbit),
+                                  diff=np.max(np.abs(mathematica_trajectory[:,j]-python_trajectory[:,j]))
+                                  ):
+                    self.assertTrue(np.allclose(mathematica_trajectory[:,j],python_trajectory[:,j]))
