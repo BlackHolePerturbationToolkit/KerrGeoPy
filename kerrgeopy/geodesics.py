@@ -5,7 +5,7 @@ from scipy.special import ellipj, ellipeinc
 from numpy import sin, cos, arcsin, arccos, floor, where
 
 def _ellippiinc(phi,n,k):
-    """
+    r"""
     Incomplete elliptic integral of the third kind defined as :math:`\Pi(\phi,n,k) = \int_0^{\phi} \frac{1}{1-n\sin^2\theta}\frac{1}{\sqrt{1-k^2\sin^2\theta}}d\theta`.
 
     :type phi: double
@@ -26,7 +26,7 @@ def _ellippiinc(phi,n,k):
     return where(num_cycles % 2 == 0, num_cycles*_ellippi(n,k)+integral, (num_cycles+1)*_ellippi(n,k)-integral)
     
 def radial_solutions(a,p,e,x):
-    """
+    r"""
     Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of Fujita and Hikida (arXiv:0906.1420). 
     :math:`q_r` is defined as :math:`q_r = \upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`.
     Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
@@ -97,7 +97,7 @@ def radial_solutions(a,p,e,x):
     return r, t_r, phi_r
         
 def polar_solutions(a,p,e,x):
-    """
+    r"""
     Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` from equation 6 of Fujita and Hikida (arXiv:0906.1420).
     :math:`q_\theta` is defined as :math:`q_\theta = \upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
     Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.

@@ -2,7 +2,7 @@ from scipy.special import ellipk, ellipe, elliprj, elliprf
 from .constants import *
 
 def _ellippi(n,k):
-    """
+    r"""
     Complete elliptic integral of the third kind defined as :math:`\Pi(n,k) = \int_0^{\frac{\pi}{2}} \frac{d\theta}{(1-n\sin^2{\theta})\sqrt{1-k^2\sin^2{\theta}}}`
     
     :type n: double
