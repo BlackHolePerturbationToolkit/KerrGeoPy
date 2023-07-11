@@ -1,6 +1,7 @@
 from numpy import sign, sqrt, inf, nan
 from math import pi
 from scipy.optimize import root_scalar
+from .units import *
 
 def _coefficients(r,a,x):
     """
@@ -363,4 +364,5 @@ def scale_constants(constants,M,mu):
     
     :rtype: tuple
     """
+    M = mass_in_kg(M)
     return constants[0]*mu, constants[1]*mu*M, constants[2]*mu**2*M**2

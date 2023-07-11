@@ -1,6 +1,7 @@
 from .constants import *
 from .frequencies import *
 from .geodesics import *
+from .units import *
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -26,6 +27,46 @@ class Orbit:
         self.E, self.L, self.Q = constants_of_motion(a,p,e,x)
         self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = orbital_frequencies(a,p,e,x)
 
+    def constants_of_motion(self, units="natural"):
+        """
+        Computes the constants of motion for the orbit. 
+
+        :param units: units to return the constants of motion in, defaults to "natural"
+        :type units: str, optional
+
+        :return: tuple of constants of motion in the form (E,L,Q)
+        :rtype: tuple
+        """
+        constants = self.E, self.L, self.Q
+        if units == "natural":
+            return constants
+        elif units == "mks":
+            E, L, Q = scale_constants(constants,1,self.mu/self.M)
+            return energy_in_joules(E,self.M), angular_momentum_in_mks(L,self.M), carter_constant_in_mks(Q,self.M)
+        
+        elif units == "cgs":
+            E, L, Q = scale_constants(constants,1,self.mu/self.M)
+            return energy_in_ergs(E,self.M), angular_momentum_in_cgs(L,self.M), carter_constant_in_cgs(Q,self.M)
+        
+    def orbital_frequencies(self, units="natural",time="mino"):
+        """
+        Computes the orbital frequencies for the orbit.
+
+        :param units: _description_, defaults to "natural"
+        :type units: str, optional
+        :param time: _description_, defaults to "mino"
+        :type time: str, optional
+        :return: _description_
+        :rtype: _type_
+        """
+        upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
+        if units == "natural":
+            return upsilon_r, upsilon_theta, upsilon_phi, gamma
+        if units == "mks" or units == "cgs":
+            return frequency_in_Hz(upsilon_r,self.M), frequency_in_Hz(upsilon_theta,self.M), frequency_in_Hz(upsilon_phi,self.M), frequency_in_Hz(gamma,self.M)
+        if units == "mHz":
+            return frequency_in_mHz(upsilon_r,self.M), frequency_in_mHz(upsilon_theta,self.M), frequency_in_mHz(upsilon_phi,self.M), frequency_in_mHz(gamma,self.M)
+        
     def trajectory(self,initial_phases=(0,0,0,0)):
         """
         Computes the time, radial, polar, and azimuthal coordinates of the orbit as a function of mino time.
@@ -78,7 +119,7 @@ class Orbit:
         :type initial_phases: tuple, optional
         :param grid: if true, grid lines are shown on plot
         :type grid: bool, optional
-        :param axes:if true, axes are shown on plot
+        :param axes: if true, axes are shown on plot
         :type axes: bool, optional
         :param thickness: line thickness of the orbit
         :type thickness: double, optional
