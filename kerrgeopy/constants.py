@@ -210,6 +210,8 @@ def _S_polar(p,a,e):
     :type a: double
     :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
     :type e: double
+
+    :rtype: double
     """
     return      p**5*(-6 - 2*e + p) \
                 + a**2*p**3*(-4*(-1+e)*(1+e)**2 + (3 + e*(2 + 3*e))*p) \
@@ -226,6 +228,8 @@ def _S_equatorial(p,a,e):
     :type a: double
     :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
     :type e: double
+
+    :rtype: double
     """
     return      a**4*(-3 - 2*e + e**2)**2 \
                 + p**2*(-6 - 2*e + p)**2 \
@@ -241,6 +245,8 @@ def _S(p,a,e,x):
     :type a: double
     :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
     :type e: double
+
+    :rtype: double
     """
     return -4*(3 + e)*p**11 + p**12 + \
        a**12*(-1 + e)**4*(1 + e)**8*(-1 + x)**4*(1 + x)**4 - \

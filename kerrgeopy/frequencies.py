@@ -30,6 +30,7 @@ def _radial_roots(a,p,e,constants):
     :param constants: dimensionless constants of motion for the orbit
     :type constants: tuple(double, double, double)
 
+    :return: tuple containing the four roots of the radial equation
     :rtype: tuple(double, double, double, double)
     """
     E, L, Q = constants
@@ -46,7 +47,7 @@ def _radial_roots(a,p,e,constants):
     return r1, r2, r3, r4
 
 def _polar_roots(a,x,constants):
-    """
+    r"""
     Computes epsilon_0, z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
@@ -56,6 +57,7 @@ def _polar_roots(a,x,constants):
     :param constants: dimensionless constants of motion for the orbit
     :type constants: tuple(double, double, double)
 
+    :return: tuple of the form :math:`(\epsilon_0, z_-, z_+)`
     :rtype: tuple(double, double, double, double)
     """
     E, L, Q = constants
@@ -266,9 +268,9 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
                                    )
               )
 
-def orbital_frequencies(a,p,e,x,time="Mino"):
-    """
-    Computes frequencies of orbital motion. Returns Mino frequencies by default.
+def mino_frequencies(a,p,e,x):
+    r"""
+    Computes frequencies of orbital motion in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double
@@ -278,9 +280,8 @@ def orbital_frequencies(a,p,e,x,time="Mino"):
     :type e: double
     :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
     :type x: double
-    :param time: specifies the time in which to compute frequencies (options are "Mino" and "Boyer-Lindquist"), defaults to "Mino"
-    :type time: str, optional
 
+    :return: tuple of the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
     :rtype: tuple
     """
     constants = constants_of_motion(a,p,e,x)
@@ -289,8 +290,28 @@ def orbital_frequencies(a,p,e,x,time="Mino"):
     upsilon_phi = phi_frequency(a,p,e,x,constants,upsilon_r,upsilon_theta)
     Gamma = gamma(a,p,e,x,constants,upsilon_r,upsilon_theta)
 
-    if time == "Mino":
-        return upsilon_r, abs(upsilon_theta), upsilon_phi, Gamma
+    return upsilon_r, abs(upsilon_theta), upsilon_phi, Gamma
     
-    if time == "Boyer-Lindquist":
-        return upsilon_r/Gamma, abs(upsilon_theta)/Gamma, upsilon_phi/Gamma
+def observer_frequencies(a,p,e,x):
+    r"""
+    Computes frequencies of orbital motion in Boyer-Lindquist time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :type a: double
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param e: orbital eccentricity (must satisfy 0 <= e < 1)
+    :type e: double
+    :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
+    :type x: double
+
+    :return: tuple of the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
+    :rtype: tuple
+    """
+    constants = constants_of_motion(a,p,e,x)
+    upsilon_r = r_frequency(a,p,e,x,constants)
+    upsilon_theta = theta_frequency(a,p,e,x,constants)
+    upsilon_phi = phi_frequency(a,p,e,x,constants,upsilon_r,upsilon_theta)
+    Gamma = gamma(a,p,e,x,constants,upsilon_r,upsilon_theta)
+    
+    return upsilon_r/Gamma, abs(upsilon_theta)/Gamma, upsilon_phi/Gamma

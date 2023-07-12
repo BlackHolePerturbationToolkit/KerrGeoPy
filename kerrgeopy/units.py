@@ -75,6 +75,17 @@ def time_in_seconds(t,M):
     """
     return t*G/c**3*mass_in_kg(M)
 
+def time_in_seconds2(t,M):
+    """
+    Converts time^2 in geometrized units to seconds^2
+
+    :param t: time^2 in multiples of M^2
+    :type t: double
+    :param M: mass of the primary body in solar masses
+    :type M: double
+    """
+    return t*(G/c**3)**2*mass_in_kg(M)**2
+
 def time_in_days(t,M):
     """
     Converts time in geometrized units to days

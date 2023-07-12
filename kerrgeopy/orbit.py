@@ -10,13 +10,13 @@ class Orbit:
         """
         Initializes an orbit with the given orbital parameters
 
-        :param a: dimensionless angular momentum
+        :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
         :type a: double
         :param p: semi-latus rectum
         :type p: double
-        :param e: orbital eccentricity
+        :param e: orbital eccentricity (must satisfy 0 <= e < 1)
         :type e: double
-        :param x: cosine of the orbital inclination
+        :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
         :type x: double
         :param M: mass of the black hole
         :type M: double
@@ -25,13 +25,14 @@ class Orbit:
         """
         self.a, self.p, self.e, self.x, self.M, self.mu = a, p, e, x, M, mu
         self.E, self.L, self.Q = constants_of_motion(a,p,e,x)
-        self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = orbital_frequencies(a,p,e,x)
+        self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,p,e,x)
+        self.omega_r, self.omega_theta, self.omega_phi = observer_frequencies(a,p,e,x)
 
     def constants_of_motion(self, units="natural"):
         """
-        Computes the constants of motion for the orbit. 
+        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants by default. Returns a tuple of the form (E, L, Q)
 
-        :param units: units to return the constants of motion in, defaults to "natural"
+        :param units: units to return the constants of motion in, defaults to "natural" (other options are "mks" and "cgs")
         :type units: str, optional
 
         :return: tuple of constants of motion in the form (E,L,Q)
@@ -40,41 +41,70 @@ class Orbit:
         constants = self.E, self.L, self.Q
         if units == "natural":
             return constants
-        elif units == "mks":
+        
+        if self.M is None or self.mu is None: raise ValueError("M and mu must be specified to convert constants of motion to physical units")
+        
+        if units == "mks":
             E, L, Q = scale_constants(constants,1,self.mu/self.M)
             return energy_in_joules(E,self.M), angular_momentum_in_mks(L,self.M), carter_constant_in_mks(Q,self.M)
         
-        elif units == "cgs":
+        if units == "cgs":
             E, L, Q = scale_constants(constants,1,self.mu/self.M)
             return energy_in_ergs(E,self.M), angular_momentum_in_cgs(L,self.M), carter_constant_in_cgs(Q,self.M)
         
-    def orbital_frequencies(self, units="natural",time="mino"):
-        """
-        Computes the orbital frequencies for the orbit.
+        raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
+        
+    def mino_frequencies(self, units="natural"):
+        r"""
+        Computes orbital frequencies in Mino time. Returns dimensionless frequencies in geometrized units by default.
 
-        :param units: _description_, defaults to "natural"
+        :param units: units to return the frequencies in (options are "natural", "mks" and "cgs"), defaults to "natural"
         :type units: str, optional
-        :param time: _description_, defaults to "mino"
-        :type time: str, optional
-        :return: _description_
-        :rtype: _type_
+
+        :return: tuple of orbital frequencies in the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
+        :rtype: tuple
         """
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
         if units == "natural":
             return upsilon_r, upsilon_theta, upsilon_phi, gamma
+        
+        if self.M is None: raise ValueError("M must be specified to convert frequencies to physical units")
+        
         if units == "mks" or units == "cgs":
-            return frequency_in_Hz(upsilon_r,self.M), frequency_in_Hz(upsilon_theta,self.M), frequency_in_Hz(upsilon_phi,self.M), frequency_in_Hz(gamma,self.M)
+            return time_in_seconds(upsilon_r,self.M), time_in_seconds(upsilon_theta,self.M), time_in_seconds(upsilon_phi,self.M), time_in_seconds2(gamma,self.M)
+        
+        raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
+    
+    def observer_frequencies(self, units="natural"):
+        r"""
+        Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless frequencies in geometrized units by default.
+
+        :param units: units to return the frequencies in (options are "natural", "mks", "cgs" and "mHz"), defaults to "natural"
+        :type units: str, optional
+        :return: tuple of orbital frequencies in the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
+        :rtype: tuple
+        """
+        upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
+        if units == "natural":
+            return upsilon_r/gamma, upsilon_theta/gamma, upsilon_phi/gamma
+        
+        if self.M is None: raise ValueError("M must be specified to convert frequencies to physical units")
+
+        if units == "mks" or units == "cgs":
+            return frequency_in_Hz(upsilon_r/gamma,self.M), frequency_in_Hz(upsilon_theta/gamma,self.M), frequency_in_Hz(upsilon_phi/gamma,self.M)
         if units == "mHz":
-            return frequency_in_mHz(upsilon_r,self.M), frequency_in_mHz(upsilon_theta,self.M), frequency_in_mHz(upsilon_phi,self.M), frequency_in_mHz(gamma,self.M)
+            return frequency_in_mHz(upsilon_r/gamma,self.M), frequency_in_mHz(upsilon_theta/gamma,self.M), frequency_in_mHz(upsilon_phi/gamma,self.M)
+        
+        raise ValueError("units must be one of 'natural', 'mks', 'cgs', or 'mHz'")
         
     def trajectory(self,initial_phases=(0,0,0,0)):
-        """
+        r"""
         Computes the time, radial, polar, and azimuthal coordinates of the orbit as a function of mino time.
 
         :param initial_phases: tuple of initial phases for the time, radial, polar, and azimuthal coordinates, defaults to (0,0,0,0)
         :type initial_phases: tuple, optional
 
-        :return: tuple of functions in the form (t,r,theta,phi)
+        :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         :rtype: tuple
         """
         a, p, e, x = self.a, self.p, self.e, self.x
@@ -111,9 +141,9 @@ class Orbit:
         :type lambda0: double, optional
         :param lambda1: ending mino time
         :type lambda1: double, optional
-        :param elevation: camera elevation angle
+        :param elevation: camera elevation angle in degrees
         :type elevation: double, optional
-        :param azimuth: camera azimuthal angle
+        :param azimuth: camera azimuthal angle in degrees
         :type azimuth: double, optional
         :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
         :type initial_phases: tuple, optional
@@ -134,7 +164,7 @@ class Orbit:
 
         t, r, theta, phi = self.trajectory(initial_phases)
 
-        # compute trajectory
+        # compute trajectory in cartesian coordinates
         trajectory_x = r(time)*sin(theta(time))*cos(phi(time))
         trajectory_y = r(time)*sin(theta(time))*sin(phi(time))
         trajectory_z = r(time)*cos(theta(time))
@@ -173,6 +203,7 @@ class Orbit:
         # plot orbit
         ax.scatter(x_visible,y_visible,z_visible,color="red",s=thickness)
 
+        # set viewing angle
         ax.view_init(elevation,azimuth)
         # set equal aspect ratio and orthogonal projection
         ax.set_box_aspect([np.ptp(x_visible),np.ptp(y_visible),np.ptp(z_visible)])
@@ -184,3 +215,33 @@ class Orbit:
         if not axes: ax.axis("off")
 
         return fig, ax
+    
+    def is_visible(self,point,elevation,azimuth):
+        """
+        Determines if a point is visible from a given viewing angle or obscured by the black hole. 
+        Viewing angles are defined as in https://matplotlib.org/stable/api/toolkits/mplot3d/view_angles.html and black hole is centered at the origin.
+
+        :param point: cartersian coordinates of point to test
+        :type point: array_like
+        :param elevation: camera elevation angle in degrees
+        :type elevation: double
+        :param azimuth: camera azimuthal angle in degrees
+        :type azimuth: double
+        """
+        # compute event horizon radius
+        event_horizon = 1+sqrt(1-self.a**2)
+
+        # convert viewing angles to radians
+        elevation_rad = elevation*pi/180
+        azimuth_rad = azimuth*pi/180
+
+        # https://matplotlib.org/stable/api/toolkits/mplot3d/view_angles.html
+        view_plane_normal = [cos(elevation_rad)*cos(azimuth_rad),cos(elevation_rad)*sin(azimuth_rad),sin(elevation_rad)]
+
+        # compute the component normal to the viewing plane
+        normal_component = np.dot(view_plane_normal,point)
+        # compute the projection of the point onto the viewing plane
+        projection = point-normal_component*view_plane_normal
+
+        # test if point is outside the event horizon and either in front of the viewing plane or outside the event horizon when projected onto the viewing plane
+        return True if (np.linalg.norm(point) > event_horizon) & ((normal_component >= 0) | (np.linalg.norm(projection) > event_horizon)) else False
