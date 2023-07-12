@@ -22,7 +22,9 @@ class TestGeodesics(unittest.TestCase):
                 )
             
             for j, component in enumerate(components):
-                with self.subTest(i=i,component=component,
-                                  params="a = {}, p = {}, e = {}, x = {}".format(*orbit)
+                with self.subTest(i=i,
+                                  component=component,
+                                  params="a = {}, p = {}, e = {}, x = {}".format(*orbit),
+                                  diff=np.max(np.abs(mathematica_trajectory[:,j]-python_trajectory[:,j]))
                                   ):
                     self.assertTrue(np.allclose(mathematica_trajectory[:,j],python_trajectory[:,j]))

@@ -38,7 +38,8 @@ class TestOrbit(unittest.TestCase):
                 )
             
             for j, component in enumerate(components):
-                with self.subTest(i=i,component=component,
+                with self.subTest(i=i,
+                                  component=component,
                                   params="a = {}, p = {}, e = {}, x = {}".format(*orbit),
                                   diff=np.max(np.abs(mathematica_trajectory[:,j]-python_trajectory[:,j]))
                                   ):
