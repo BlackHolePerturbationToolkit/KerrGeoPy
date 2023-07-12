@@ -1,4 +1,4 @@
-from numpy import sign, sqrt, inf, nan
+from numpy import sign, sqrt, copysign, inf, nan
 from math import pi
 from scipy.optimize import root_scalar
 from .units import *
@@ -46,11 +46,24 @@ def _coefficients_derivative(r,a,x):
     
     return f_prime(r), g_prime(r), h_prime(r), d_prime(r)
 
+def _standardize_params(a,x):
+    """
+    Changes signs of a and x so that a is positive and x encodes the direction of the orbit.
+
+    :param a: dimensionless spin of the black hole
+    :type a: double
+    :param x: cosine of the orbital inclination
+    :type x: double
+
+    :rtype: tuple(double, double)
+    """
+    return abs(a), x*copysign(1,a)
+
 def energy(a,p,e,x):
     """
     Computes the dimensionless energy of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -61,8 +74,10 @@ def energy(a,p,e,x):
     
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
+
     if a == 1: raise ValueError("Extreme Kerr not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     # marginally bound case
@@ -106,7 +121,7 @@ def angular_momentum(a,p,e,x,E=None):
     """
     Computes the dimensionless angular momentum of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -119,8 +134,10 @@ def angular_momentum(a,p,e,x,E=None):
     
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
+
     if a == 1: raise ValueError("Extreme Kerr not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     # compute energy if not given
@@ -148,7 +165,7 @@ def carter_constant(a,p,e,x,E=None,L=None):
     """
     Computes the dimensionless carter constant of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -163,8 +180,10 @@ def carter_constant(a,p,e,x,E=None,L=None):
     
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
+
     if a == 1:  raise ValueError("Extreme Kerr not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     # polar case
@@ -184,7 +203,7 @@ def constants_of_motion(a,p,e,x):
     """
     Computes the dimensionless energy, angular momentum, and carter constant of a bound orbit with the given parameters. Returns a tuple of the form (E, L, Q)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -206,9 +225,9 @@ def _S_polar(p,a,e):
 
     :param p: orbital semi-latus rectum
     :type p: double
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
-    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :param e: orbital eccentricity
     :type e: double
 
     :rtype: double
@@ -224,9 +243,9 @@ def _S_equatorial(p,a,e):
 
     :param p: orbital semi-latus rectum
     :type p: double
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
-    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :param e: orbital eccentricity
     :type e: double
 
     :rtype: double
@@ -241,9 +260,9 @@ def _S(p,a,e,x):
 
     :param p: orbital semi-latus rectum
     :type p: double
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
-    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :param e: orbital eccentricity
     :type e: double
 
     :rtype: double
@@ -281,7 +300,7 @@ def separatrix(a,e,x):
     """
     Returns the value of p at the separatrix for the given orbital parameters computed using the bracked root finding method described in Stein and Warburton (arXiv:1912.07609)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
     :type e: double
@@ -290,8 +309,10 @@ def separatrix(a,e,x):
     
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
+
     if a == 1: raise ValueError("Extreme Kerr not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
 
     if a == 0:
         return 6+2*e
@@ -325,13 +346,13 @@ def is_stable(a,p,e,x):
     """
     Tests whether or not the given orbital parameters define a stable bound orbit
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
-    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :param e: orbital eccentricity
     :type e: double
-    :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
+    :param x: cosine of the orbital inclination
     :type x: double
     
     :rtype: boolean
@@ -344,11 +365,11 @@ def valid_params(a,e,x):
     """
     Tests whether the given parameters fall into the allowed ranges
 
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
-    :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
+    :param e: orbital eccentricity
     :type e: double
-    :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
+    :param x: cosine of the orbital inclination
     :type x: double
 
     :rtype: boolean
@@ -361,7 +382,7 @@ def scale_constants(constants,M,mu):
     """
     Scales the dimensionless constants of motion to the given mass parameters
     
-    :param constants: dimensionless constants of motion in the form (E,L,Q)
+    :param constants: dimensionless constants of motion in the form (E, L, Q)
     :type constants: tuple
     :param M: mass of the black hole
     :type M: double

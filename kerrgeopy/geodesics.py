@@ -1,4 +1,5 @@
 from .constants import *
+from .constants import _standardize_params
 from .frequencies import _radial_roots, _polar_roots, _ellippi
 from .frequencies import *
 from scipy.special import ellipj, ellipeinc
@@ -43,6 +44,8 @@ def radial_solutions(a,p,e,x):
     :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`
     :rtype: tuple
     """
+    a, x = _standardize_params(a,x)
+
     constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1, r2, r3, r4 = _radial_roots(a,p,e,constants)
@@ -114,6 +117,8 @@ def polar_solutions(a,p,e,x):
     :return: tuple of functions in the form :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
     :rtype: tuple
     """
+    a, x = _standardize_params(a,x)
+
     constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)

@@ -32,7 +32,8 @@ release = '0.0.1'
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary"
+    "sphinx.ext.autosummary",
+    "nbsphinx"
 ]
 autosummary_generate = True
 # https://stackoverflow.com/questions/2701998/automatically-document-all-modules-recursively-with-sphinx-autodoc/62613202#62613202
@@ -52,3 +53,13 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = 'sphinx_book_theme'
+
+html_theme_options = {
+    "repository_url": "https://github.com/syp2001",
+    "use_repository_button": True,
+    "navbar_end": ["navbar-icon-links"],
+}
+html_title = "kerrgeopy"
+html_context = {
+    "default_mode": "light"
+}

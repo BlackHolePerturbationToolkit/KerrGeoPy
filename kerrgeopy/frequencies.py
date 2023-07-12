@@ -1,5 +1,6 @@
 from scipy.special import ellipk, ellipe, elliprj, elliprf
 from .constants import *
+from .constants import _standardize_params
 
 def _ellippi(n,k):
     r"""
@@ -19,13 +20,13 @@ def _radial_roots(a,p,e,constants):
     """
     Computes r1, r2, r3 and r4 as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
-    :param e: orbital eccentricity (must satisfy 0 <= e < 1)
+    :param e: orbital eccentricity
     :type e: double
-    :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
+    :param x: cosine of the orbital inclination
     :type x: tuple(double, double, double, double)
     :param constants: dimensionless constants of motion for the orbit
     :type constants: tuple(double, double, double)
@@ -50,9 +51,9 @@ def _polar_roots(a,x,constants):
     r"""
     Computes epsilon_0, z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole
     :type a: double
-    :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
+    :param x: cosine of the orbital inclination
     :type x: tuple(double, double, double)
     :param constants: dimensionless constants of motion for the orbit
     :type constants: tuple(double, double, double)
@@ -73,7 +74,7 @@ def r_frequency(a,p,e,x,constants=None):
     """
     Computes the frequency of motion in r in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -86,11 +87,12 @@ def r_frequency(a,p,e,x,constants=None):
 
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
 
     if a == 1: raise ValueError("Extreme Kerr not supported")
     if x == 0: raise ValueError("Polar orbits not supported")
     if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     # compute constants if not passed in
@@ -107,7 +109,7 @@ def theta_frequency(a,p,e,x,constants=None):
     """
     Computes the frequency of motion in theta in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -120,10 +122,13 @@ def theta_frequency(a,p,e,x,constants=None):
     
     :rtype: double
     """
+
+    a, x = _standardize_params(a,x)
+
     if a == 1: raise ValueError("Extreme Kerr not supported")
     if x == 0: raise ValueError("Polar orbits not supported")
     if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     # Schwarzschild case
@@ -147,7 +152,7 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     """
     Computes the frequency of motion in phi in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -164,10 +169,12 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
+
     if a == 1: raise ValueError("Extreme Kerr not supported")
     if x == 0: raise ValueError("Polar orbits not supported")
     if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
 
     # Schwarzschild case
@@ -208,7 +215,7 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     """
     Computes the average rate at which observer time accumulates in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
     
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -225,10 +232,12 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     
     :rtype: double
     """
+    a, x = _standardize_params(a,x)
+
     if a == 1: raise ValueError("Extreme Kerr not supported")
     if x == 0: raise ValueError("Polar orbits not supported")
     if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a, e and x^2 must be between 0 and 1")
+    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
     if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
     
     # marginally bound case
@@ -272,7 +281,7 @@ def mino_frequencies(a,p,e,x):
     r"""
     Computes frequencies of orbital motion in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double
@@ -296,7 +305,7 @@ def observer_frequencies(a,p,e,x):
     r"""
     Computes frequencies of orbital motion in Boyer-Lindquist time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
-    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
     :param p: orbital semi-latus rectum
     :type p: double

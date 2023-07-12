@@ -30,12 +30,12 @@ class Orbit:
 
     def constants_of_motion(self, units="natural"):
         """
-        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants by default. Returns a tuple of the form (E, L, Q)
+        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants in geometried units by default
 
-        :param units: units to return the constants of motion in, defaults to "natural" (other options are "mks" and "cgs")
+        :param units: units to return the constants of motion in (options are "natural", "mks" and "cgs"), defaults to "natural"
         :type units: str, optional
 
-        :return: tuple of constants of motion in the form (E,L,Q)
+        :return: tuple of the form (E, L, Q)
         :rtype: tuple
         """
         constants = self.E, self.L, self.Q

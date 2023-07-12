@@ -10,4 +10,5 @@ dependencies:
   - pip
   - python=3.11
   - sphinx-book-theme
+  - nbsphinx
   - sphinx-autoapi
