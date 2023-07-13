@@ -6,22 +6,42 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Orbit:
+    """
+    Class representing a bound geodesic orbit in Kerr spacetime.
+
+    :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
+    :type a: double
+    :param p: semi-latus rectum
+    :type p: double
+    :param e: orbital eccentricity (must satisfy 0 <= e < 1)
+    :type e: double
+    :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
+    :type x: double
+    :param M: mass of the primary in solar masses
+    :type M: double
+    :param mu: mass of the smaller body in solar masses
+    :type mu: double
+
+    :ivar a: dimensionless angular momentum
+    :ivar p: semi-latus rectum
+    :ivar e: orbital eccentricity
+    :ivar x: cosine of the orbital inclination
+    :ivar M: mass of the primary in solar masses
+    :ivar mu: mass of the smaller body in solar masses
+    :ivar E: dimensionless energy
+    :ivar L: dimensionless angular momentum
+    :ivar Q: dimensionless carter constant
+    :ivar upsilon_r: dimensionless radial orbital frequency in Mino time
+    :ivar upsilon_theta: dimensionless polar orbital frequency in Mino time
+    :ivar upsilon_phi: dimensionless azimuthal orbital frequency in Mino time
+    :ivar gamma: dimensionless time dilation factor
+    :ivar omega_r: dimensionless radial orbital frequency in Boyer-Lindquist time
+    :ivar omega_theta: dimensionless polar orbital frequency in Boyer-Lindquist time
+    :ivar omega_phi: dimensionless azimuthal orbital frequency in Boyer-Lindquist time
+    """
     def __init__(self,a,p,e,x,M = None,mu=None):
         """
-        Initializes an orbit with the given orbital parameters
-
-        :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
-        :type a: double
-        :param p: semi-latus rectum
-        :type p: double
-        :param e: orbital eccentricity (must satisfy 0 <= e < 1)
-        :type e: double
-        :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
-        :type x: double
-        :param M: mass of the black hole
-        :type M: double
-        :param mu: mass of the smaller body
-        :type mu: double
+        Constructor method
         """
         self.a, self.p, self.e, self.x, self.M, self.mu = a, p, e, x, M, mu
         self.E, self.L, self.Q = constants_of_motion(a,p,e,x)
@@ -30,13 +50,14 @@ class Orbit:
 
     def constants_of_motion(self, units="natural"):
         """
-        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants in geometried units by default
+        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants in geometried units by default.
+        M and mu must be defined in order to convert to physical units.
 
         :param units: units to return the constants of motion in (options are "natural", "mks" and "cgs"), defaults to "natural"
         :type units: str, optional
 
         :return: tuple of the form (E, L, Q)
-        :rtype: tuple
+        :rtype: tuple(double, double, double)
         """
         constants = self.E, self.L, self.Q
         if units == "natural":
@@ -57,12 +78,13 @@ class Orbit:
     def mino_frequencies(self, units="natural"):
         r"""
         Computes orbital frequencies in Mino time. Returns dimensionless frequencies in geometrized units by default.
+        M and mu must be defined in order to convert to physical units.
 
         :param units: units to return the frequencies in (options are "natural", "mks" and "cgs"), defaults to "natural"
         :type units: str, optional
 
         :return: tuple of orbital frequencies in the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
-        :rtype: tuple
+        :rtype: tuple(double, double, double, double)
         """
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
         if units == "natural":
@@ -78,11 +100,12 @@ class Orbit:
     def observer_frequencies(self, units="natural"):
         r"""
         Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless frequencies in geometrized units by default.
+        M and mu must be defined in order to convert to physical units.
 
         :param units: units to return the frequencies in (options are "natural", "mks", "cgs" and "mHz"), defaults to "natural"
         :type units: str, optional
         :return: tuple of orbital frequencies in the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
-        :rtype: tuple
+        :rtype: tuple(double, double, double)
         """
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
         if units == "natural":
@@ -105,12 +128,12 @@ class Orbit:
         :type initial_phases: tuple, optional
 
         :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
-        :rtype: tuple
+        :rtype: tuple(function, function, function, function)
         """
         a, p, e, x = self.a, self.p, self.e, self.x
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
-        r_phase, t_r, phi_r = radial_solutions(a,p,e,x)
-        theta_phase, t_theta, phi_theta = polar_solutions(a,p,e,x)
+        r_phases, t_r, phi_r = radial_solutions(a,p,e,x)
+        theta_phases, t_theta, phi_theta = polar_solutions(a,p,e,x)
         q_t0, q_r0, q_theta0, q_phi0 = initial_phases
 
         # Calculate normalization constants so that t = 0 and phi = 0 at lambda = 0 when q_t0 = 0 and q_phi0 = 0 
@@ -122,10 +145,10 @@ class Orbit:
             return q_t0 + gamma*mino_time + t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t
         
         def r(mino_time):
-            return r_phase(upsilon_r*mino_time+q_r0)
+            return r_phases(upsilon_r*mino_time+q_r0)
         
         def theta(mino_time):
-            return theta_phase(upsilon_theta*mino_time+q_theta0)
+            return theta_phases(upsilon_theta*mino_time+q_theta0)
         
         def phi(mino_time):
             # equation 6

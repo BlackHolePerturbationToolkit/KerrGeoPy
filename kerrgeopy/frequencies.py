@@ -291,7 +291,7 @@ def mino_frequencies(a,p,e,x):
     :type x: double
 
     :return: tuple of the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
-    :rtype: tuple
+    :rtype: tuple(double, double, double, double)
     """
     constants = constants_of_motion(a,p,e,x)
     upsilon_r = r_frequency(a,p,e,x,constants)
@@ -315,7 +315,7 @@ def observer_frequencies(a,p,e,x):
     :type x: double
 
     :return: tuple of the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
-    :rtype: tuple
+    :rtype: tuple(double, double, double)
     """
     constants = constants_of_motion(a,p,e,x)
     upsilon_r = r_frequency(a,p,e,x,constants)

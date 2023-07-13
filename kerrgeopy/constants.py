@@ -389,7 +389,7 @@ def scale_constants(constants,M,mu):
     :param mu: mass ratio
     :type mu: double
     
-    :rtype: tuple
+    :rtype: tuple(double, double, double)
     """
     M = mass_in_kg(M)
     return constants[0]*mu, constants[1]*mu*M, constants[2]*mu**2*M**2
