@@ -42,7 +42,7 @@ def radial_solutions(a,p,e,x):
     :type x: double
 
     :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`
-    :rtype: tuple
+    :rtype: tuple(function, function, function)
     """
     a, x = _standardize_params(a,x)
 
@@ -115,7 +115,7 @@ def polar_solutions(a,p,e,x):
     :type x: double
 
     :return: tuple of functions in the form :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
-    :rtype: tuple
+    :rtype: tuple(function, function, function)
     """
     a, x = _standardize_params(a,x)
 

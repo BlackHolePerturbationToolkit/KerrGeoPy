@@ -2,6 +2,8 @@ from numpy import sign, sqrt, copysign, inf, nan
 from math import pi
 from scipy.optimize import root_scalar
 from .units import *
+from scipy.interpolate import RectBivariateSpline
+import numpy as np
 
 def _coefficients(r,a,x):
     """
@@ -300,7 +302,7 @@ def separatrix(a,e,x):
     """
     Returns the value of p at the separatrix for the given orbital parameters computed using the bracked root finding method described in Stein and Warburton (arXiv:1912.07609)
     
-    :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
+    :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double
     :param e: orbital eccentricity (must satisfy 0 <= e <= 1)
     :type e: double
@@ -309,7 +311,6 @@ def separatrix(a,e,x):
     
     :rtype: double
     """
-    a, x = _standardize_params(a,x)
 
     if a == 1: raise ValueError("Extreme Kerr not supported")
     if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
@@ -342,6 +343,25 @@ def separatrix(a,e,x):
         p = root_scalar(_S,args=(a,e,x),bracket=[p_polar.root, 12])
         return p.root
     
+def fast_separatrix(a, grid_spacing=0.01):
+    # create grid of e and x values to interpolate over
+    num_e_pts = int(1/grid_spacing)
+    num_x_pts = int(2/grid_spacing)
+    e = np.linspace(0,1,num_e_pts)
+    x = np.linspace(-1,1,num_x_pts)
+    E, X = np.meshgrid(e,x)
+
+    # compute separatrix values on grid
+    P = np.zeros((num_e_pts,num_x_pts))
+    for i in range(num_e_pts):
+        for j in range(num_x_pts):
+            P[i,j] = separatrix(a,E[j,i],X[j,i])
+
+    # create interpolator
+    interpolator = RectBivariateSpline(e,x,P)
+
+    return interpolator
+
 def is_stable(a,p,e,x):
     """
     Tests whether or not the given orbital parameters define a stable bound orbit

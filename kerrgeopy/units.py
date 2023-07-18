@@ -33,6 +33,32 @@ def distance_in_meters(d,M):
     """
     return d*G/c**2*mass_in_kg(M)
 
+def distance_in_cm(d,M):
+    """
+    Converts distance in geometrized units to centimeters
+
+    :param d: distance in multiples of M
+    :type d: double
+    :param M: mass of the primary body in solar masses
+    :type M: double
+
+    :return: distance in centimeters
+    :rtype: double
+    """
+    return distance_in_meters(d,M)*100
+
+def distance_in_km(d,M):
+    """
+    Converts distance in geometrized units to kilometers
+
+    :param d: distance in multiples of M
+    :type d: double
+
+    :return: distance in kilometers
+    :rtype: double
+    """
+    return distance_in_meters(d,M)/1000
+
 def distance_in_lightyears(d,M):
     """
     Converts distance in geometrized units to lightyears
