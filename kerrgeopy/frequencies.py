@@ -68,7 +68,7 @@ def _polar_roots(a,x,constants):
     # simplified using definition of carter constant
     z_plus = nan if a == 0 else 1+1/(epsilon0*(1-z_minus)) 
     
-    return epsilon0, z_minus, z_plus
+    return z_minus, z_plus
 
 def r_frequency(a,p,e,x,constants=None):
     """
@@ -138,7 +138,7 @@ def theta_frequency(a,p,e,x,constants=None):
     # compute constants if not provided
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
-    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
+    z_minus, z_plus = _polar_roots(a,x,constants)
     
     # equation 13
     k_theta = sqrt(z_minus/z_plus)
@@ -185,7 +185,7 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
+    z_minus, z_plus = _polar_roots(a,x,constants)
     
     # compute frequencies if they are not passed in
     if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
@@ -248,7 +248,8 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
     r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
+    z_minus, z_plus = _polar_roots(a,x,constants)
+    epsilon0 =  a**2*(1-E**2)/L**2
     # simplified form of a**2*sqrt(z_plus/epsilon0)
     a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
     

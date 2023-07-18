@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 from kerrgeopy.geodesics import *
+from kerrgeopy.frequencies import _radial_roots, _polar_roots
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent
@@ -15,8 +16,14 @@ class TestGeodesics(unittest.TestCase):
 
         for i, orbit in enumerate(orbit_values):
             mathematica_trajectory = np.genfromtxt(DATA_DIR / f"geodesics/trajectory{i}.txt", delimiter=",")
-            r, t_r, phi_r = radial_solutions(*orbit)
-            theta, t_theta, phi_theta = polar_solutions(*orbit)
+            
+            a,p,e,x = orbit
+            constants = constants_of_motion(*orbit)
+            radial_roots = _radial_roots(a,p,e,constants)
+            polar_roots = _polar_roots(a,x,constants)
+            r, t_r, phi_r = radial_solutions(a,constants,radial_roots)
+            theta, t_theta, phi_theta = polar_solutions(a,constants,polar_roots)
+
             python_trajectory = np.transpose(
                 np.apply_along_axis(lambda x: np.array([t_r(x),t_theta(x),phi_r(x),phi_theta(x)]),0,orbit_times)
                 )

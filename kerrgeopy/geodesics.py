@@ -1,6 +1,6 @@
 from .constants import *
 from .constants import _standardize_params
-from .frequencies import _radial_roots, _polar_roots, _ellippi
+from .frequencies import _ellippi
 from .frequencies import *
 from scipy.special import ellipj, ellipeinc
 from numpy import sin, cos, arcsin, arccos, floor, where
@@ -26,7 +26,7 @@ def _ellippiinc(phi,n,k):
 
     return where(num_cycles % 2 == 0, num_cycles*_ellippi(n,k)+integral, (num_cycles+1)*_ellippi(n,k)-integral)
     
-def radial_solutions(a,p,e,x):
+def radial_solutions(a,constants,roots):
     r"""
     Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of Fujita and Hikida (arXiv:0906.1420). 
     :math:`q_r` is defined as :math:`q_r = \Upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`.
@@ -44,11 +44,8 @@ def radial_solutions(a,p,e,x):
     :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`
     :rtype: tuple(function, function, function)
     """
-    a, x = _standardize_params(a,x)
-
-    constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
-    r1, r2, r3, r4 = _radial_roots(a,p,e,constants)
+    r1, r2, r3, r4 = roots
 
     r_plus = 1+sqrt(1-a**2)
     r_minus = 1-sqrt(1-a**2)
@@ -99,7 +96,7 @@ def radial_solutions(a,p,e,x):
     
     return r, t_r, phi_r
         
-def polar_solutions(a,p,e,x):
+def polar_solutions(a,constants,roots):
     r"""
     Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` from equation 6 of Fujita and Hikida (arXiv:0906.1420).
     :math:`q_\theta` is defined as :math:`q_\theta = \Upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
@@ -117,11 +114,9 @@ def polar_solutions(a,p,e,x):
     :return: tuple of functions in the form :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
     :rtype: tuple(function, function, function)
     """
-    a, x = _standardize_params(a,x)
-
-    constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
-    epsilon0, z_minus, z_plus = _polar_roots(a,x,constants)
+    z_minus, z_plus = roots
+    epsilon0 = a**2*(1-E**2)/L**2
     # simplified form of epsilon0*z_plus
     e0zp = (a**2*(1-E**2)*(1-z_minus)+L**2)/(L**2*(1-z_minus))
     # simplified form of a**2*sqrt(z_plus/epsilon0)
@@ -140,12 +135,12 @@ def polar_solutions(a,p,e,x):
         u_theta = 2/pi*ellipk(k_theta**2)*(q_theta+pi/2)
         sn, cn, dn, psi_theta = ellipj(u_theta,k_theta**2)
         # equation 39
-        return sign(x)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-ellipeinc(psi_theta,k_theta**2))
+        return sign(L)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-ellipeinc(psi_theta,k_theta**2))
     
     def phi_theta(q_theta):
         sn, cn, dn, psi_theta = ellipj(2/pi*ellipk(k_theta**2)*(q_theta+pi/2),k_theta**2)
         # equation 39
-        return sign(x)*1/sqrt(e0zp)*(_ellippiinc(psi_theta,z_minus,k_theta)-2/pi*_ellippi(z_minus,k_theta)*(q_theta+pi/2))
+        return sign(L)*1/sqrt(e0zp)*(_ellippiinc(psi_theta,z_minus,k_theta)-2/pi*_ellippi(z_minus,k_theta)*(q_theta+pi/2))
     
     return theta, t_theta, phi_theta
 

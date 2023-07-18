@@ -2,6 +2,7 @@ from .constants import *
 from .frequencies import *
 from .geodesics import *
 from .units import *
+from .frequencies import _radial_roots, _polar_roots
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -136,8 +137,12 @@ class Orbit:
         
         a, p, e, x = self.a, self.p, self.e, self.x
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
-        r_phases, t_r, phi_r = radial_solutions(a,p,e,x)
-        theta_phases, t_theta, phi_theta = polar_solutions(a,p,e,x)
+        constants = self.constants_of_motion()
+        radial_roots = _radial_roots(a,p,e,constants)
+        polar_roots = _polar_roots(a,x,constants)
+
+        r_phases, t_r, phi_r = radial_solutions(a,constants,radial_roots)
+        theta_phases, t_theta, phi_theta = polar_solutions(a,constants,polar_roots)
         q_t0, q_r0, q_theta0, q_phi0 = initial_phases
 
         unit_conversion_func = {"natural": lambda x,M: x, "mks": distance_in_meters, "cgs": distance_in_cm, "au": distance_in_au,"km": distance_in_km}
