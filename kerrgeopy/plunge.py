@@ -4,12 +4,6 @@ import numpy as np
 from scipy.special import ellipj, ellipeinc, ellipk
 from .geodesics import _ellippiinc
 
-# def radial_polynomial(a,E,L,Q):
-#     return Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
-
-# def polar_polynomial(a,E,L,Q):
-#     return Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
-
 def _plunging_radial_roots(a,E,L,Q):
     # standard form of the radial polynomial R(r)
     R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
