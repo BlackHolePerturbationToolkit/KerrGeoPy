@@ -1,5 +1,7 @@
 from .constants import *
 from .frequencies import *
+from numpy import cos, sin
+from numpy.polynomial import Polynomial
 
 class BlackHole:
     def __init__(self,a,M):
@@ -38,25 +40,59 @@ class BlackHole:
         """
         return is_stable(self.a,orbit.p,orbit.e,orbit.x)
     
-    def constants_of_motion(self,orbit,dimensionless=True):
+    def metric(self,t,r,theta,phi):
         """
-        Computes the constants of motion for a given orbit
-        
-        :param orbit: orbit to compute the constants of motion for
-        :type orbit: Orbit
+        Returns the matrix representation of the metric at a given point expressed in Boyer-Lindquist coordinates.
 
-        :rtype: tuple
+        :param t: time coordinate
+        :type t: double
+        :param r: radial coordinate
+        :type r: double
+        :param theta: polar coordinate
+        :type theta: double
+        :param phi: azimuthal coordinate
+        :type phi: double
+
+        :rtype: numpy.ndarray
         """
-        constants = constants_of_motion(self.a, orbit.p, orbit.e, orbit.x)
-        return constants if dimensionless else scale_constants(constants, self.M, orbit.mu)
+        a = self.a*self.M
+        sigma = r**2+a**2*cos(theta)**2
+        delta = r**2-2*r+a**2
+        return np.array(
+            [[-(1-2*r/sigma),               0,              0,      -2*a*r*sin(theta)**2/sigma],
+             [0,                            sigma/delta,    0,      0],
+             [0,                            0,              sigma,  0],
+             [-2*a*r*sin(theta)**2/sigma,   0,              0,      sin(theta)**2*(r**2+a**2+2*a**2*r*sin(theta)**2/sigma)]
+             ]
+        )
     
-    def orbital_frequencies(self,orbit):
-        """
-        Computes the orbital frequencies for a given orbit
+    def norm(self,t,r,theta,phi,v):
+        return np.dot(v,np.dot(self.metric(t,r,theta,phi),v))
+    
+    def four_velocity(self,t,r,theta,phi,constants):
+        a = self.a
+        E, L, Q = constants
+        #R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
+        #Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
+        R = lambda r: (E*(r**2+a**2)-a*L)**2-(r**2-2*r+a**2)*(r**2+(a*E-L)**2+Q)
+        Z = lambda z: Q-(Q+a**2*(1-E**2)+L**2)*z**2+a**2*(1-E**2)*z**4
 
-        :param orbit: orbit to compute the orbital frequencies for
-        :type orbit: Orbit
+        def t_prime(time):
+            delta = r(time)**2-2*r(time)+a**2
+            sigma = r(time)**2+a**2*cos(theta(time))**2
+            return 1/sigma*((r(time)**2+a**2)/delta*(E*(r(time)**2+a**2)-a*L)-a**2*E*(1-cos(theta(time))**2)+a*L)
 
-        :rtype: tuple
-        """
-        return orbital_frequencies(self.a, orbit.p, orbit.e, orbit.x)
+        def r_prime(time):
+            sigma = r(time)**2+a**2*cos(theta(time))**2
+            return sqrt(R(r(time)))/sigma
+
+        def theta_prime(time):
+            sigma = r(time)**2+a**2*cos(theta(time))**2
+            return sqrt(Z(cos(theta(time))))/sigma
+        
+        def phi_prime(time):
+            sigma = r(time)**2+a**2*cos(theta(time))**2
+            delta = r(time)**2-2*r(time)+a**2
+            return 1/sigma*(a/delta*(E*(r(time)**2+a**2)-a*L)+L/(1-cos(theta(time))**2)-a*E)
+        
+        return t_prime, r_prime, theta_prime, phi_prime

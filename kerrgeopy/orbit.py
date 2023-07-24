@@ -224,7 +224,7 @@ class Orbit:
         # compute the projection of each trajectory point onto the viewing plane
         projection = trajectory-np.transpose(normal_component*np.transpose(np.broadcast_to(view_plane_normal,(num_pts,3))))
         # find points in front of the viewing plane or outside the event horizon when projected onto the viewing plane
-        condition = (np.dot(trajectory,view_plane_normal) >= 0) | (np.linalg.norm(projection,axis=1) > event_horizon)
+        condition = (np.linalg.norm(trajectory,axis=1) > event_horizon) & ((normal_component >= 0) | (np.linalg.norm(projection,axis=1) > event_horizon))
         x_visible = trajectory_x[condition]
         y_visible = trajectory_y[condition]
         z_visible = trajectory_z[condition]
