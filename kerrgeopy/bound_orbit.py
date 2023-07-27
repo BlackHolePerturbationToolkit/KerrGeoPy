@@ -160,7 +160,7 @@ class BoundOrbit(Orbit):
 
         def t(mino_time):
             # equation 6
-            return time_conversion_func[time_units](q_t0 + gamma*mino_time + t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t)
+            return time_conversion_func[time_units](q_t0 + gamma*mino_time + t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t, self.M)
         
         def r(mino_time):
             return distance_conversion_func[distance_units](r_phases(upsilon_r*mino_time+q_r0),self.M)
