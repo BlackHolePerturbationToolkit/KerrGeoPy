@@ -1,6 +1,3 @@
-# KerrGeoPy
-Python library to compute orbital properties and solve the geodesic equation for bound and plunging orbits around a spinning black hole
-
 # Getting Started
 
 Bound orbits in kerrgeopy are parametrized by the following:
@@ -44,12 +41,20 @@ Use the `animate()` method to create an animation of the orbit and save it as an
 orbit.animate("animation1.mp4")
 ```
 
+
+https://github.com/syp2001/KerrGeoPy/assets/38138782/e8a265f2-550c-4a5e-9383-befbac5e7004
+
+
 The `animate()` method also provides parameters to change the length of the orbital tail and to change the visibility of the axes
 
 
 ```python
 orbit.animate("animation2.mp4", grid=False, axes=False, tail="short")
 ```
+
+
+https://github.com/syp2001/KerrGeoPy/assets/38138782/25622db9-f144-4ba5-b9a9-b099f3ddb683
+
 
 Next, we can compute the time, radial, polar and azimuthal components of the trajectory as a function of Mino time using the `trajectory()` method
 
@@ -185,7 +190,7 @@ display(Math(fr"""\Omega_r = {omega_r:.3f} \text{{ mHz}} \quad
 ```
 
 
-$\displaystyle M = 1e+06 \text{ M}_\odot \quad \mu = 10 \text{ M}_\odot$
+$\displaystyle M = 1e+06 \text{ M}_{\odot} \quad \mu = 10 \text{ M}_{\odot}$
 
 
 
