@@ -93,14 +93,6 @@ plt.xlabel("time")
 plt.ylabel(r"$\phi(\lambda)$")
 ```
 
-
-
-
-    Text(0, 0.5, '$\\phi(\\lambda)$')
-
-
-
-
     
 ![png](output_10_1.png)
     
@@ -188,9 +180,6 @@ display(Math(fr"""\Omega_r = {omega_r:.3f} \text{{ mHz}} \quad
             \Omega_\theta = {omega_theta:.3f} \text{{ mHz}}\quad
             \Omega_\phi = {omega_phi:.3f} \text{{ mHz}}"""))
 ```
-
-
-$\displaystyle M = 1e+06 \text{ M}_{\odot} \quad \mu = 10 \text{ M}_{\odot}$
 
 
 
