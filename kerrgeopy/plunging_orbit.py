@@ -61,7 +61,6 @@ class PlungingOrbit(Orbit):
         theta_phases, t_theta, phi_theta = plunging_polar_solutions(a,E,L,Q)
         q_t0, q_r0, q_theta0, q_phi0 = initial_phases
 
-        q_r0 = q_r0+pi
         # Calculate normalization constants so that t = 0 and phi = 0 at lambda = 0 when q_t0 = 0 and q_phi0 = 0 
         C_t = t_r(q_r0)+t_theta(q_theta0)
         C_phi= phi_r(q_r0)+phi_theta(q_theta0)
@@ -94,11 +93,6 @@ class PlungingOrbit(Orbit):
         Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
         radial_roots = _plunging_radial_roots(a,E,L,Q)
         polar_roots = Z.roots()
-        if len(polar_roots) == 1:
-            z_minus = polar_roots[0]
-            z_plus = polar_roots[0]
-        elif len(polar_roots) == 2:
-            z_minus, z_plus = polar_roots
 
         upsilon_r, upsilon_theta, upsilon_phi, gamma = mino_frequencies_from_constants(a,constants,radial_roots,polar_roots)
         r_phases, t_r, phi_r = radial_solutions(a,constants,radial_roots)
