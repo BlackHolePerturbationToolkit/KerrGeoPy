@@ -70,7 +70,7 @@ def _polar_roots(a,x,constants):
     
     return z_minus, z_plus
 
-def r_frequency(a,p,e,x,constants=None):
+def r_frequency(a,constants,radial_roots):
     """
     Computes the frequency of motion in r in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
@@ -87,25 +87,15 @@ def r_frequency(a,p,e,x,constants=None):
 
     :rtype: double
     """
-    a, x = _standardize_params(a,x)
-
-    if a == 1: raise ValueError("Extreme Kerr not supported")
-    if x == 0: raise ValueError("Polar orbits not supported")
-    if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
-    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
-
-    # compute constants if not passed in
-    if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
 
-    r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
+    r1,r2,r3,r4 = radial_roots
     # equation 13
     k_r = sqrt((r1-r2)*(r3-r4)/((r1-r3)*(r2-r4)))
     # equation 15
     return pi*sqrt((1-E**2)*(r1-r3)*(r2-r4))/(2*ellipk(k_r**2))
 
-def theta_frequency(a,p,e,x,constants=None):
+def theta_frequency(a,constants,radial_roots,polar_roots):
     """
     Computes the frequency of motion in theta in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
     
@@ -122,23 +112,16 @@ def theta_frequency(a,p,e,x,constants=None):
     
     :rtype: double
     """
-
-    a, x = _standardize_params(a,x)
-
-    if a == 1: raise ValueError("Extreme Kerr not supported")
-    if x == 0: raise ValueError("Polar orbits not supported")
-    if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
-    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+    r1, r2, r3, r4 = radial_roots
+    z_minus, z_plus = polar_roots
+    E, L, Q = constants
 
     # Schwarzschild case
     if a == 0:
-        return p/sqrt(-3-e**2+p)*(sign(x) if e == 0 else 1)
+        p = 2*r1*r2/(r1+r2)
+        e = (r1-r2)/(r1+r2)
+        return p/sqrt(-3-e**2+p)*(sign(L) if e == 0 else 1)
     
-    # compute constants if not provided
-    if constants is None: constants = constants_of_motion(a,p,e,x)
-    E, L, Q = constants
-    z_minus, z_plus = _polar_roots(a,x,constants)
     
     # equation 13
     k_theta = sqrt(z_minus/z_plus)
@@ -148,7 +131,7 @@ def theta_frequency(a,p,e,x,constants=None):
     # equation 15
     return pi*L*sqrt(e0zp)/(2*ellipk(k_theta**2))
 
-def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
+def phi_frequency(a,constants,radial_roots,polar_roots,upsilon_r=None,upsilon_theta=None):
     """
     Computes the frequency of motion in phi in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
     
@@ -169,27 +152,21 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     
     :rtype: double
     """
-    a, x = _standardize_params(a,x)
 
-    if a == 1: raise ValueError("Extreme Kerr not supported")
-    if x == 0: raise ValueError("Polar orbits not supported")
-    if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
-    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+    E, L, Q = constants
+    r1,r2,r3,r4 = radial_roots
+    z_minus, z_plus = polar_roots
 
     # Schwarzschild case
     if a == 0:
-        return sign(x)*p/sqrt(-3-e**2+p)
-    
-    # compute constants if they are not passed in
-    if constants is None: constants = constants_of_motion(a,p,e,x)
-    E, L, Q = constants
-    r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    z_minus, z_plus = _polar_roots(a,x,constants)
+        p = 2*r1*r2/(r1+r2)
+        e = (r1-r2)/(r1+r2)
+        return sign(L)*p/sqrt(-3-e**2+p)
+
     
     # compute frequencies if they are not passed in
-    if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
-    if upsilon_theta is None: upsilon_theta = theta_frequency(a,p,e,x,constants)
+    if upsilon_r is None: upsilon_r = r_frequency(a,constants,radial_roots)
+    if upsilon_theta is None: upsilon_theta = theta_frequency(a,constants,radial_roots,polar_roots)
     
     # simplified form of epsilon0*z_plus
     e0zp = (a**2*(1-E**2)*(1-z_minus)+L**2)/(L**2*(1-z_minus))
@@ -211,7 +188,7 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
                - (2*E*r_minus-a*L)/(r3-r_minus)*(ellipk(k_r**2)-(r2-r3)/(r2-r_minus)*_ellippi(h_minus,k_r))
               )
 
-def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
+def gamma(a,constants,radial_roots,polar_roots,upsilon_r=None,upsilon_theta=None):
     """
     Computes the average rate at which observer time accumulates in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
     
@@ -232,30 +209,30 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     
     :rtype: double
     """
-    a, x = _standardize_params(a,x)
+    # a, x = _standardize_params(a,x)
 
-    if a == 1: raise ValueError("Extreme Kerr not supported")
-    if x == 0: raise ValueError("Polar orbits not supported")
-    if e == 1: raise ValueError("Marginally bound orbits not supported")
-    if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
-    if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
-    
+    # if a == 1: raise ValueError("Extreme Kerr not supported")
+    # if x == 0: raise ValueError("Polar orbits not supported")
+    # if e == 1: raise ValueError("Marginally bound orbits not supported")
+    # if not valid_params(a,e,x): raise ValueError("a^2, e and x^2 must be between 0 and 1")
+    # if not is_stable(a,p,e,x): raise ValueError("Not a stable orbit")
+    r1,r2,r3,r4 = radial_roots
+    z_minus, z_plus = polar_roots
+
+    e = (r1-r2)/(r1+r2)
     # marginally bound case
     if e == 1:
         return inf
     
-    # compute constants if they are not passed in
-    if constants is None: constants = constants_of_motion(a,p,e,x)
     E, L, Q = constants
-    r1,r2,r3,r4 = _radial_roots(a,p,e,constants)
-    z_minus, z_plus = _polar_roots(a,x,constants)
+    
     epsilon0 =  a**2*(1-E**2)/L**2
     # simplified form of a**2*sqrt(z_plus/epsilon0)
     a2sqrt_zp_over_e0 = L**2/((1-E**2)*sqrt(1-z_minus)) if a == 0 else a**2*z_plus/sqrt(epsilon0*z_plus)
     
     # compute frequencies if they are not passed in
-    if upsilon_r is None: upsilon_r = r_frequency(a,p,e,x,constants)
-    if upsilon_theta is None: upsilon_theta = theta_frequency(a,p,e,x,constants)
+    if upsilon_r is None: upsilon_r = r_frequency(a,constants,radial_roots)
+    if upsilon_theta is None: upsilon_theta = theta_frequency(a,constants,radial_roots,polar_roots)
     
     r_plus = 1+sqrt(1-a**2)
     r_minus = 1-sqrt(1-a**2)
@@ -278,7 +255,7 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
                                    )
               )
 
-def mino_frequencies(a,p,e,x):
+def mino_frequencies(a,constants,radial_roots,polar_roots):
     r"""
     Computes frequencies of orbital motion in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
@@ -294,15 +271,14 @@ def mino_frequencies(a,p,e,x):
     :return: tuple of the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
     :rtype: tuple(double, double, double, double)
     """
-    constants = constants_of_motion(a,p,e,x)
-    upsilon_r = r_frequency(a,p,e,x,constants)
-    upsilon_theta = theta_frequency(a,p,e,x,constants)
-    upsilon_phi = phi_frequency(a,p,e,x,constants,upsilon_r,upsilon_theta)
-    Gamma = gamma(a,p,e,x,constants,upsilon_r,upsilon_theta)
+    upsilon_r = r_frequency(a,constants,radial_roots)
+    upsilon_theta = theta_frequency(a,constants,radial_roots,polar_roots)
+    upsilon_phi = phi_frequency(a,constants,radial_roots,polar_roots,upsilon_r,upsilon_theta)
+    Gamma = gamma(a,constants,radial_roots,polar_roots,upsilon_r,upsilon_theta)
 
     return upsilon_r, abs(upsilon_theta), upsilon_phi, Gamma
     
-def observer_frequencies(a,p,e,x):
+def observer_frequencies(a,constants,radial_roots,polar_roots):
     r"""
     Computes frequencies of orbital motion in Boyer-Lindquist time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 
@@ -318,10 +294,9 @@ def observer_frequencies(a,p,e,x):
     :return: tuple of the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
     :rtype: tuple(double, double, double)
     """
-    constants = constants_of_motion(a,p,e,x)
-    upsilon_r = r_frequency(a,p,e,x,constants)
-    upsilon_theta = theta_frequency(a,p,e,x,constants)
-    upsilon_phi = phi_frequency(a,p,e,x,constants,upsilon_r,upsilon_theta)
-    Gamma = gamma(a,p,e,x,constants,upsilon_r,upsilon_theta)
-    
+    upsilon_r = r_frequency(a,constants,radial_roots)
+    upsilon_theta = theta_frequency(a,constants,radial_roots,polar_roots)
+    upsilon_phi = phi_frequency(a,constants,radial_roots,polar_roots,upsilon_r,upsilon_theta)
+    Gamma = gamma(a,constants,radial_roots,polar_roots,upsilon_r,upsilon_theta)
+
     return upsilon_r/Gamma, abs(upsilon_theta)/Gamma, upsilon_phi/Gamma

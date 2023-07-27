@@ -1,12 +1,23 @@
 from .plunge import *
+from .plunge import _plunging_radial_roots
+from .geodesics import *
+from .orbit import Orbit
 import matplotlib.pyplot as plt
 
-class PlungingOrbit:
+class PlungingOrbit(Orbit):
     def __init__(self,a,E,L,Q):
         self.a, self.E, self.L, self.Q = a, E, L, Q
         self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
-    
+
     def trajectory(self,initial_phases=(0,0,0,0)):
+        a, E, L, Q = self.a, self.E, self.L, self.Q
+        radial_roots = _plunging_radial_roots(a,E,L,Q)
+        if np.iscomplex(radial_roots[3]):
+            return self._complex_trajectory(initial_phases)
+        else:
+            return self._real_trajectory(initial_phases)
+    
+    def _complex_trajectory(self,initial_phases=(0,0,0,0)):
         a, E, L, Q = self.a, self.E, self.L, self.Q
         upsilon_r, upsilon_theta = self.upsilon_r, self.upsilon_theta
         r_phases, t_r, phi_r = plunging_radial_solutions_complex(a,E,L,Q)
@@ -29,6 +40,43 @@ class PlungingOrbit:
         
         def phi(mino_time):
             return phi_r(upsilon_r*mino_time+q_r0) + phi_theta(upsilon_theta*mino_time+q_theta0) - a*E*mino_time - C_phi + q_phi0
+        
+        return t, r, theta, phi
+    
+    def _real_trajectory(self,initial_phases=(0,0,0,0)):
+        a, E, L, Q = self.a, self.E, self.L, self.Q
+        constants = (E,L,Q)
+        Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
+        radial_roots = _plunging_radial_roots(a,E,L,Q)
+        polar_roots = Z.roots()
+        if len(polar_roots) == 1:
+            z_minus = polar_roots[0]
+            z_plus = polar_roots[0]
+        elif len(polar_roots) == 2:
+            z_minus, z_plus = polar_roots
+
+        upsilon_r, upsilon_theta, upsilon_phi, gamma = mino_frequencies(a,constants,radial_roots,polar_roots)
+        r_phases, t_r, phi_r = radial_solutions(a,constants,radial_roots)
+        theta_phases, t_theta, phi_theta = polar_solutions(a,constants,polar_roots)
+        q_t0, q_r0, q_theta0, q_phi0 = initial_phases
+
+        # Calculate normalization constants so that t = 0 and phi = 0 at lambda = 0 when q_t0 = 0 and q_phi0 = 0 
+        C_t = t_r(q_r0)+t_theta(q_theta0)
+        C_phi= phi_r(q_r0)+phi_theta(q_theta0)
+
+        def t(mino_time):
+            # equation 6
+            return q_t0 + gamma*mino_time + t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t
+        
+        def r(mino_time):
+            return r_phases(upsilon_r*mino_time+q_r0)
+        
+        def theta(mino_time):
+            return theta_phases(upsilon_theta*mino_time+q_theta0)
+        
+        def phi(mino_time):
+            # equation 6
+            return q_phi0 + upsilon_phi*mino_time + phi_r(upsilon_r*mino_time+q_r0) + phi_theta(upsilon_theta*mino_time+q_theta0) - C_phi
         
         return t, r, theta, phi
     
