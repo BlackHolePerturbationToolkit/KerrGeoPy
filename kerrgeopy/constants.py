@@ -344,6 +344,18 @@ def separatrix(a,e,x):
         return p.root
     
 def fast_separatrix(a, grid_spacing=0.01):
+    """
+    Constructs a faster separatrix function for a given value of a by interpolating over a grid of e and x values.
+
+    :param a: dimensionless spin of the black hole
+    :type a: double
+    :param grid_spacing: spacing of the grid over which to interpolate, defaults to 0.01
+    :type grid_spacing: double, optional
+
+    :return: interpolated function of e and x
+    :rtype: scipy.interpolate.RectBivariateSpline
+    """
+    
     # create grid of e and x values to interpolate over
     num_e_pts = int(1/grid_spacing)
     num_x_pts = int(2/grid_spacing)

@@ -2,9 +2,25 @@ from numpy import sort_complex, sqrt, arctan, arctan2, arccos, log, sin, cos, pi
 from numpy.polynomial import Polynomial
 import numpy as np
 from scipy.special import ellipj, ellipeinc, ellipk
-from .geodesics import _ellippiinc
+from .bound_solutions import _ellippiinc
 
 def _plunging_radial_roots(a,E,L,Q):
+    """
+    Computes the radial roots for a plunging orbit. The roots are sorted in ascending order with real roots first.
+    If all roots are real, the roots are sorted such that the motion is between the first two roots.
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+
+    :return: tuple of radial roots
+    :rtype: tuple(double,double,double,double)
+    """
     # standard form of the radial polynomial R(r)
     R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
     roots = R.roots()
@@ -31,6 +47,21 @@ def _plunging_radial_roots(a,E,L,Q):
     return r1, r2, r3, r4
 
 def plunging_mino_frequencies(a,E,L,Q):
+    r"""
+    Computes the radial and polar mino frequencies for a plunging orbit.
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+
+    :return: radial and polar mino frequencies :math:`(\Upsilon_r,\Upsilon_\theta)`
+    :rtype: tuple(double,double)
+    """
     r1, r2, r3, r4 = _plunging_radial_roots(a,E,L,Q)
     rho_r = np.real(r3)
     rho_i = np.imag(r4)
@@ -40,17 +71,35 @@ def plunging_mino_frequencies(a,E,L,Q):
     B = sqrt((r1-rho_r)**2+rho_i**2)
     k_r = sqrt(((r2-r1)**2-(A-B)**2)/(4*A*B))
 
+    # equation 52
     upsilon_r = pi*sqrt(A*B*(1-E**2))/(2*ellipk(k_r**2))
 
+    # equation 14
     z1 = sqrt(1/2*(1+(L**2+Q)/(a**2*(1-E**2))-sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
     z2 = sqrt(a**2*(1-E**2)/2*(1+(L**2+Q)/(a**2*(1-E**2))+sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
     k_theta = a*sqrt(1-E**2)*z1/z2
 
+    # equation 53
     upsilon_theta = pi*ellipk(k_theta**2)/(2*z2)
 
     return upsilon_r, upsilon_theta
 
 def plunging_radial_integrals(a,E,L,Q):
+    r"""
+    Computes the radial integrals :math:`I_r`, :math:`I_{r^2}` and :math:`I_{r_\pm}` defined in equation 39 of Dyson and van de Meent (arXiv:2302.03704) as a function of the radial phase.
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+
+    :return: radial integrals :math:`(I_r,I_{r^2},I_{r_+},I_{r_-})`
+    :rtype: tuple(function,function,function,function)
+    """
     r1, r2, r3, r4 = _plunging_radial_roots(a,E,L,Q)
     rho_r = np.real(r3)
     rho_i = np.imag(r4)
@@ -120,7 +169,21 @@ def plunging_radial_integrals(a,E,L,Q):
     return I_r, I_r2, I_r_plus, I_r_minus
 
 def plunging_radial_solutions_complex(a,E,L,Q):
+    r"""
+    Computes the radial solutions :math:`r(q_r), t_r(q_r), \phi_r(q_r)` from equation 50 and 51 of Dyson and van de Meent (arXiv:2302.03704) for the case of two complex radial roots.
 
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+
+    :return: tuple of radial solutions :math:`(r(q_r), t_r(q_r), \phi_r(q_r))`
+    :rtype: tuple(function, function, function)
+    """
     roots = _plunging_radial_roots(a,E,L,Q)
     if np.iscomplex(roots).sum() != 2: raise ValueError("There should be two complex roots")
 
@@ -168,6 +231,21 @@ def plunging_radial_solutions_complex(a,E,L,Q):
     return r, t_r, phi_r
 
 def plunging_polar_solutions(a,E,L,Q):
+    r"""
+    Computes the polar solutions :math:`\theta(q_\theta), t_\theta(q_\theta), \phi_\theta(q_\theta)` from equation 33 and 37 of Dyson and van de Meent (arXiv:2302.03704).
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+    
+    :return: tuple of polar solutions :math:`(\theta(q_\theta), t_\theta(q_\theta), \phi_\theta(q_\theta))`
+    :rtype: tuple(function, function, function)
+    """
     z1 = sqrt(1/2*(1+(L**2+Q)/(a**2*(1-E**2))-sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
     z2 = sqrt(a**2*(1-E**2)/2*(1+(L**2+Q)/(a**2*(1-E**2))+sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
     k_theta = a*sqrt(1-E**2)*z1/z2

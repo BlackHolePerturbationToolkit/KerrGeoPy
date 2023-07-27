@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from kerrgeopy.geodesics import *
+from kerrgeopy.bound_solutions import *
 from kerrgeopy.frequencies import _radial_roots, _polar_roots
 from pathlib import Path
 

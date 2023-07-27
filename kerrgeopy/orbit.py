@@ -2,11 +2,26 @@ from numpy import sin, cos, sqrt, pi
 from numpy.polynomial import Polynomial
 import numpy as np
 import matplotlib.pyplot as plt
-from .plunge import _plunging_radial_roots
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
 
 class Orbit:
+    r"""
+    Class representing an orbit in Kerr spacetime.
+
+    :param a: spin parameter
+    :type a: double
+    :param init_position: initial position of the orbit :math:`(t_0,r_0,\theta_0,\phi_0)`
+    :type init_position: tuple(double,double,double,double)
+    :param init_velocity: initial four-velocity of the orbit :math:`(\frac{dt}{d\tau}(0), \frac{dr}{d\tau}(0),\frac{d\theta}{d\tau}(0),\frac{d\phi}{d\tau}(0))`
+    :type init_velocity: tuple(double,double,double,double)
+
+    :ivar a: spin parameter
+    :ivar init_position: initial position of the orbit :math:`(t_0,r_0,\theta_0,\phi_0)`
+    :ivar E: dimensionless energy
+    :ivar L: dimensionless angular momentum
+    :ivar Q: dimensionless carter constant
+    """
     def __init__(self,a,init_position,init_velocity):
         self.a = a
         self.init_position = init_position
@@ -167,7 +182,31 @@ class Orbit:
         # test if point is outside the event horizon and either in front of the viewing plane or outside the event horizon when projected onto the viewing plane
         return True if (np.linalg.norm(point) > event_horizon) & ((normal_component >= 0) | (np.linalg.norm(projection) > event_horizon)) else False
     
-    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2,tail="long"):
+    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2, tail="long"):
+        """
+        Saves an animation of the orbit as an mp4 file
+
+        :param filename: filename to save the animation to
+        :type filename: str
+        :param lambda0: starting mino time, defaults to 0
+        :type lambda0: double, optional
+        :param lambda1: ending mino time, defaults to 10
+        :type lambda1: double, optional
+        :param elevation: camera elevation angle in degrees, defaults to 30
+        :type elevation: double, optional
+        :param azimuth: camera azimuthal angle in degrees, defaults to -60
+        :type azimuth: double, optional
+        :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
+        :type initial_phases: tuple, optional
+        :param grid: sets visibility of the grid, defaults to True
+        :type grid: bool, optional
+        :param axes: sets visibility of axes, defaults to True
+        :type axes: bool, optional
+        :param thickness: thickness of the tail of the orbit, defaults to 2
+        :type thickness: double, optional
+        :param tail: sets the length of the tail (options are "short", "long" and "none"), defaults to "long"
+        :type tail: str, optional
+        """
         num_pts = int(2e3)
         time = np.linspace(lambda0,lambda1,num_pts)
 
@@ -209,6 +248,8 @@ class Orbit:
 
         # plot black hole
         ax.plot_surface(x_sphere, y_sphere, z_sphere, color='black',shade=False,zorder=0)
+
+        # set axis limits
         ax.set_xlim([x.min(),x.max()])
         ax.set_ylim([y.min(),y.max()])
         ax.set_zlim([z.min(),z.max()])
@@ -223,6 +264,7 @@ class Orbit:
         if not axes: ax.axis("off")
 
         def animate(i,body,tail):
+            # adjust length of tail
             if tail == "long": start = 0
             elif tail == "short": start = max(0,i-50)
             elif tail == "none": start = i
@@ -231,6 +273,7 @@ class Orbit:
             body._offsets3d = ([x[i]],[y[i]],[z[i]])
             tail._offsets3d = (x[start:i][condition_slice],y[start:i][condition_slice],z[start:i][condition_slice])
             
+        # save to file
         ani = FuncAnimation(fig,animate,num_pts,fargs=(body,tail))
         FFwriter = FFMpegWriter(fps=60)
         ani.save(filename, writer = FFwriter)

@@ -4,15 +4,18 @@ from numpy import cos, sin
 from numpy.polynomial import Polynomial
 
 class KerrSpacetime:
-    def __init__(self,a,M=None):
-        """
-        Initializes a black hole with mass M and spin parameter a
+    """
+        Class representing a black hole with mass M and spin parameter a
 
         :param a: dimensionless angular momentum
         :type a: double
         :param M: mass of the black hole
         :type M: double
-        """
+
+        :ivar a: dimensionless angular momentum
+        :ivar M: mass of the black hole
+    """
+    def __init__(self,a,M=None):
         self.a = a
         self.M = M
 
@@ -85,14 +88,48 @@ class KerrSpacetime:
         )
     
     def norm(self,t,r,theta,phi,v):
+        """
+        Computes the norm of a vector at a given point in spacetime expressed in Boyer-Lindquist coordinates
+
+        :param t: time coordinate
+        :type t: double
+        :param r: radial coordinate
+        :type r: double
+        :param theta: polar coordinate
+        :type theta: double
+        :param phi: azimuthal coordinate
+        :type phi: double
+        :param v: vector to compute the norm of
+        :type v: array_like
+
+        :return: norm of v
+        :rtype: double
+        """
         return np.dot(v,np.dot(self.metric(t,r,theta,phi),v))
     
     def four_velocity(self,t,r,theta,phi,constants):
+        r"""
+        Computes the four velocity of a given trajectory
+
+        :param t: time component of trajectory
+        :type t: function
+        :param r: radial component of trajectory
+        :type r: function
+        :param theta: polar component of trajectory
+        :type theta: function
+        :param phi: azimuthal component of trajectory
+        :type phi: function
+        :param constants: tuple of constants of motion in the form :math:`(E,L,Q)`
+        :type constants: tuple(double, double, double)
+
+        :return: components of the four velocity (i.e. :math:`(\frac{dt}{d\tau}, \frac{dr}{d\tau},\frac{d\theta}{d\tau},\frac{d\phi}{d\tau})`)
+        :rtype: tuple(function, function, function, function)
+        """
         a = self.a
         E, L, Q = constants
-        #R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
-        #Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
+        # radial polynomial
         R = lambda r: (E*(r**2+a**2)-a*L)**2-(r**2-2*r+a**2)*(r**2+(a*E-L)**2+Q)
+        # polar polynomial
         Z = lambda z: Q-(Q+a**2*(1-E**2)+L**2)*z**2+a**2*(1-E**2)*z**4
 
         def t_prime(time):

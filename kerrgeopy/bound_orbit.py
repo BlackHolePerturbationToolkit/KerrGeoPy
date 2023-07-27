@@ -1,6 +1,6 @@
 from .constants import *
 from .frequencies import *
-from .geodesics import *
+from .bound_solutions import *
 from .units import *
 from .frequencies import _radial_roots, _polar_roots
 from .orbit import Orbit

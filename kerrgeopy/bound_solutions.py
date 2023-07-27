@@ -1,5 +1,4 @@
 from .constants import *
-from .constants import _standardize_params
 from .frequencies import _ellippi
 from .frequencies import *
 from scipy.special import ellipj, ellipeinc
@@ -26,7 +25,7 @@ def _ellippiinc(phi,n,k):
 
     return where(num_cycles % 2 == 0, num_cycles*_ellippi(n,k)+integral, (num_cycles+1)*_ellippi(n,k)-integral)
     
-def radial_solutions(a,constants,roots):
+def radial_solutions(a,constants,radial_roots):
     r"""
     Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of Fujita and Hikida (arXiv:0906.1420). 
     :math:`q_r` is defined as :math:`q_r = \Upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`.
@@ -34,18 +33,16 @@ def radial_solutions(a,constants,roots):
 
     :param a: dimensionless spin parameter
     :type a: double
-    :param p: orbital semilatus rectum
-    :type p: double
-    :param e: orbital eccentricity
-    :type e: double
-    :param x:  orbital inclination
-    :type x: double
+    :param constants: tuple of constants :math:`(E,L,Q)`
+    :type constants: tuple(double,double,double)
+    :param radial_roots: tuple of roots :math:`(r_1,r_2,r_3,r_4)`
+    :type radial_roots: tuple(double,double,double,double)
 
     :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`
     :rtype: tuple(function, function, function)
     """
     E, L, Q = constants
-    r1, r2, r3, r4 = roots
+    r1, r2, r3, r4 = radial_roots
 
     r_plus = 1+sqrt(1-a**2)
     r_minus = 1-sqrt(1-a**2)
@@ -96,7 +93,7 @@ def radial_solutions(a,constants,roots):
     
     return r, t_r, phi_r
         
-def polar_solutions(a,constants,roots):
+def polar_solutions(a,constants,polar_roots):
     r"""
     Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` from equation 6 of Fujita and Hikida (arXiv:0906.1420).
     :math:`q_\theta` is defined as :math:`q_\theta = \Upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
@@ -104,18 +101,16 @@ def polar_solutions(a,constants,roots):
 
     :param a: dimensionless spin parameter
     :type a: double
-    :param p: orbital semilatus rectum
-    :type p: double
-    :param e: orbital eccentricity
-    :type e: double
-    :param x: orbital inclination
-    :type x: double
+    :param constants: tuple of constants :math:`(E,L,Q)`
+    :type constants: tuple(double,double,double)
+    :param polar_roots: tuple of roots :math:`(z_-,z_+)`
+    :type polar_roots: tuple(double,double)
 
     :return: tuple of functions in the form :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
     :rtype: tuple(function, function, function)
     """
     E, L, Q = constants
-    z_minus, z_plus = roots
+    z_minus, z_plus = polar_roots
     epsilon0 = a**2*(1-E**2)/L**2
     # simplified form of epsilon0*z_plus
     e0zp = (a**2*(1-E**2)*(1-z_minus)+L**2)/(L**2*(1-z_minus))
