@@ -3,8 +3,8 @@ from .frequencies import *
 from numpy import cos, sin
 from numpy.polynomial import Polynomial
 
-class BlackHole:
-    def __init__(self,a,M):
+class KerrSpacetime:
+    def __init__(self,a,M=None):
         """
         Initializes a black hole with mass M and spin parameter a
 
@@ -40,6 +40,24 @@ class BlackHole:
         """
         return is_stable(self.a,orbit.p,orbit.e,orbit.x)
     
+    def inner_horizon(self):
+        """
+        Computes the radius of the inner event horizon
+
+        :return: radius of the inner event horizon
+        :rtype: double
+        """
+        return 1-sqrt(1-self.a**2)
+    
+    def outer_horizon(self):
+        """
+        Computes the radius of the outer event horizon
+
+        :return: radius of the outer event horizon
+        :rtype: double
+        """
+        return 1+sqrt(1-self.a**2)
+    
     def metric(self,t,r,theta,phi):
         """
         Returns the matrix representation of the metric at a given point expressed in Boyer-Lindquist coordinates.
@@ -55,7 +73,7 @@ class BlackHole:
 
         :rtype: numpy.ndarray
         """
-        a = self.a*self.M
+        a = self.a
         sigma = r**2+a**2*cos(theta)**2
         delta = r**2-2*r+a**2
         return np.array(
