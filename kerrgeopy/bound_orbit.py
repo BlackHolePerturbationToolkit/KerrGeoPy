@@ -1,4 +1,4 @@
-from .constants import *
+from .constants_of_motion import *
 from .frequencies import *
 from .bound_solutions import *
 from .units import *
@@ -97,7 +97,7 @@ class BoundOrbit(Orbit):
         if self.M is None: raise ValueError("M must be specified to convert frequencies to physical units")
         
         if units == "mks" or units == "cgs":
-            return time_in_seconds(upsilon_r,self.M), time_in_seconds(upsilon_theta,self.M), time_in_seconds(upsilon_phi,self.M), time_in_seconds2(gamma,self.M)
+            return time_in_seconds(upsilon_r,self.M), time_in_seconds(upsilon_theta,self.M), time_in_seconds(upsilon_phi,self.M), time2_in_seconds2(gamma,self.M)
         
         raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
     
@@ -124,7 +124,7 @@ class BoundOrbit(Orbit):
         
         raise ValueError("units must be one of 'natural', 'mks', 'cgs', or 'mHz'")
         
-    def trajectory(self,initial_phases=(0,0,0,0),distance_units="natural"):
+    def trajectory(self,initial_phases=(0,0,0,0),distance_units="natural",time_units="natural"):
         r"""
         Computes the time, radial, polar, and azimuthal coordinates of the orbit as a function of mino time.
 
@@ -132,11 +132,14 @@ class BoundOrbit(Orbit):
         :type initial_phases: tuple, optional
         :param distance_units: units to compute the radial component of the trajectory in (options are "natural", "mks", "cgs", "au" and "km"), defaults to "natural"
         :type distance_units: str, optional
+        :param time_units: units to compute the time component of the trajectory in (options are "natural", "mks", "cgs", and "days"), defaults to "natural"
+        :type time_units: str, optional
 
         :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         :rtype: tuple(function, function, function, function)
         """
         if distance_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert r to physical units")
+        if time_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert t to physical units")
         
         a, p, e, x = self.a, self.p, self.e, self.x
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
@@ -148,7 +151,8 @@ class BoundOrbit(Orbit):
         theta_phases, t_theta, phi_theta = polar_solutions(a,constants,polar_roots)
         q_t0, q_r0, q_theta0, q_phi0 = initial_phases
 
-        unit_conversion_func = {"natural": lambda x,M: x, "mks": distance_in_meters, "cgs": distance_in_cm, "au": distance_in_au,"km": distance_in_km}
+        distance_conversion_func = {"natural": lambda x,M: x, "mks": distance_in_meters, "cgs": distance_in_cm, "au": distance_in_au,"km": distance_in_km}
+        time_conversion_func = {"natural": lambda x,M: x, "mks": time_in_seconds, "cgs": time_in_seconds, "days": time_in_days}
 
         # Calculate normalization constants so that t = 0 and phi = 0 at lambda = 0 when q_t0 = 0 and q_phi0 = 0 
         C_t = t_r(q_r0)+t_theta(q_theta0)
@@ -156,10 +160,10 @@ class BoundOrbit(Orbit):
 
         def t(mino_time):
             # equation 6
-            return q_t0 + gamma*mino_time + t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t
+            return time_conversion_func[time_units](q_t0 + gamma*mino_time + t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t)
         
         def r(mino_time):
-            return unit_conversion_func[distance_units](r_phases(upsilon_r*mino_time+q_r0),self.M)
+            return distance_conversion_func[distance_units](r_phases(upsilon_r*mino_time+q_r0),self.M)
         
         def theta(mino_time):
             return theta_phases(upsilon_theta*mino_time+q_theta0)

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from kerrgeopy.constants import *
+from kerrgeopy.constants_of_motion import *
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent

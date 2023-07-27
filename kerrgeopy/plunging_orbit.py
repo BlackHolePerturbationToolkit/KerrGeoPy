@@ -1,5 +1,5 @@
-from .plunge import *
-from .plunge import _plunging_radial_roots
+from .plunging_solutions import *
+from .plunging_solutions import _plunging_radial_roots
 from .bound_solutions import *
 from .orbit import Orbit
 import matplotlib.pyplot as plt

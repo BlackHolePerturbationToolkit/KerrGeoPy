@@ -1,4 +1,4 @@
-from .constants import *
+from .constants_of_motion import *
 from numpy import cos, sin
 
 class KerrSpacetime:
@@ -13,7 +13,7 @@ class KerrSpacetime:
         :ivar a: dimensionless angular momentum
         :ivar M: mass of the black hole
     """
-    def __init__(self,a,M=None):
+    def __init__(self,a,M):
         self.a = a
         self.M = M
 
@@ -45,7 +45,7 @@ class KerrSpacetime:
         """
         Computes the radius of the inner event horizon
 
-        :return: radius of the inner event horizon
+        :return: dimensionless radius of the inner event horizon
         :rtype: double
         """
         return 1-sqrt(1-self.a**2)
@@ -54,7 +54,7 @@ class KerrSpacetime:
         """
         Computes the radius of the outer event horizon
 
-        :return: radius of the outer event horizon
+        :return: dimensionless radius of the outer event horizon
         :rtype: double
         """
         return 1+sqrt(1-self.a**2)

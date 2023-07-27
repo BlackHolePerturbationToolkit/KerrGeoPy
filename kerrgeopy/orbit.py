@@ -66,8 +66,8 @@ class Orbit:
             elif (r2 > r_minus) & (r0 < r3) & (r0 > r4):
                 self.plunging = True
         
-    def trajectory(init_phases=(0,0,0,0)):
-        pass
+    # def trajectory(init_phases=(0,0,0,0)):
+    #     pass
 
     def plot(self,lambda0=0, lambda1=20, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=1):
         """

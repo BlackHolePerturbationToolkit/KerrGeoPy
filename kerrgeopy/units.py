@@ -101,7 +101,7 @@ def time_in_seconds(t,M):
     """
     return t*G/c**3*mass_in_kg(M)
 
-def time_in_seconds2(t,M):
+def time2_in_seconds2(t,M):
     """
     Converts time^2 in geometrized units to seconds^2
 
