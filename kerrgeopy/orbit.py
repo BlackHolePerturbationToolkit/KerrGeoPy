@@ -95,7 +95,7 @@ class Orbit:
         """
         lambda_range = lambda1 - lambda0
         point_density = 500
-        num_pts = lambda_range*point_density
+        num_pts = int(lambda_range*point_density)
         time = np.linspace(lambda0,lambda1,num_pts)
 
         t, r, theta, phi = self.trajectory(initial_phases)
@@ -207,7 +207,9 @@ class Orbit:
         :param tail: sets the length of the tail (options are "short", "long" and "none"), defaults to "long"
         :type tail: str, optional
         """
-        num_pts = int(2e3)
+        lambda_range = lambda1 - lambda0
+        point_density = 200
+        num_pts = int(lambda_range*point_density)
         time = np.linspace(lambda0,lambda1,num_pts)
 
         fig = plt.figure(figsize=(7,7))
@@ -215,7 +217,7 @@ class Orbit:
         eh = 1+sqrt(1-self.a**2)
 
         body = ax.scatter([],[],[],c="black")
-        tail = ax.scatter([],[],[],c="red",s=thickness)
+        tail = ax.scatter([],[],[],c="red", s=thickness)
 
         t, r, theta, phi = self.trajectory(initial_phases)
 
