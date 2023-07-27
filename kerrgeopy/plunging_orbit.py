@@ -100,7 +100,7 @@ class PlungingOrbit(Orbit):
         elif len(polar_roots) == 2:
             z_minus, z_plus = polar_roots
 
-        upsilon_r, upsilon_theta, upsilon_phi, gamma = mino_frequencies(a,constants,radial_roots,polar_roots)
+        upsilon_r, upsilon_theta, upsilon_phi, gamma = mino_frequencies_from_constants(a,constants,radial_roots,polar_roots)
         r_phases, t_r, phi_r = radial_solutions(a,constants,radial_roots)
         theta_phases, t_theta, phi_theta = polar_solutions(a,constants,polar_roots)
         q_t0, q_r0, q_theta0, q_phi0 = initial_phases

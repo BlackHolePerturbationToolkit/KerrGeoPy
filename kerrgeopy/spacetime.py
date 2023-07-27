@@ -1,7 +1,5 @@
 from .constants import *
-from .frequencies import *
 from numpy import cos, sin
-from numpy.polynomial import Polynomial
 
 class KerrSpacetime:
     """

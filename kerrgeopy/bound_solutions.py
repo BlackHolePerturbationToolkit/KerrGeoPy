@@ -1,6 +1,6 @@
 from .constants import *
-from .frequencies import _ellippi
-from .frequencies import *
+from .frequencies_from_constants import _ellippi
+from .frequencies_from_constants import *
 from scipy.special import ellipj, ellipeinc
 from numpy import sin, cos, arcsin, arccos, floor, where
 

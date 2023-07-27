@@ -265,8 +265,8 @@ class Orbit:
 
         def animate(i,body,tail):
             # adjust length of tail
-            if tail == "long": start = 0
-            elif tail == "short": start = max(0,i-50)
+            start = 0
+            if tail == "short": start = max(0,i-50)
             elif tail == "none": start = i
 
             condition_slice = condition[start:i]

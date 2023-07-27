@@ -1,14 +1,14 @@
 import unittest
 import numpy as np
 from kerrgeopy.bound_solutions import *
-from kerrgeopy.frequencies import _radial_roots, _polar_roots
+from kerrgeopy.frequencies_from_constants import _radial_roots, _polar_roots
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent
 
 DATA_DIR = THIS_DIR.parent / "tests/data"
 
-class TestGeodesics(unittest.TestCase):
+class TestBoundSolutions(unittest.TestCase):
     def test_random(self):
         components = ["t_r","t_theta","phi_r","phi_theta"]
         orbit_values = np.genfromtxt(DATA_DIR / "orbit_values.txt", delimiter=",")

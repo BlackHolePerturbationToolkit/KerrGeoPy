@@ -1,6 +1,6 @@
 __all__ = ["constants","frequencies"]
 from kerrgeopy import *
-from kerrgeopy.frequencies import *
+from kerrgeopy.frequencies_from_constants import *
 from kerrgeopy.constants import *
 from kerrgeopy.bound_orbit import BoundOrbit
 from kerrgeopy.plunging_orbit import PlungingOrbit

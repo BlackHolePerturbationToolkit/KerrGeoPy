@@ -2,7 +2,7 @@ from .constants import *
 from .frequencies import *
 from .bound_solutions import *
 from .units import *
-from .frequencies import _radial_roots, _polar_roots
+from .frequencies_from_constants import _radial_roots, _polar_roots
 from .orbit import Orbit
 import numpy as np
 import matplotlib.pyplot as plt
@@ -49,10 +49,8 @@ class BoundOrbit(Orbit):
         constants = constants_of_motion(a,p,e,x)
 
         self.E, self.L, self.Q = constants
-        radial_roots = _radial_roots(a,p,e,constants)
-        polar_roots = _polar_roots(a,x,constants)
-        self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,constants,radial_roots,polar_roots)
-        self.omega_r, self.omega_theta, self.omega_phi = observer_frequencies(a,constants,radial_roots,polar_roots)
+        self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,p,e,x)
+        self.omega_r, self.omega_theta, self.omega_phi = observer_frequencies(a,p,e,x)
 
     def constants_of_motion(self, units="natural"):
         """
