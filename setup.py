@@ -3,7 +3,7 @@ import setuptools
 
 setup(
     name="kerrgeopy",
-    version="0.0.1",
+    version="0.0.3",
     author="Seyong Park",
     description="Library for computing bound and plunging geodesics in Kerr spacetime",
     url="https://github.com/syp2001/KerrGeoPy",
@@ -13,5 +13,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Natural Language :: English",
     ),
-    install_requires=["scipy","numpy","matplotlib"]
+    install_requires=["scipy>=1.8","numpy","matplotlib>=3.3"]
 )
