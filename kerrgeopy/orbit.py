@@ -167,7 +167,7 @@ class Orbit:
         # test if point is outside the event horizon and either in front of the viewing plane or outside the event horizon when projected onto the viewing plane
         return True if (np.linalg.norm(point) > event_horizon) & ((normal_component >= 0) | (np.linalg.norm(projection) > event_horizon)) else False
     
-    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2):
+    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2,tail="long"):
         num_pts = int(2e3)
         time = np.linspace(lambda0,lambda1,num_pts)
 
@@ -176,7 +176,7 @@ class Orbit:
         eh = 1+sqrt(1-self.a**2)
 
         body = ax.scatter([],[],[],c="black")
-        trail = ax.scatter([],[],[],c="red",s=thickness)
+        tail = ax.scatter([],[],[],c="red",s=thickness)
 
         t, r, theta, phi = self.trajectory(initial_phases)
 
@@ -222,15 +222,15 @@ class Orbit:
         if not grid: ax.grid(False)
         if not axes: ax.axis("off")
 
-        def animate(i,body,trail):
-            if trail == "long": start = 0
-            elif trail == "short": start = max(0,i-50)
-            elif trail == "none": start = i
-            
+        def animate(i,body,tail):
+            if tail == "long": start = 0
+            elif tail == "short": start = max(0,i-50)
+            elif tail == "none": start = i
+
             condition_slice = condition[start:i]
             body._offsets3d = ([x[i]],[y[i]],[z[i]])
-            trail._offsets3d = (x[start:i][condition_slice],y[start:i][condition_slice],z[start:i][condition_slice])
+            tail._offsets3d = (x[start:i][condition_slice],y[start:i][condition_slice],z[start:i][condition_slice])
             
-        ani = FuncAnimation(fig,animate,num_pts,fargs=(body,trail))
+        ani = FuncAnimation(fig,animate,num_pts,fargs=(body,tail))
         FFwriter = FFMpegWriter(fps=60)
         ani.save(filename, writer = FFwriter)
