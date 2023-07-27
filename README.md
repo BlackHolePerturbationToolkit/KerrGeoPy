@@ -21,7 +21,7 @@ Retrograde orbits are represented using negative values for $a$ or for $x$. Firs
 import kerrgeopy as kg
 from math import cos, pi
 
-orbit = kg.BoundOrbit(0.999,3,0.4,cos(pi/6))
+orbit = kg.BoundOrbit(0.998,3,0.6,cos(pi/4))
 ```
 
 We can plot the orbit from $\lambda = 0$ to $\lambda = 10$ using the `plot()` method
