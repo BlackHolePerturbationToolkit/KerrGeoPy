@@ -1,3 +1,11 @@
+# Installation
+
+Install kerrgeopy using pip
+
+```shell
+pip install kerrgeopy
+```
+
 # Getting Started
 
 Bound orbits in kerrgeopy are parametrized by the following:
@@ -99,12 +107,12 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 
 ## Orbital Properties
-
 We can compute the dimensionless energy, angular momentum and carter constant using the `constants_of_motion()` method. We can also compute the frequencies of motion in Mino time using the `mino_frequencies()` method and in Boyer-Lindquist time using the `observer_frequencies()` method.
-
 
 ```python
 from IPython.display import display, Math
+
+orbit = kg.BoundOrbit(0.999,3,0.4,cos(pi/6))
 
 E, L, Q = orbit.constants_of_motion()
 
@@ -149,7 +157,7 @@ If $M$ and $\mu$ are defined, then kerrgeopy can also compute constants and freq
 
 
 ```python
-orbit = kg.Orbit(0.999,3,0.4,cos(pi/6), M=1e6, mu=10)
+orbit = kg.BoundOrbit(0.999,3,0.4,cos(pi/6), M=1e6, mu=10)
 ```
 
 
@@ -254,15 +262,6 @@ plt.plot(time, phi(time))
 plt.xlabel("time")
 plt.ylabel(r"$\phi(\lambda)$")
 ```
-
-
-
-
-    Text(0, 0.5, '$\\phi(\\lambda)$')
-
-
-
-
     
 ![png](output_23_1.png)
     
