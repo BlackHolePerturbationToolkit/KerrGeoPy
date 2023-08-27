@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from constants import *
+from kerrgeopy.constants import *
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent
