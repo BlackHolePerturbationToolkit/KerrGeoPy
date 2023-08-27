@@ -182,7 +182,7 @@ class Orbit:
         # test if point is outside the event horizon and either in front of the viewing plane or outside the event horizon when projected onto the viewing plane
         return True if (np.linalg.norm(point) > event_horizon) & ((normal_component >= 0) | (np.linalg.norm(projection) > event_horizon)) else False
     
-    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2, tail="long"):
+    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2, tail_length="long"):
         """
         Saves an animation of the orbit as an mp4 file
 
@@ -221,7 +221,7 @@ class Orbit:
 
         t, r, theta, phi = self.trajectory(initial_phases)
 
-        ax.view_init(35,-60)
+        ax.view_init(elevation,azimuth)
         x = r(time)*sin(theta(time))*cos(phi(time))
         y = r(time)*sin(theta(time))*sin(phi(time))
         z = r(time)*cos(theta(time))
@@ -268,8 +268,8 @@ class Orbit:
         def animate(i,body,tail):
             # adjust length of tail
             start = 0
-            if tail == "short": start = max(0,i-50)
-            elif tail == "none": start = i
+            if tail_length == "short": start = max(0,i-50)
+            elif tail_length == "none": start = i
 
             condition_slice = condition[start:i]
             body._offsets3d = ([x[i]],[y[i]],[z[i]])

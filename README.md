@@ -29,7 +29,7 @@ from math import cos, pi
 orbit = kg.BoundOrbit(0.998,3,0.6,cos(pi/4))
 ```
 
-We can plot the orbit from $\lambda = 0$ to $\lambda = 10$ using the `plot()` method
+Plot the orbit from $\lambda = 0$ to $\lambda = 10$ using the `plot()` method
 
 
 ```python
@@ -64,7 +64,7 @@ orbit.animate("animation2.mp4", grid=False, axes=False, tail="short")
 https://github.com/syp2001/KerrGeoPy/assets/38138782/25622db9-f144-4ba5-b9a9-b099f3ddb683
 
 
-Next, we can compute the time, radial, polar and azimuthal components of the trajectory as a function of Mino time using the `trajectory()` method
+Next, compute the time, radial, polar and azimuthal components of the trajectory as a function of Mino time using the `trajectory()` method
 
 
 ```python
@@ -107,7 +107,7 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 
 ## Orbital Properties
-We can compute the dimensionless energy, angular momentum and carter constant using the `constants_of_motion()` method. We can also compute the frequencies of motion in Mino time using the `mino_frequencies()` method and in Boyer-Lindquist time using the `observer_frequencies()` method.
+Use the `constants_of_motion()` method to compute the dimensionless energy, angular momentum and carter constant. Frequencies of motion can be computed in Mino time using the `mino_frequencies()` method and in Boyer-Lindquist time using the `observer_frequencies()` method.
 
 ```python
 from IPython.display import display, Math
@@ -153,8 +153,7 @@ $\displaystyle \Omega_r = 0.056 \quad \Omega_\theta = 0.109 \quad \Omega_\phi = 
 
 ## Units
 
-If $M$ and $\mu$ are defined, then kerrgeopy can also compute constants and frequencies in physical units.
-
+If the masses of the two bodies are given, kerrgeopy can also compute constants and frequencies of motion in physical units. M and mu define the mass of the primary and secondary body respectively in solar masses.
 
 ```python
 orbit = kg.BoundOrbit(0.999,3,0.4,cos(pi/6), M=1e6, mu=10)
@@ -283,12 +282,11 @@ kg.separatrix(0.5,0.5,0.5)
 
 
 
-For better performance, kerrgeopy also provides a method which constructs a faster separatrix function given a value of $a$ by interpolating from a grid of $e$ and $x$ values. This method is slightly less accurate but runs around 100 times faster.
-
+For better performance, use the `fast_separatrix()` method to construct a faster separatrix function given a value of $a$ by interpolating from a grid of $e$ and $x$ values. The separatrix function that this method returns is slightly less accurate but runs around 100 times faster.
 
 ```python
-fast_separatrix = kg.fast_separatrix(a=0.5)
-fast_separatrix(0.5,0.5)
+fast_sep = kg.fast_separatrix(a=0.5)
+fast_sep(0.5,0.5)
 ```
 
 
@@ -308,7 +306,7 @@ fast_separatrix(0.5,0.5)
 
 
 ```python
-%timeit fast_separatrix(0.5,0.5)
+%timeit fast_sep(0.5,0.5)
 ```
 
     947 ns ± 5.48 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
