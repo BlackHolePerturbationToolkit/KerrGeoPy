@@ -59,7 +59,7 @@ html_theme_options = {
     "use_repository_button": True,
     "navbar_end": ["navbar-icon-links"],
 }
-html_title = "kerrgeopy"
+html_title = "Kerrgeopy"
 html_context = {
     "default_mode": "light"
 }
