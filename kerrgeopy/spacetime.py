@@ -1,4 +1,4 @@
-from .constants_of_motion import *
+from .constants import *
 from numpy import cos, sin
 
 class KerrSpacetime:

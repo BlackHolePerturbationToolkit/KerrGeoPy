@@ -1,4 +1,4 @@
-from .constants_of_motion import _standardize_params
+from .constants import _standardize_params
 from .frequencies_from_constants import *
 from .frequencies_from_constants import _radial_roots, _polar_roots, _ellippi
 

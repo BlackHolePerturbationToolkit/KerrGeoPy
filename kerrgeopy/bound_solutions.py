@@ -1,4 +1,4 @@
-from .constants_of_motion import *
+from .constants import *
 from .frequencies_from_constants import _ellippi
 from .frequencies_from_constants import *
 from scipy.special import ellipj, ellipeinc

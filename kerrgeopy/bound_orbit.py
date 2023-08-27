@@ -1,4 +1,4 @@
-from .constants_of_motion import *
+from .constants import *
 from .frequencies import *
 from .bound_solutions import *
 from .units import *
