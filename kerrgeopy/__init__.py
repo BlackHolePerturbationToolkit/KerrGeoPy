@@ -1,4 +1,4 @@
-__all__ = ["constants","frequencies","bound_orbit","plunging_orbit"]
+__all__ = ["constants", "frequencies", "bound_orbit", "plunging_orbit"]
 from kerrgeopy import *
 from kerrgeopy.frequencies import *
 from kerrgeopy.constants import *
