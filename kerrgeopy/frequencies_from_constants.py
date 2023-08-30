@@ -48,7 +48,7 @@ def _radial_roots(a,p,e,constants):
 
 def _polar_roots(a,x,constants):
     r"""
-    Computes epsilon_0, z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
+    Computes z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
 
     :param a: dimensionless spin of the black hole
     :type a: double
@@ -57,7 +57,7 @@ def _polar_roots(a,x,constants):
     :param constants: dimensionless constants of motion for the orbit
     :type constants: tuple(double, double, double)
 
-    :return: tuple of the form :math:`(\epsilon_0, z_-, z_+)`
+    :return: tuple of roots in the form :math:`(z_-, z_+)`
     :rtype: tuple(double, double, double, double)
     """
     E, L, Q = constants
@@ -98,7 +98,7 @@ def theta_frequency_from_constants(a,constants,radial_roots,polar_roots):
     :type constants: tuple(double, double, double)
     :param radial_roots: tuple containing the four roots of the radial polynomial
     :type radial_roots: tuple(double, double, double, double)
-    :param polar_roots: tuple containing the roots of the polar equation :math:`(\epsilon_0, z_-, z_+)`
+    :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
     
     :rtype: double
@@ -132,7 +132,7 @@ def phi_frequency_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=
     :type constants: tuple(double, double, double)
     :param radial_roots: tuple containing the four roots of the radial polynomial
     :type radial_roots: tuple(double, double, double, double)
-    :param polar_roots: tuple containing the roots of the polar equation :math:`(\epsilon_0, z_-, z_+)`
+    :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
     :param upsilon_r: Mino frequency of motion in r can be passed in to speed computation if it is already known
     :type upsilon_r: double, optional
@@ -186,7 +186,7 @@ def gamma_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=None,ups
     :type constants: tuple(double, double, double)
     :param radial_roots: tuple containing the four roots of the radial polynomial
     :type radial_roots: tuple(double, double, double, double)
-    :param polar_roots: tuple containing the roots of the polar equation :math:`(\epsilon_0, z_-, z_+)`
+    :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
     :param upsilon_r: Mino frequency of motion in r can be passed in to speed computation if it is already known
     :type upsilon_r: double, optional
@@ -244,10 +244,10 @@ def mino_frequencies_from_constants(a,constants,radial_roots,polar_roots):
     :type constants: tuple(double, double, double)
     :param radial_roots: tuple containing the four roots of the radial polynomial
     :type radial_roots: tuple(double, double, double, double)
-    :param polar_roots: tuple containing the roots of the polar equation :math:`(\epsilon_0, z_-, z_+)`
+    :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
 
-    :return: tuple of the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
+    :return: tuple of frequencies in the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
     :rtype: tuple(double, double, double, double)
     """
     upsilon_r = r_frequency_from_constants(a,constants,radial_roots)
@@ -263,14 +263,14 @@ def observer_frequencies_from_constants(a,constants,radial_roots,polar_roots):
 
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
-    :param p: orbital semi-latus rectum
-    :type p: double
-    :param e: orbital eccentricity (must satisfy 0 <= e < 1)
-    :type e: double
-    :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
-    :type x: double
+    :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
+    :type constants: tuple(double, double, double)
+    :param radial_roots: tuple containing the four roots of the radial polynomial
+    :type radial_roots: tuple(double, double, double, double)
+    :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
+    :type polar_roots: tuple(double, double)
 
-    :return: tuple of the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
+    :return: tuple of frequencies in the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
     :rtype: tuple(double, double, double)
     """
     upsilon_r = r_frequency_from_constants(a,constants,radial_roots)
