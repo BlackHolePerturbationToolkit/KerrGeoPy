@@ -1,3 +1,6 @@
+"""
+Module containing functions for computing frequencies of motion for bound orbits using the :math:`(a,p,e,x)` parametrization.
+"""
 from .constants import _standardize_params
 from .frequencies_from_constants import *
 from .frequencies_from_constants import _radial_roots, _polar_roots, _ellippi

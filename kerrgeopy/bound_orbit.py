@@ -1,3 +1,6 @@
+"""
+Module containing the BoundOrbit class
+"""
 from .constants import *
 from .frequencies import *
 from .bound_solutions import *
@@ -9,7 +12,7 @@ import matplotlib.pyplot as plt
 
 class BoundOrbit(Orbit):
     """
-    Class representing a bound geodesic orbit in Kerr spacetime.
+    Class representing a bound orbit in Kerr spacetime.
 
     :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
     :type a: double

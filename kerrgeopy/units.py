@@ -1,3 +1,6 @@
+"""
+Module containing functions to convert between geometrized units and physical units.
+"""
 # https://en.wikipedia.org/wiki/Geometrized_unit_system
 
 # speed of light in m/s

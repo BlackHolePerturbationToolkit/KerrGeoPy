@@ -1,3 +1,6 @@
+"""
+Module containing the Orbit class
+"""
 from numpy import sin, cos, sqrt, pi
 from numpy.polynomial import Polynomial
 import numpy as np
@@ -7,7 +10,7 @@ from matplotlib.animation import FFMpegWriter
 
 class Orbit:
     r"""
-    Class representing an orbit in Kerr spacetime.
+    Class representing an orbit in Kerr spacetime defined using initial conditions.
 
     :param a: spin parameter
     :type a: double
@@ -184,7 +187,8 @@ class Orbit:
     
     def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2, tail_length="long"):
         """
-        Saves an animation of the orbit as an mp4 file
+        Saves an animation of the orbit as an mp4 file. 
+        Note that this function requires ffmpeg to be installed and may take several minutes to run depending on the length of the animation.
 
         :param filename: filename to save the animation to
         :type filename: str

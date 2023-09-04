@@ -1,3 +1,6 @@
+"""
+Module containing functions for computing the constants of motion for bound orbits using the :math:`(a,p,e,x)` parametrization.
+"""
 from numpy import sign, sqrt, copysign, inf, nan
 from math import pi
 from scipy.optimize import root_scalar
@@ -345,7 +348,7 @@ def separatrix(a,e,x):
     
 def fast_separatrix(a, grid_spacing=0.01):
     """
-    Constructs a faster separatrix function for a given value of a by interpolating over a grid of e and x values.
+    Constructs a faster separatrix function for a given value of :math:`a` by interpolating over a grid of :math:`e` and :math:`x` values.
 
     :param a: dimensionless spin of the black hole
     :type a: double

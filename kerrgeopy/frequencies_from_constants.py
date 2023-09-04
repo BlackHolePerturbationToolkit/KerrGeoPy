@@ -1,3 +1,6 @@
+"""
+Module containing functions for computing frequencies of motion from the spin parameter, constants of motion, and radial and polar roots.
+"""
 from scipy.special import ellipk, ellipe, elliprj, elliprf
 from .constants import *
 
@@ -75,7 +78,7 @@ def r_frequency_from_constants(constants,radial_roots):
 
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
-    :param radial_roots: tuple containing the four roots of the radial equation
+    :param radial_roots: tuple containing the four roots of the radial equation :math:`(r_1, r_2, r_3, r_4)`. Assumes that motion is between r1 and r2 and that roots are otherwise in ascending order.
     :type radial_roots: tuple(double, double, double, double)
 
     :rtype: double
@@ -96,7 +99,7 @@ def theta_frequency_from_constants(a,constants,radial_roots,polar_roots):
     :type a: double
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
-    :param radial_roots: tuple containing the four roots of the radial polynomial
+    :param radial_roots: tuple containing the four roots of the radial polynomial :math:`(r_1, r_2, r_3, r_4)`. Assumes that motion is between r1 and r2 and that roots are otherwise in ascending order.
     :type radial_roots: tuple(double, double, double, double)
     :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
@@ -130,7 +133,7 @@ def phi_frequency_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=
     :type a: double
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
-    :param radial_roots: tuple containing the four roots of the radial polynomial
+    :param radial_roots: tuple containing the four roots of the radial polynomial :math:`(r_1, r_2, r_3, r_4)`. Assumes that motion is between r1 and r2 and that roots are otherwise in ascending order.
     :type radial_roots: tuple(double, double, double, double)
     :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
@@ -184,7 +187,7 @@ def gamma_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=None,ups
     :type a: double
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
-    :param radial_roots: tuple containing the four roots of the radial polynomial
+    :param radial_roots: tuple containing the four roots of the radial polynomial :math:`(r_1, r_2, r_3, r_4)`. Assumes that motion is between r1 and r2 and that roots are otherwise in ascending order.
     :type radial_roots: tuple(double, double, double, double)
     :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
@@ -242,7 +245,7 @@ def mino_frequencies_from_constants(a,constants,radial_roots,polar_roots):
     :type a: double
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
-    :param radial_roots: tuple containing the four roots of the radial polynomial
+    :param radial_roots: tuple containing the four roots of the radial polynomial :math:`(r_1, r_2, r_3, r_4)`. Assumes that motion is between r1 and r2 and that roots are otherwise in ascending order.
     :type radial_roots: tuple(double, double, double, double)
     :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)
@@ -265,7 +268,7 @@ def observer_frequencies_from_constants(a,constants,radial_roots,polar_roots):
     :type a: double
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
-    :param radial_roots: tuple containing the four roots of the radial polynomial
+    :param radial_roots: tuple containing the four roots of the radial polynomial :math:`(r_1, r_2, r_3, r_4)`. Assumes that motion is between r1 and r2 and that roots are otherwise in ascending order.
     :type radial_roots: tuple(double, double, double, double)
     :param polar_roots: tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     :type polar_roots: tuple(double, double)

@@ -1,3 +1,6 @@
+"""
+Module containing functions to compute intermediate terms in the bound orbit solutions of Fujita and Hikida (arXiv:0906.1420).
+"""
 from .constants import *
 from .frequencies_from_constants import _ellippi
 from .frequencies_from_constants import *

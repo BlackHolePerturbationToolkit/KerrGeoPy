@@ -18,6 +18,12 @@ The library also provides a set of methods for computing constants of motion and
    :align: right
    :width: 45%
 
+.. note::
+
+   This project is under active development. 
+
+.. _Installation:
+
 Installation
 ------------
 Install the latest version of kerrgeopy using pip
@@ -26,11 +32,7 @@ Install the latest version of kerrgeopy using pip
 
    pip install kerrgeopy
 
-See `Getting Started <notebooks/Tutorial.html>`_ for usage examples.
-
-.. note::
-
-   This project is under active development. The documentation is not yet complete.
+See `Getting Started <notebooks/Tutorial.html>`_ for basic usage. See the `API Reference`_ below or the `Modules <_autosummary/kerrgeopy.html>`_ page for a complete list of classes and methods.
 
 
 .. toctree::
@@ -38,15 +40,34 @@ See `Getting Started <notebooks/Tutorial.html>`_ for usage examples.
    :caption: Tutorials
 
    notebooks/Tutorial
+   notebooks/Trajectory
+   notebooks/Orbital Properties
+   notebooks/Graphics
+   
+.. _API Reference:
+
+API Reference
+-------------
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference
+   :hidden:
+
+   Full List of Modules <https://kerrgeopy.readthedocs.io/en/latest/_autosummary/kerrgeopy.html>
 
 .. autosummary::
    :toctree: _autosummary
    :template: custom-module-template.rst
-   :caption: API Reference
    :recursive:
 
-   kerrgeopy
-
+   ~kerrgeopy.bound_orbit.BoundOrbit
+   ~kerrgeopy.plunging_orbit.PlungingOrbit
+   ~kerrgeopy.orbit.Orbit
+   ~kerrgeopy.spacetime.KerrSpacetime
+   ~kerrgeopy.constants
+   ~kerrgeopy.frequencies
+   ~kerrgeopy.units
 
 Indices and tables
 ==================

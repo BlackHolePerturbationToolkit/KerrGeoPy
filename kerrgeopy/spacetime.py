@@ -1,9 +1,12 @@
+"""
+Module containing the KerrSpacetime class
+"""
 from .constants import *
 from numpy import cos, sin
 
 class KerrSpacetime:
     """
-        Class representing a black hole with mass M and spin parameter a
+        Class representing spacetime around a black hole with mass :math:`M` and spin parameter :math:`a`
 
         :param a: dimensionless angular momentum
         :type a: double
@@ -30,16 +33,20 @@ class KerrSpacetime:
         """
         return separatrix(self.a,e,x)
     
-    def is_stable(self,orbit):
+    def is_stable(self,p,e,x):
         """
         Determines whether a given orbit is stable or not.
 
-        :param orbit: orbit to be tested
-        :type orbit: Orbit
-
+        :param p: dimensionless semi-latus rectum
+        :type p: double
+        :param e: orbital eccentricity
+        :type e: double
+        :param x: cosine of the orbital inclination
+        :type x: double
+        
         :rtype: bool
         """
-        return is_stable(self.a,orbit.p,orbit.e,orbit.x)
+        return is_stable(self.a,p,e,x)
     
     def inner_horizon(self):
         """

@@ -1,3 +1,6 @@
+"""
+Module containing functions to compute intermediate terms in the plunging orbit solutions of Dyson and van de Meent (arXiv:2302.03704).
+"""
 from numpy import sort_complex, sqrt, arctan, arctan2, arccos, log, sin, cos, pi
 from numpy.polynomial import Polynomial
 import numpy as np
