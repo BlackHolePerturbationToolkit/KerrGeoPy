@@ -38,7 +38,7 @@ def radial_solutions(a,constants,radial_roots):
     :type a: double
     :param constants: tuple of constants :math:`(E,L,Q)`
     :type constants: tuple(double,double,double)
-    :param radial_roots: tuple of roots :math:`(r_1,r_2,r_3,r_4)`
+    :param radial_roots: tuple of roots :math:`(r_1,r_2,r_3,r_4)`. Assumes that motion is between :math:`r_1` and :math:`r_2` and that roots are otherwise in decreasing order.
     :type radial_roots: tuple(double,double,double,double)
 
     :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`

@@ -237,7 +237,7 @@ def mino_frequencies(a,p,e,x):
 
     return upsilon_r, abs(upsilon_theta), upsilon_phi, Gamma
     
-def observer_frequencies(a,p,e,x):
+def fundamental_frequencies(a,p,e,x):
     r"""
     Computes frequencies of orbital motion in Boyer-Lindquist time using the method derived in Fujita and Hikida (arXiv:0906.1420)
 

@@ -3,16 +3,16 @@ Module containing the BoundOrbit class
 """
 from .constants import *
 from .frequencies import *
-from .bound_solutions import *
+from .stable_solutions import *
 from .units import *
 from .frequencies_from_constants import _radial_roots, _polar_roots
 from .orbit import Orbit
 import numpy as np
 import matplotlib.pyplot as plt
 
-class BoundOrbit(Orbit):
+class StableOrbit(Orbit):
     """
-    Class representing a bound orbit in Kerr spacetime.
+    Class representing a stable bound orbit in Kerr spacetime.
 
     :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
     :type a: double
@@ -53,7 +53,7 @@ class BoundOrbit(Orbit):
 
         self.E, self.L, self.Q = constants
         self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,p,e,x)
-        self.omega_r, self.omega_theta, self.omega_phi = observer_frequencies(a,p,e,x)
+        self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a,p,e,x)
 
     def constants_of_motion(self, units="natural"):
         """
@@ -104,7 +104,7 @@ class BoundOrbit(Orbit):
         
         raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
     
-    def observer_frequencies(self, units="natural"):
+    def fundamental_frequencies(self, units="natural"):
         r"""
         Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless frequencies in geometrized units by default.
         M and mu must be defined in order to convert to physical units.

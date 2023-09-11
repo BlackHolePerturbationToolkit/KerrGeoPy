@@ -1,7 +1,7 @@
-bound\_orbit
-============
+﻿stable\_orbit
+=============
 
-.. automodule:: kerrgeopy.bound_orbit
+.. automodule:: kerrgeopy.stable_orbit
   
    
    
@@ -19,7 +19,7 @@ bound\_orbit
       :toctree:
       :template: custom-class-template.rst
    
-      BoundOrbit
+      StableOrbit
    
    
 

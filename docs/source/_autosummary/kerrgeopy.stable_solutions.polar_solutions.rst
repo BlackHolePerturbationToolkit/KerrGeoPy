@@ -1,6 +1,6 @@
 polar\_solutions
 ================
 
-.. currentmodule:: kerrgeopy.bound_solutions
+.. currentmodule:: kerrgeopy.stable_solutions
 
 .. autofunction:: polar_solutions

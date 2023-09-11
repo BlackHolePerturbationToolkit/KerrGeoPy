@@ -3,7 +3,7 @@ Module containing the PlungingOrbit class
 """
 from .plunging_solutions import *
 from .plunging_solutions import _plunging_radial_roots
-from .bound_solutions import *
+from .stable_solutions import *
 from .orbit import Orbit
 import matplotlib.pyplot as plt
 

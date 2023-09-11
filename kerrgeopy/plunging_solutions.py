@@ -5,7 +5,7 @@ from numpy import sort_complex, sqrt, arctan, arctan2, arccos, log, sin, cos, pi
 from numpy.polynomial import Polynomial
 import numpy as np
 from scipy.special import ellipj, ellipeinc, ellipk
-from .bound_solutions import _ellippiinc
+from .stable_solutions import _ellippiinc
 
 def _plunging_radial_roots(a,E,L,Q):
     """
@@ -33,6 +33,7 @@ def _plunging_radial_roots(a,E,L,Q):
 
     r_minus = 1-sqrt(1-a**2)
 
+    # if there are 4 real roots, by convention r4 < r3 < r2 < r1
     if len(real_roots) == 4:
         # if there are three roots outside the event horizon swap r1/r3 and r2/r4
         if real_roots[1] > r_minus:
@@ -41,8 +42,9 @@ def _plunging_radial_roots(a,E,L,Q):
             r3 = real_roots[3]
             r4 = real_roots[2]
         else:
-            r1, r2, r3, r4 = real_roots
+            r4, r3, r2, r1 = real_roots
 
+    # in the case of two complex roots, r1 < r2 are real and r3/r4 are complex conjugates
     elif len(real_roots) == 2:
         r1, r2 = real_roots
         r3, r4 = complex_roots
@@ -90,6 +92,7 @@ def plunging_mino_frequencies(a,E,L,Q):
 def plunging_radial_integrals(a,E,L,Q):
     r"""
     Computes the radial integrals :math:`I_r`, :math:`I_{r^2}` and :math:`I_{r_\pm}` defined in equation 39 of Dyson and van de Meent (arXiv:2302.03704) as a function of the radial phase.
+    Used to compute the radial solutions for the case of two complex roots.
 
     :param a: dimensionless spin parameter
     :type a: double
@@ -190,7 +193,7 @@ def plunging_radial_solutions_complex(a,E,L,Q):
     roots = _plunging_radial_roots(a,E,L,Q)
     if np.iscomplex(roots).sum() != 2: raise ValueError("There should be two complex roots")
 
-    r1, r2, r3, r4 = roots
+    r1, r2, r3, r4 = roots # r1 < r2 are real and r3/r4 are complex conjugates
     rho_r = np.real(r3)
     rho_i = np.imag(r4)
 

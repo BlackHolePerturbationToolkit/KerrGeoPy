@@ -1,4 +1,4 @@
-frequencies
+﻿frequencies
 ===========
 
 .. automodule:: kerrgeopy.frequencies
@@ -15,9 +15,9 @@ frequencies
       :toctree:
       :template: custom-base-template.rst
    
+      fundamental_frequencies
       gamma
       mino_frequencies
-      observer_frequencies
       phi_frequency
       r_frequency
       theta_frequency

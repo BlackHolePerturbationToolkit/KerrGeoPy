@@ -16,7 +16,7 @@ class KerrSpacetime:
         :ivar a: dimensionless angular momentum
         :ivar M: mass of the black hole
     """
-    def __init__(self,a,M):
+    def __init__(self,a,M=None):
         self.a = a
         self.M = M
 

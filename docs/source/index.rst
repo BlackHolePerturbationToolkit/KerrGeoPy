@@ -40,8 +40,8 @@ See `Getting Started <notebooks/Tutorial.html>`_ for basic usage. See the `API R
    :caption: Tutorials
 
    notebooks/Tutorial
-   notebooks/Trajectory
    notebooks/Orbital Properties
+   notebooks/Trajectory
    notebooks/Graphics
    
 .. _API Reference:
@@ -60,8 +60,8 @@ API Reference
    :toctree: _autosummary
    :template: custom-module-template.rst
    :recursive:
-
-   ~kerrgeopy.bound_orbit.BoundOrbit
+   
+   ~kerrgeopy.stable_orbit.StableOrbit
    ~kerrgeopy.plunging_orbit.PlungingOrbit
    ~kerrgeopy.orbit.Orbit
    ~kerrgeopy.spacetime.KerrSpacetime

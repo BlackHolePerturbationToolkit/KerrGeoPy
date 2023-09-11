@@ -1,7 +1,7 @@
-bound\_solutions
-================
+﻿stable\_solutions
+=================
 
-.. automodule:: kerrgeopy.bound_solutions
+.. automodule:: kerrgeopy.stable_solutions
   
    
    
