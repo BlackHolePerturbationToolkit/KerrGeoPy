@@ -39,7 +39,7 @@ See `Getting Started <notebooks/Tutorial.html>`_ for basic usage. See the `API R
    :maxdepth: 2
    :caption: Tutorials
 
-   notebooks/Tutorial
+   notebooks/Getting Started
    notebooks/Orbital Properties
    notebooks/Trajectory
    notebooks/Graphics

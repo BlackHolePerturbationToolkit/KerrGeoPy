@@ -1,5 +1,6 @@
 """
 Module containing functions for computing frequencies of motion from the spin parameter, constants of motion, and radial and polar roots.
+Frequencies are computed using the method derived in `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 """
 from scipy.special import ellipk, ellipe, elliprj, elliprf
 from .constants import *
@@ -20,7 +21,7 @@ def _ellippi(n,k):
 
 def _radial_roots(a,p,e,constants):
     """
-    Computes r1, r2, r3 and r4 as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
+    Computes r1, r2, r3 and r4 as defined in equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 
     :param a: dimensionless spin of the black hole
     :type a: double
@@ -51,7 +52,7 @@ def _radial_roots(a,p,e,constants):
 
 def _polar_roots(a,x,constants):
     r"""
-    Computes z_minus and z_plus as defined in equation 10 of Fujita and Hikida (arXiv:0906.1420)
+    Computes z_minus and z_plus as defined in equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 
     :param a: dimensionless spin of the black hole
     :type a: double
@@ -74,7 +75,7 @@ def _polar_roots(a,x,constants):
 
 def r_frequency_from_constants(constants,radial_roots):
     """
-    Computes the frequency of motion in r in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the frequency of motion in r in Mino time.
 
     :param constants: dimensionless constants of motion for the orbit in the form :math:`(E,L,Q)`
     :type constants: tuple(double, double, double)
@@ -93,7 +94,7 @@ def r_frequency_from_constants(constants,radial_roots):
 
 def theta_frequency_from_constants(a,constants,radial_roots,polar_roots):
     """
-    Computes the frequency of motion in theta in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the frequency of motion in theta in Mino time.
     
     :param a: dimensionless spin of the black hole
     :type a: double
@@ -127,7 +128,7 @@ def theta_frequency_from_constants(a,constants,radial_roots,polar_roots):
 
 def phi_frequency_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=None,upsilon_theta=None):
     """
-    Computes the frequency of motion in phi in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the frequency of motion in phi in Mino time.
     
     :param a: dimensionless spin of the black hole
     :type a: double
@@ -181,7 +182,7 @@ def phi_frequency_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=
 
 def gamma_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=None,upsilon_theta=None):
     """
-    Computes the average rate at which observer time accumulates in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the average rate at which observer time accumulates in Mino time.
     
     :param a: dimensionless spin of the black hole
     :type a: double
@@ -239,7 +240,7 @@ def gamma_from_constants(a,constants,radial_roots,polar_roots,upsilon_r=None,ups
 
 def mino_frequencies_from_constants(a,constants,radial_roots,polar_roots):
     r"""
-    Computes frequencies of orbital motion in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes frequencies of orbital motion in Mino time.
 
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -262,7 +263,7 @@ def mino_frequencies_from_constants(a,constants,radial_roots,polar_roots):
     
 def frequencies_from_constants(a,constants,radial_roots,polar_roots):
     r"""
-    Computes frequencies of orbital motion in Boyer-Lindquist time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes frequencies of orbital motion in Boyer-Lindquist time.
 
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double

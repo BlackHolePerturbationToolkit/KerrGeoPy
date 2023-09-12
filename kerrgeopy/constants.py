@@ -1,5 +1,6 @@
 """
 Module containing functions for computing the constants of motion for bound orbits using the :math:`(a,p,e,x)` parametrization.
+Constants of motion are computed using the method described in Appendix B of `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_.
 """
 from numpy import sign, sqrt, copysign, inf, nan
 from math import pi
@@ -10,7 +11,7 @@ import numpy as np
 
 def _coefficients(r,a,x):
     """
-    Computes the coefficients f, g, h and d from equation B.5 in Schmidt (arXiv:gr-qc/0202090)
+    Computes the coefficients f, g, h and d from equation B.5 in `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
     
     :param r: dimensionless distance from the black hole
     :type r: double
@@ -32,7 +33,7 @@ def _coefficients(r,a,x):
 
 def _coefficients_derivative(r,a,x):
     """
-    Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in Schmidt (arXiv:gr-qc/0202090)
+    Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
     
     :param r: dimensionless distance from the black hole
     :type r: double
@@ -66,7 +67,7 @@ def _standardize_params(a,x):
 
 def energy(a,p,e,x):
     """
-    Computes the dimensionless energy of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
+    Computes the dimensionless energy of a bound orbit with the given parameters
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -124,7 +125,7 @@ def energy(a,p,e,x):
 
 def angular_momentum(a,p,e,x,E=None):
     """
-    Computes the dimensionless angular momentum of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
+    Computes the dimensionless angular momentum of a bound orbit with the given parameters
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -168,7 +169,7 @@ def angular_momentum(a,p,e,x,E=None):
     
 def carter_constant(a,p,e,x,E=None,L=None):
     """
-    Computes the dimensionless carter constant of a bound orbit with the given parameters using calculations from Appendix B of Schmidt (arXiv:gr-qc/0202090)
+    Computes the dimensionless carter constant of a bound orbit with the given parameters
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -206,7 +207,7 @@ def carter_constant(a,p,e,x,E=None,L=None):
 
 def constants_of_motion(a,p,e,x):
     """
-    Computes the dimensionless energy, angular momentum, and carter constant of a bound orbit with the given parameters. Returns a tuple of the form (E, L, Q)
+    Computes the dimensionless energy, angular momentum, and Carter constant of a bound orbit with the given parameters
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -217,6 +218,7 @@ def constants_of_motion(a,p,e,x):
     :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
     :type x: double
     
+    :return: tuple of constants in the form :math:`(E, L, Q)`
     :rtype: tuple(double, double, double)
     """
     E = energy(a,p,e,x)
@@ -226,7 +228,7 @@ def constants_of_motion(a,p,e,x):
 
 def _S_polar(p,a,e):
     """
-    Separatrix polynomial for a polar orbit from equation 37 in Stein and Warburton (arXiv:1912.07609)
+    Separatrix polynomial for a polar orbit from equation 37 in `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     :param p: orbital semi-latus rectum
     :type p: double
@@ -244,7 +246,7 @@ def _S_polar(p,a,e):
 
 def _S_equatorial(p,a,e):
     """
-    Separatrix polynomial for an equatorial orbit from equation 23 in Stein and Warburton (arXiv:1912.07609)
+    Separatrix polynomial for an equatorial orbit from equation 23 in `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     :param p: orbital semi-latus rectum
     :type p: double
@@ -261,7 +263,7 @@ def _S_equatorial(p,a,e):
 
 def _S(p,a,e,x):
     """
-    Full separatrix polynomial from equation A1 in Stein and Warburton (arXiv:1912.07609)
+    Full separatrix polynomial from equation A1 in `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     :param p: orbital semi-latus rectum
     :type p: double
@@ -303,7 +305,7 @@ def _S(p,a,e,x):
 
 def separatrix(a,e,x):
     """
-    Returns the value of p at the separatrix for the given orbital parameters computed using the bracked root finding method described in Stein and Warburton (arXiv:1912.07609)
+    Returns the value of p at the separatrix for the given orbital parameters computed using the bracked root finding method described in `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
     
     :param a: dimensionless spin of the black hole (must satisfy 0 <= a < 1)
     :type a: double

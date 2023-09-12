@@ -1,5 +1,5 @@
 """
-Module containing functions to compute intermediate terms in the bound orbit solutions of Fujita and Hikida (arXiv:0906.1420).
+Module containing functions to compute intermediate terms in the bound orbit solutions of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 """
 from .constants import *
 from .frequencies_from_constants import _ellippi
@@ -30,7 +30,7 @@ def _ellippiinc(phi,n,k):
     
 def radial_solutions(a,constants,radial_roots):
     r"""
-    Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of Fujita and Hikida (arXiv:0906.1420). 
+    Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_.
     :math:`q_r` is defined as :math:`q_r = \Upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`.
     Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
 
@@ -98,7 +98,7 @@ def radial_solutions(a,constants,radial_roots):
         
 def polar_solutions(a,constants,polar_roots):
     r"""
-    Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` from equation 6 of Fujita and Hikida (arXiv:0906.1420).
+    Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` from equation 6 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_.
     :math:`q_\theta` is defined as :math:`q_\theta = \Upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
     Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
 

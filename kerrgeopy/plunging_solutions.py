@@ -1,5 +1,5 @@
 """
-Module containing functions to compute intermediate terms in the plunging orbit solutions of Dyson and van de Meent (arXiv:2302.03704).
+Module containing functions to compute intermediate terms in the plunging orbit solutions of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_
 """
 from numpy import sort_complex, sqrt, arctan, arctan2, arccos, log, sin, cos, pi
 from numpy.polynomial import Polynomial
@@ -91,7 +91,7 @@ def plunging_mino_frequencies(a,E,L,Q):
 
 def plunging_radial_integrals(a,E,L,Q):
     r"""
-    Computes the radial integrals :math:`I_r`, :math:`I_{r^2}` and :math:`I_{r_\pm}` defined in equation 39 of Dyson and van de Meent (arXiv:2302.03704) as a function of the radial phase.
+    Computes the radial integrals :math:`I_r`, :math:`I_{r^2}` and :math:`I_{r_\pm}` defined in equation 39 of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_ as a function of the radial phase.
     Used to compute the radial solutions for the case of two complex roots.
 
     :param a: dimensionless spin parameter
@@ -176,7 +176,7 @@ def plunging_radial_integrals(a,E,L,Q):
 
 def plunging_radial_solutions_complex(a,E,L,Q):
     r"""
-    Computes the radial solutions :math:`r(q_r), t_r(q_r), \phi_r(q_r)` from equation 50 and 51 of Dyson and van de Meent (arXiv:2302.03704) for the case of two complex radial roots.
+    Computes the radial solutions :math:`r(q_r), t_r(q_r), \phi_r(q_r)` from equation 50 and 51 of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_ for the case of two complex radial roots.
 
     :param a: dimensionless spin parameter
     :type a: double
@@ -238,7 +238,7 @@ def plunging_radial_solutions_complex(a,E,L,Q):
 
 def plunging_polar_solutions(a,E,L,Q):
     r"""
-    Computes the polar solutions :math:`\theta(q_\theta), t_\theta(q_\theta), \phi_\theta(q_\theta)` from equation 33 and 37 of Dyson and van de Meent (arXiv:2302.03704).
+    Computes the polar solutions :math:`\theta(q_\theta), t_\theta(q_\theta), \phi_\theta(q_\theta)` from equation 33 and 37 of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_
 
     :param a: dimensionless spin parameter
     :type a: double

@@ -1,5 +1,6 @@
 """
 Module containing functions for computing frequencies of motion for bound orbits using the :math:`(a,p,e,x)` parametrization.
+Frequencies are computed using the method derived in `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 """
 from .constants import _standardize_params
 from .frequencies_from_constants import *
@@ -7,7 +8,7 @@ from .frequencies_from_constants import _radial_roots, _polar_roots, _ellippi
 
 def r_frequency(a,p,e,x,constants=None):
     """
-    Computes the frequency of motion in r in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the frequency of motion in r in Mino time
 
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -42,7 +43,7 @@ def r_frequency(a,p,e,x,constants=None):
 
 def theta_frequency(a,p,e,x,constants=None):
     """
-    Computes the frequency of motion in theta in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the frequency of motion in theta in Mino time
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -85,7 +86,7 @@ def theta_frequency(a,p,e,x,constants=None):
 
 def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     """
-    Computes the frequency of motion in phi in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the frequency of motion in phi in Mino time
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -148,7 +149,7 @@ def phi_frequency(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
 
 def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
     """
-    Computes the average rate at which observer time accumulates in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes the average rate at which observer time accumulates in Mino time
     
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -215,7 +216,7 @@ def gamma(a,p,e,x,constants=None,upsilon_r=None,upsilon_theta=None):
 
 def mino_frequencies(a,p,e,x):
     r"""
-    Computes frequencies of orbital motion in Mino time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes frequencies of orbital motion in Mino time
 
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
@@ -239,7 +240,7 @@ def mino_frequencies(a,p,e,x):
     
 def fundamental_frequencies(a,p,e,x):
     r"""
-    Computes frequencies of orbital motion in Boyer-Lindquist time using the method derived in Fujita and Hikida (arXiv:0906.1420)
+    Computes frequencies of orbital motion in Boyer-Lindquist time
 
     :param a: dimensionless spin of the black hole (must satisfy -1 < a < 1)
     :type a: double
