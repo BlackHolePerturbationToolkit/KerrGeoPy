@@ -3,6 +3,8 @@ Module containing the KerrSpacetime class
 """
 from .constants import *
 from numpy import cos, sin
+from numpy.polynomial import Polynomial
+import numpy as np
 
 class KerrSpacetime:
     """
@@ -17,8 +19,7 @@ class KerrSpacetime:
         :ivar M: mass of the black hole
     """
     def __init__(self,a,M=None):
-        self.a = a
-        self.M = M
+        self.a, self.M = a, M
 
     def separatrix(self,e,x):
         """
@@ -112,7 +113,7 @@ class KerrSpacetime:
         """
         return np.dot(v,np.dot(self.metric(t,r,theta,phi),v))
     
-    def four_velocity(self,t,r,theta,phi,constants):
+    def four_velocity(self,t,r,theta,phi,constants,upsilon_r,upsilon_theta,initial_phases):
         r"""
         Computes the four velocity of a given trajectory
 
@@ -126,16 +127,28 @@ class KerrSpacetime:
         :type phi: function
         :param constants: tuple of constants of motion in the form :math:`(E,L,Q)`
         :type constants: tuple(double, double, double)
+        :param upsilon_r: radial frequency
+        :type upsilon_r: double
+        :param upsilon_theta: polar frequency
+        :type upsilon_theta: double
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
 
-        :return: components of the four velocity (i.e. :math:`(\frac{dt}{d\tau}, \frac{dr}{d\tau},\frac{d\theta}{d\tau},\frac{d\phi}{d\tau})`)
+        :return: components of the four velocity (i.e. :math:`(u^t,u^r,u^\theta,u^\phi)`)
         :rtype: tuple(function, function, function, function)
         """
         a = self.a
         E, L, Q = constants
+        q_t0, q_r0, q_theta0, q_phi0 = initial_phases
+
         # radial polynomial
         R = lambda r: (E*(r**2+a**2)-a*L)**2-(r**2-2*r+a**2)*(r**2+(a*E-L)**2+Q)
+        # R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
+
         # polar polynomial
         Z = lambda z: Q-(Q+a**2*(1-E**2)+L**2)*z**2+a**2*(1-E**2)*z**4
+        # Z = lambda z: Q-z**2*(a**2*(1-E**2)*(1-z**2)+L**2+Q)
+        # Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
 
         def t_prime(time):
             delta = r(time)**2-2*r(time)+a**2
@@ -143,12 +156,14 @@ class KerrSpacetime:
             return 1/sigma*((r(time)**2+a**2)/delta*(E*(r(time)**2+a**2)-a*L)-a**2*E*(1-cos(theta(time))**2)+a*L)
 
         def r_prime(time):
+            q_r = upsilon_r*time + q_r0
             sigma = r(time)**2+a**2*cos(theta(time))**2
-            return sqrt(R(r(time)))/sigma
+            return np.copysign(1,sin(q_r))*sqrt(abs(R(r(time))))/sigma
 
         def theta_prime(time):
+            q_theta = upsilon_theta*time + q_theta0
             sigma = r(time)**2+a**2*cos(theta(time))**2
-            return sqrt(Z(cos(theta(time))))/sigma
+            return np.copysign(1,sin(q_theta))*sqrt(abs(Z(cos(theta(time)))))/(sigma*sin(theta(time)))
         
         def phi_prime(time):
             sigma = r(time)**2+a**2*cos(theta(time))**2

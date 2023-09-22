@@ -6,8 +6,8 @@
 Overview
 ========
 
-**Kerrgeopy** is a python library for computing geodesics in Kerr spacetime. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). 
-It implements the analytical solutions for plunging orbits from `Dyson and van de Meent <https://arxiv.org/abs/2302.03704>`_, as well as solutions for non-plunging orbits from `Fujita and Hikida <https://arxiv.org/abs/0906.1420>`_. 
+**KerrGeoPy** is a python library for computing bound timelike geodesics in Kerr spacetime. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). 
+It implements the analytical solutions for plunging orbits from `Dyson and van de Meent <https://arxiv.org/abs/2302.03704>`_, as well as solutions for stable orbits from `Fujita and Hikida <https://arxiv.org/abs/0906.1420>`_. 
 The library also provides a set of methods for computing constants of motion and orbital frequencies, and can generate plots and animations like those shown below.
 
 .. image:: images/orbit.png
@@ -32,7 +32,7 @@ Install the latest version of kerrgeopy using pip
 
    pip install kerrgeopy
 
-See `Getting Started <notebooks/Tutorial.html>`_ for basic usage. See the `API Reference`_ below or the `Modules <_autosummary/kerrgeopy.html>`_ page for a complete list of classes and methods.
+See `Getting Started <notebooks/Getting%20Started.html>`_ for basic usage. See the `API Reference`_ below or the `Modules <_autosummary/kerrgeopy.html>`_ page for a complete list of classes and methods.
 
 
 .. toctree::
@@ -67,6 +67,7 @@ API Reference
    ~kerrgeopy.spacetime.KerrSpacetime
    ~kerrgeopy.constants
    ~kerrgeopy.frequencies
+   ~kerrgeopy.initial_conditions
    ~kerrgeopy.units
 
 Indices and tables

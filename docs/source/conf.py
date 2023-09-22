@@ -22,7 +22,7 @@ copyright = '2023, Seyong Park'
 author = 'Seyong Park'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -61,7 +61,7 @@ html_theme_options = {
     "use_repository_button": True,
     "navbar_end": ["navbar-icon-links"],
 }
-html_title = "Kerrgeopy"
+html_title = "KerrGeoPy"
 html_context = {
     "default_mode": "light"
 }

@@ -4,11 +4,9 @@ Module containing the BoundOrbit class
 from .constants import *
 from .frequencies import *
 from .stable_solutions import *
-from .units import *
-from .frequencies_from_constants import _radial_roots, _polar_roots
+from .initial_conditions import apex_from_constants
+from .frequencies import _radial_roots, _polar_roots
 from .orbit import Orbit
-import numpy as np
-import matplotlib.pyplot as plt
 
 class StableOrbit(Orbit):
     """
@@ -55,32 +53,27 @@ class StableOrbit(Orbit):
         self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,p,e,x)
         self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a,p,e,x)
 
-    def constants_of_motion(self, units="natural"):
+    @classmethod
+    def from_constants(cls,a,E,L,Q,M=None,mu=None):
         """
-        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants in geometried units by default.
-        M and mu must be defined in order to convert to physical units.
+        Alternative constructor method that takes the constants of motion as arguments.
 
-        :param units: units to return the constants of motion in (options are "natural", "mks" and "cgs"), defaults to "natural"
-        :type units: str, optional
-
-        :return: tuple of the form (E, L, Q)
-        :rtype: tuple(double, double, double)
+        :param a: spin parameter
+        :type a: double
+        :param E: dimensionless energy
+        :type E: double
+        :param L: dimensionless angular momentum
+        :type L: double
+        :param Q: dimensionless Carter constant
+        :type Q: double
+        :param M: mass of the primary in solar masses
+        :type M: double, optional
+        :param mu: mass of the smaller body in solar masses
+        :type mu: double, optional
         """
-        constants = self.E, self.L, self.Q
-        if units == "natural":
-            return constants
-        
-        if self.M is None or self.mu is None: raise ValueError("M and mu must be specified to convert constants of motion to physical units")
-        
-        if units == "mks":
-            E, L, Q = scale_constants(constants,1,self.mu/self.M)
-            return energy_in_joules(E,self.M), angular_momentum_in_mks(L,self.M), carter_constant_in_mks(Q,self.M)
-        
-        if units == "cgs":
-            E, L, Q = scale_constants(constants,1,self.mu/self.M)
-            return energy_in_ergs(E,self.M), angular_momentum_in_cgs(L,self.M), carter_constant_in_cgs(Q,self.M)
-        
-        raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
+        a, p, e, x = apex_from_constants(a,E,L,Q)
+
+        return cls(a,p,e,x,M,mu)
         
     def mino_frequencies(self, units="natural"):
         r"""
@@ -131,7 +124,7 @@ class StableOrbit(Orbit):
         r"""
         Computes the time, radial, polar, and azimuthal coordinates of the orbit as a function of mino time.
 
-        :param initial_phases: tuple of initial phases for the time, radial, polar, and azimuthal coordinates, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
         :type initial_phases: tuple, optional
         :param distance_units: units to compute the radial component of the trajectory in (options are "natural", "mks", "cgs", "au" and "km"), defaults to "natural"
         :type distance_units: str, optional
@@ -141,6 +134,7 @@ class StableOrbit(Orbit):
         :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         :rtype: tuple(function, function, function, function)
         """
+
         if distance_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert r to physical units")
         if time_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert t to physical units")
         

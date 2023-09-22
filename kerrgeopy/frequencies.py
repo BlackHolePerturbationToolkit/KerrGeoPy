@@ -4,7 +4,61 @@ Frequencies are computed using the method derived in `Fujita and Hikida <https:/
 """
 from .constants import _standardize_params
 from .frequencies_from_constants import *
-from .frequencies_from_constants import _radial_roots, _polar_roots, _ellippi
+from .frequencies_from_constants import _ellippi
+
+def _radial_roots(a,p,e,constants):
+    """
+    Computes r1, r2, r3 and r4 as defined in equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
+
+    :param a: dimensionless spin of the black hole
+    :type a: double
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param e: orbital eccentricity
+    :type e: double
+    :param x: cosine of the orbital inclination
+    :type x: tuple(double, double, double, double)
+    :param constants: dimensionless constants of motion for the orbit
+    :type constants: tuple(double, double, double)
+
+    :return: tuple containing the four roots of the radial equation
+    :rtype: tuple(double, double, double, double)
+    """
+    E, L, Q = constants
+    
+    r1 = p/(1-e)
+    r2 = p/(1+e)
+    
+    A_plus_B = 2/(1-E**2)-r1-r2
+    AB = a**2*Q/(r1*r2*(1-E**2))
+    
+    r3 = (A_plus_B+sqrt(A_plus_B**2-4*AB))/2
+    r4 = AB/r3
+    
+    return r1, r2, r3, r4
+
+def _polar_roots(a,x,constants):
+    r"""
+    Computes z_minus and z_plus as defined in equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
+
+    :param a: dimensionless spin of the black hole
+    :type a: double
+    :param x: cosine of the orbital inclination
+    :type x: tuple(double, double, double)
+    :param constants: dimensionless constants of motion for the orbit
+    :type constants: tuple(double, double, double)
+
+    :return: tuple of roots in the form :math:`(z_-, z_+)`
+    :rtype: tuple(double, double, double, double)
+    """
+    E, L, Q = constants
+    epsilon0 = a**2*(1-E**2)/L**2
+    z_minus = 1-x**2
+    #z_plus = a**2*(1-E**2)/(L**2*epsilon0)+1/(epsilon0*(1-z_minus))
+    # simplified using definition of carter constant
+    z_plus = nan if a == 0 else 1+1/(epsilon0*(1-z_minus)) 
+    
+    return z_minus, z_plus
 
 def r_frequency(a,p,e,x,constants=None):
     """

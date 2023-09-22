@@ -18,6 +18,9 @@
    
       ~PlungingOrbit.__init__
       ~PlungingOrbit.animate
+      ~PlungingOrbit.constants_of_motion
+      ~PlungingOrbit.four_velocity
+      ~PlungingOrbit.four_velocity_norm
       ~PlungingOrbit.is_visible
       ~PlungingOrbit.plot
       ~PlungingOrbit.trajectory

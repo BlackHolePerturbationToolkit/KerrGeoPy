@@ -1,9 +1,15 @@
 """
 Module containing the Orbit class
 """
-from numpy import sin, cos, sqrt, pi
+from .spacetime import KerrSpacetime
+from .initial_conditions import *
+from .units import *
+from .constants import scale_constants
+from .frequencies import mino_frequencies, fundamental_frequencies
+from numpy import sin, cos, sqrt, pi, arcsin
 from numpy.polynomial import Polynomial
 import numpy as np
+from scipy.special import ellipkinc
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
@@ -14,63 +20,134 @@ class Orbit:
 
     :param a: spin parameter
     :type a: double
-    :param init_position: initial position of the orbit :math:`(t_0,r_0,\theta_0,\phi_0)`
-    :type init_position: tuple(double,double,double,double)
-    :param init_velocity: initial four-velocity of the orbit :math:`(\frac{dt}{d\tau}(0), \frac{dr}{d\tau}(0),\frac{d\theta}{d\tau}(0),\frac{d\phi}{d\tau}(0))`
-    :type init_velocity: tuple(double,double,double,double)
+    :param initial_position: initial position of the orbit :math:`(t_0,r_0,\theta_0,\phi_0)`
+    :type initial_position: tuple(double,double,double,double)
+    :param initial_velocity: initial four-velocity of the orbit :math:`(u^t_0,u^r_0,u^\theta_0,u^\phi_0)`
+    :type initial_velocity: tuple(double,double,double,double)
+    :param M: mass of the primary in solar masses
+    :type M: double, optional
+    :param mu: mass of the smaller body in solar masses
+    :type mu: double, optional
 
     :ivar a: spin parameter
-    :ivar init_position: initial position of the orbit :math:`(t_0,r_0,\theta_0,\phi_0)`
+    :ivar initial_position: initial position of the orbit :math:`(t_0,r_0,\theta_0,\phi_0)`
+    :ivar initial_velocity: initial four-velocity of the orbit :math:`(u^t_0,u^r_0,u^\theta_0,u^\phi_0)`
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless carter constant
     """
-    def __init__(self,a,init_position,init_velocity):
-        self.a = a
-        self.init_position = init_position
-        self.init_velocity = init_velocity
+    def __init__(self,a,initial_position,initial_velocity, M=None, mu=None):
+        self.a, self.initial_position, self.initial_velocity, self.M, self.mu = a, initial_position, initial_velocity, M, mu
 
-        t0, r0, theta0, phi0 = init_position
-        dt0, dr0, dtheta0, dphi0 = init_velocity
-        sigma = r0**2+a**2*cos(theta0)**2
-        delta = r0**2-2*r0+a**2
+        t0, r0, theta0, phi0 = initial_position
+        dt0, dr0, dtheta0, dphi0 = initial_velocity
 
-        # solve for E and L by writing the t and phi equations as a matrix equation
-        A = np.array(
-            [[(r0**2+a**2)**2/delta-a**2*(1-cos(theta0)**2), a-a*(r0**2+a**2)/delta],
-            [a*(r0**2+a**2)/delta-a, 1/(1-cos(theta0)**2)-a**2/delta]]
-        )
-        b = np.array([sigma*dt0,sigma*dphi0])
-        E, L = np.linalg.solve(A,b)
+        # check if initial four-velocity is valid
+        spacetime = KerrSpacetime(a)
+        initial_norm =  spacetime.norm(t0,r0,theta0,phi0,initial_velocity)
+        if initial_norm >= 0: raise ValueError("Initial velocity is not timelike")
+        if abs(initial_norm + 1) > 1e-6: raise ValueError("Initial velocity is not normalized")
 
-        # solve for Q by substituting E and L back into the theta equation
-        Q = ((sigma*dtheta0)**2 + cos(theta0)**2*(self.a**2*(1-self.E**2)*(1-cos(theta0)**2)+self.L**2))/(1-cos(theta0)**2)
-
+        E, L, Q = constants_from_initial_conditions(a,initial_position,initial_velocity)
         self.E, self.L, self.Q = E, L, Q
 
-        # standard form of the radial polynomial R(r)
-        R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
-        radial_roots = R.roots()
-        # get the real roots and the complex roots
-        real_roots = np.sort(np.real(radial_roots[np.isreal(radial_roots)]))
-        complex_roots = radial_roots[np.iscomplex(radial_roots)]
 
-        r_minus = 1-sqrt(1-a**2)
-
-        if len(complex_roots) == 4: raise ValueError("Not a physical orbit")
-        if len(complex_roots) == 2:
-            self.plunging = True
+        if is_stable(a,initial_position,initial_velocity):
+            self.stable = True
+            a, p, e, x = apex_from_constants(a,E,L,Q)
+            self.a, self.p, self.e, self.x = a, p, e, x
+            self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,p,e,x)
+            self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a,p,e,x)
+            self.initial_phases = stable_orbit_initial_phases(a,initial_position,initial_velocity)
         else:
-            r4, r3, r2, r1 = real_roots
-            if (r2 < r_minus) & (r0 < r1) & (r0 > r2): 
-                self.plunging = True
-            elif (r2 > r_minus) & (r0 < r1) & (r0 > r2):
-                self.plunging = False
-            elif (r2 > r_minus) & (r0 < r3) & (r0 > r4):
-                self.plunging = True
+            self.stable = False
+            self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
+            self.initial_phases = plunging_orbit_initial_phases(a,initial_position,initial_velocity)
+
+    def trajectory(self,distance_units="natural",time_units="natural"):
+        r"""
+        Computes the components of the trajectory as a function of Mino time
+
+        :param distance_units: units to compute the radial component of the trajectory in (options are "natural", "mks", "cgs", "au" and "km"), defaults to "natural"
+        :type distance_units: str, optional
+        :param time_units: units to compute the time component of the trajectory in (options are "natural", "mks", "cgs", and "days"), defaults to "natural"
+        :type time_units: str, optional
+
+        :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
+        :rtype: tuple(function, function, function, function)
+        """
+        if self.stable:
+            from .stable_orbit import StableOrbit
+            orbit = StableOrbit(self.a,self.p,self.e,self.x,self.M,self.mu)
+            return orbit.trajectory(self.initial_phases,distance_units,time_units)
+        else:
+            from .plunging_orbit import PlungingOrbit
+            orbit = PlungingOrbit(self.a,self.E,self.L,self.Q,self.M,self.mu)
+            return orbit.trajectory(self.initial_phases,distance_units,time_units)
         
-    # def trajectory(init_phases=(0,0,0,0)):
-    #     pass
+    def constants_of_motion(self, units="natural"):
+        """
+        Computes the energy, angular momentum, and carter constant for the orbit. Computes dimensionless constants in geometried units by default.
+        M and mu must be defined in order to convert to physical units.
+
+        :param units: units to return the constants of motion in (options are "natural", "mks" and "cgs"), defaults to "natural"
+        :type units: str, optional
+
+        :return: tuple of the form (E, L, Q)
+        :rtype: tuple(double, double, double)
+        """
+        constants = self.E, self.L, self.Q
+        if units == "natural":
+            return constants
+        
+        if self.M is None or self.mu is None: raise ValueError("M and mu must be specified to convert constants of motion to physical units")
+        
+        if units == "mks":
+            E, L, Q = scale_constants(constants,1,self.mu/self.M)
+            return energy_in_joules(E,self.M), angular_momentum_in_mks(L,self.M), carter_constant_in_mks(Q,self.M)
+        
+        if units == "cgs":
+            E, L, Q = scale_constants(constants,1,self.mu/self.M)
+            return energy_in_ergs(E,self.M), angular_momentum_in_cgs(L,self.M), carter_constant_in_cgs(Q,self.M)
+        
+        raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
+
+    def four_velocity(self,initial_phases=(0,0,0,0)):
+        r"""
+        Computes the four velocity of the orbit as a function of Mino time
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
+        :type initial_phases: tuple, optional
+
+        :return: components of the four velocity (i.e. :math:`u^t,u^r,u^\theta,u^\phi`)
+        :rtype: tuple(function, function, function, function)
+        """
+        t, r, theta, phi = self.trajectory(initial_phases)
+        spacetime = KerrSpacetime(self.a)
+        constants = self.E, self.L, self.Q
+
+        return spacetime.four_velocity(t,r,theta,phi,constants,self.upsilon_r,self.upsilon_theta,initial_phases)
+    
+    def four_velocity_norm(self,initial_phases=(0,0,0,0)):
+        r"""
+        Computes the norm of the four velocity of the orbit as a function of Mino time
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
+        :type initial_phases: tuple, optional
+
+        :return: norm of the four velocity :math:`g_{\mu\nu}u^\mu u^\nu`
+        :rtype: function
+        """
+        t, r, theta, phi = self.trajectory(initial_phases)
+        spacetime = KerrSpacetime(self.a)
+        constants = self.E, self.L, self.Q
+        t_prime, r_prime, theta_prime, phi_prime = self.four_velocity(initial_phases)
+
+        def norm(time):
+            u = [t_prime(time),r_prime(time),theta_prime(time),phi_prime(time)]
+            return spacetime.norm(t(time),r(time),theta(time),phi(time),u)
+
+        return norm
 
     def plot(self,lambda0=0, lambda1=20, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=1):
         """

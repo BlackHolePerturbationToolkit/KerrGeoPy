@@ -1,5 +1,5 @@
 """
-Module containing functions to compute intermediate terms in the bound orbit solutions of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
+Module containing functions to compute intermediate terms in the stable bound orbit solutions of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 """
 from .constants import *
 from .frequencies_from_constants import _ellippi

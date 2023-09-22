@@ -9,8 +9,9 @@ from .stable_solutions import _ellippiinc
 
 def _plunging_radial_roots(a,E,L,Q):
     """
-    Computes the radial roots for a plunging orbit. The roots are sorted in ascending order with real roots first.
-    If all roots are real, the roots are sorted such that the motion is between the first two roots.
+    Computes the radial roots for a plunging orbit. 
+    If all roots are real, roots are sorted such that the motion is between r1 and r2 and roots are otherwise in decreasing order.
+    If there are two complex roots, r1 < r2 are real and r3/r4 are complex conjugates.
 
     :param a: dimensionless spin parameter
     :type a: double
@@ -33,7 +34,7 @@ def _plunging_radial_roots(a,E,L,Q):
 
     r_minus = 1-sqrt(1-a**2)
 
-    # if there are 4 real roots, by convention r4 < r3 < r2 < r1
+    # if there are 4 real roots, by convention r4 < r3 < r2 < r1 (consistent with stable orbits)
     if len(real_roots) == 4:
         # if there are three roots outside the event horizon swap r1/r3 and r2/r4
         if real_roots[1] > r_minus:
@@ -85,7 +86,7 @@ def plunging_mino_frequencies(a,E,L,Q):
     k_theta = a*sqrt(1-E**2)*z1/z2
 
     # equation 53
-    upsilon_theta = pi*ellipk(k_theta**2)/(2*z2)
+    upsilon_theta = pi/2*z2/ellipk(k_theta**2)
 
     return upsilon_r, upsilon_theta
 
@@ -204,7 +205,6 @@ def plunging_radial_solutions_complex(a,E,L,Q):
     # equation 42
     A = sqrt((r2-rho_r)**2+rho_i**2)
     B = sqrt((r1-rho_r)**2+rho_i**2)
-    f = 4*A*B/(A-B)**2
     k_r = sqrt(((r2-r1)**2-(A-B)**2)/(4*A*B))
 
     upsilon_r, upsilon_theta = plunging_mino_frequencies(a,E,L,Q)

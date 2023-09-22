@@ -28,6 +28,8 @@ class PlungingOrbit(Orbit):
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless Carter constant
+    :ivar M: mass of the primary in solar masses
+    :ivar mu: mass of the smaller body in solar masses
     :ivar upsilon_r: radial Mino frequency
     :ivar upsilon_theta: polar Mino frequency
     """
@@ -79,9 +81,13 @@ class PlungingOrbit(Orbit):
         distance_conversion_func = {"natural": lambda x,M: x, "mks": distance_in_meters, "cgs": distance_in_cm, "au": distance_in_au,"km": distance_in_km}
         time_conversion_func = {"natural": lambda x,M: x, "mks": time_in_seconds, "cgs": time_in_seconds, "days": time_in_days}
 
+        # adjust q_theta0 so that initial conditions are consistent with stable case
+        q_theta0 = q_theta0 + pi/2
+
         # Calculate normalization constants so that t = 0 and phi = 0 at lambda = 0 when q_t0 = 0 and q_phi0 = 0 
         C_t = t_r(q_r0)+t_theta(q_theta0)
         C_phi= phi_r(q_r0)+phi_theta(q_theta0)
+
 
         def t(mino_time):
             return time_conversion_func[time_units](t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) + a*L*mino_time - C_t + q_t0, self.M)
@@ -108,8 +114,10 @@ class PlungingOrbit(Orbit):
         """
         a, E, L, Q = self.a, self.E, self.L, self.Q
         constants = (E,L,Q)
-        Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
         radial_roots = _plunging_radial_roots(a,E,L,Q)
+
+        # polar polynomial written in terms of z = cos^2(theta)
+        Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
         polar_roots = Z.roots()
 
         upsilon_r, upsilon_theta, upsilon_phi, gamma = mino_frequencies_from_constants(a,constants,radial_roots,polar_roots)
