@@ -19,13 +19,13 @@ $e$ - orbital eccentricity
 <br>
 $x$ - cosine of the orbital inclination
 
-\begin{equation}
+$$
 a = \frac{J}{M^2}, \quad\quad p = \frac{2r_{\text{min}}r_{\text{max}}}{M(r_{\text{min}}+r_{\text{max}})}, \quad\quad e = \frac{r_{\text{max}}-r_{\text{min}}}{r_{\text{max}}+r_{\text{min}}}, \quad\quad x = \cos{\theta_{\text{inc}}}
-\end{equation}
+$$
 
 Note that $a$ and $x$ are restricted to values between -1 and 1, while $e$ is restricted to values between 0 and 1. Retrograde orbits are represented using a negative value for $a$ or for $x$. Polar orbits, marginally bound orbits, and orbits around an extreme Kerr black hole are not supported. 
 
-First, construct a [`StableOrbit`](stable_orbit.StableOrbit) using the four parameters described above.
+First, construct a `StableOrbit` using the four parameters described above.
 
 
 ```python
@@ -35,7 +35,7 @@ from math import cos, pi
 orbit = kg.StableOrbit(0.999,3,0.4,cos(pi/6))
 ```
 
-Plot the orbit from $\lambda = 0$ to $\lambda = 10$ using the [`plot()`](stable_orbit.StableOrbit.plot) method
+Plot the orbit from $\lambda = 0$ to $\lambda = 10$ using the `plot()` method
 
 
 ```python
@@ -48,7 +48,7 @@ fig, ax = orbit.plot(0,10)
     
 
 
-Next, compute the time, radial, polar and azimuthal components of the trajectory as a function of Mino time using the [`trajectory()`](stable_orbit.StableOrbit.trajectory) method. By default, the time and radial components of the trajectory are given in geometrized units and are normalized using $M$ so that they are dimensionless.
+Next, compute the time, radial, polar and azimuthal components of the trajectory as a function of Mino time using the `trajectory()` method. By default, the time and radial components of the trajectory are given in geometrized units and are normalized using $M$ so that they are dimensionless.
 
 
 ```python
@@ -88,11 +88,6 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 
 
-    Text(0, 0.5, '$\\phi(\\lambda)$')
-
-
-
-
     
 ![png](README_files/Getting%20Started_6_1.png)
     
@@ -100,7 +95,7 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 ## Orbital Properties
 
-Use the [`constants_of_motion()`](stable_orbit.StableOrbit.constants_of_motion) method to compute the dimensionless energy, angular momentum and Carter constant. By default, constants of motion are given in geometrized units where $G=c=1$ and are scale-invariant, meaning that they are normalized according to the masses of the two bodies as follows:
+Use the `constants_of_motion()` method to compute the dimensionless energy, angular momentum and Carter constant. By default, constants of motion are given in geometrized units where $G=c=1$ and are scale-invariant, meaning that they are normalized according to the masses of the two bodies as follows:
 
 \begin{equation}
 \mathcal{E} = \frac{E}{\mu}, \quad \mathcal{L} = \frac{L}{\mu M}, \quad \mathcal{Q} = \frac{Q}{\mu^2 M^2}
@@ -108,7 +103,7 @@ Use the [`constants_of_motion()`](stable_orbit.StableOrbit.constants_of_motion) 
 
 Here, $M$ is the mass of the primary body and $\mu$ is the mass of the secondary body. 
 
-Frequencies of motion can be computed in Mino time using the [`mino_frequencies()`](stable_orbit.StableOrbit.mino_frequencies) method and in Boyer-Lindquist time using the [`fundamental_frequencies()`](stable_orbit.StableOrbit.fundamental_frequencies) method. As with constants of motion, the frequencies returned by both methods are given in geometrized units and are normalized by $M$ so that they are dimensionless.
+Frequencies of motion can be computed in Mino time using the `mino_frequencies()` method and in Boyer-Lindquist time using the `fundamental_frequencies()` method. As with constants of motion, the frequencies returned by both methods are given in geometrized units and are normalized by $M$ so that they are dimensionless.
 
 
 ```python
@@ -171,18 +166,18 @@ $\mathcal{Q}$ - Carter constant
 
 It is assumed that all orbital parameters are given in geometrized units where $G=c=1$ and are normalized according to the masses of the two bodies as follows:
 
-\begin{equation}
+$$
 a = \frac{J}{M^2}, \quad \mathcal{E} = \frac{E}{\mu}, \quad \mathcal{L} = \frac{L}{\mu M}, \quad \mathcal{Q} = \frac{Q}{\mu^2 M^2}
-\end{equation}
+$$
 
-Construct a [`PlungingOrbit`](plunging_orbit.PlungingOrbit) by passing in these four parameters.
+Construct a `PlungingOrbit` by passing in these four parameters.
 
 
 ```python
 orbit = kg.PlungingOrbit(0.9, 0.94, 0.1, 12)
 ```
 
-As with stable orbits, the components of the trajectory can be computed using the [`trajectory()`](plunging_orbit.PlungingOrbit.trajectory) method
+As with stable orbits, the components of the trajectory can be computed using the `trajectory()` method
 
 
 ```python
@@ -218,13 +213,6 @@ plt.plot(time, phi(time))
 plt.xlabel("$\lambda$")
 plt.ylabel(r"$\phi(\lambda)$")
 ```
-
-
-
-
-    Text(0, 0.5, '$\\phi(\\lambda)$')
-
-
 
 
     
