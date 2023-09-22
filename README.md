@@ -1,5 +1,3 @@
-# Getting Started
-
 ## Installation
 
 Install the latest version of kerrgeopy using pip
@@ -97,9 +95,9 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 Use the `constants_of_motion()` method to compute the dimensionless energy, angular momentum and Carter constant. By default, constants of motion are given in geometrized units where $G=c=1$ and are scale-invariant, meaning that they are normalized according to the masses of the two bodies as follows:
 
-\begin{equation}
+$$
 \mathcal{E} = \frac{E}{\mu}, \quad \mathcal{L} = \frac{L}{\mu M}, \quad \mathcal{Q} = \frac{Q}{\mu^2 M^2}
-\end{equation}
+$$
 
 Here, $M$ is the mass of the primary body and $\mu$ is the mass of the secondary body. 
 
