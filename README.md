@@ -221,14 +221,14 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 ## Alternative Parametrizations
 
-Use the [`from_constants()`](stable_orbit.StableOrbit.from_constants) class method to construct a [`StableOrbit`](stable_orbit.StableOrbit) from the spin parameter and constants of motion $(a,E,L,Q)$
+Use the `from_constants()` class method to construct a `StableOrbit` from the spin parameter and constants of motion $(a,E,L,Q)$
 
 
 ```python
 orbit = kg.StableOrbit.from_constants(0.9, 0.95, 1.6, 8)
 ```
 
-Use the [`Orbit`](orbit.Orbit) class to construct an orbit from the spin parameter $a$, initial position $(t_0,r_0,\theta_0,\phi_0)$ and initial four-velocity $(u^t_0,u^r_0,u^{\theta}_0,u^{\phi}_0)$
+Use the `Orbit` class to construct an orbit from the spin parameter $a$, initial position $(t_0,r_0,\theta_0,\phi_0)$ and initial four-velocity $(u^t_0,u^r_0,u^{\theta}_0,u^{\phi}_0)$
 
 
 ```python
@@ -268,9 +268,7 @@ plt.plot(time, phi(time))
 plt.xlabel("$\lambda$")
 plt.ylabel(r"$\phi(\lambda)$")
 ```
-
-
     
-![png](Getting%20Started_files/Getting%20Started_20_1.png)
+![png](README_files/Getting%20Started_20_1.png)
     
 
