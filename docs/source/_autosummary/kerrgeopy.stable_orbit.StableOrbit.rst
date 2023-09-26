@@ -25,6 +25,7 @@
       ~StableOrbit.fundamental_frequencies
       ~StableOrbit.is_visible
       ~StableOrbit.mino_frequencies
+      ~StableOrbit.orbital_parameters
       ~StableOrbit.plot
       ~StableOrbit.trajectory
    

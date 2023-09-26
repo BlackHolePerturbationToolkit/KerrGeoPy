@@ -218,6 +218,59 @@ plt.ylabel(r"$\phi(\lambda)$")
     
 
 
-## Orbit From Initial Conditions
 
-In Progress
+## Alternative Parametrizations
+
+Use the [`from_constants()`](stable_orbit.StableOrbit.from_constants) class method to construct a [`StableOrbit`](stable_orbit.StableOrbit) from the spin parameter and constants of motion $(a,E,L,Q)$
+
+
+```python
+orbit = kg.StableOrbit.from_constants(0.9, 0.95, 1.6, 8)
+```
+
+Use the [`Orbit`](orbit.Orbit) class to construct an orbit from the spin parameter $a$, initial position $(t_0,r_0,\theta_0,\phi_0)$ and initial four-velocity $(u^t_0,u^r_0,u^{\theta}_0,u^{\phi}_0)$
+
+
+```python
+stable_orbit = kg.StableOrbit(0.999,3,0.4,cos(pi/6))
+
+x0 = stable_orbit.initial_position
+u0 = stable_orbit.initial_velocity
+
+orbit = kg.Orbit(0.999,x0,u0)
+```
+
+
+```python
+t, r, theta, phi = orbit.trajectory()
+
+time = np.linspace(0,20,200)
+
+plt.figure(figsize=(20,4))
+
+plt.subplot(1,4,1)
+plt.plot(time, t(time))
+plt.xlabel("$\lambda$")
+plt.ylabel(r"$t(\lambda)$")
+
+plt.subplot(1,4,2)
+plt.plot(time, r(time))
+plt.xlabel("$\lambda$")
+plt.ylabel("$r(\lambda)$")
+
+plt.subplot(1,4,3)
+plt.plot(time, theta(time))
+plt.xlabel("$\lambda$")
+plt.ylabel(r"$\theta(\lambda)$")
+
+plt.subplot(1,4,4)
+plt.plot(time, phi(time))
+plt.xlabel("$\lambda$")
+plt.ylabel(r"$\phi(\lambda)$")
+```
+
+
+    
+![png](Getting%20Started_files/Getting%20Started_20_1.png)
+    
+

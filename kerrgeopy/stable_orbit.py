@@ -56,10 +56,10 @@ class StableOrbit(Orbit):
         self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a,p,e,x)
         self.stable = True
 
-        # u_t, u_r, u_theta, u_phi = self.four_velocity()
-        # t, r, theta, phi = self.trajectory()
-        # self.initial_position = t(0), r(0), theta(0), phi(0)
-        # self.initial_velocity = u_t(0), u_r(0), u_theta(0), u_phi(0)
+        u_t, u_r, u_theta, u_phi = self.four_velocity()
+        t, r, theta, phi = self.trajectory()
+        self.initial_position = t(0), r(0), theta(0), phi(0)
+        self.initial_velocity = u_t(0), u_r(0), u_theta(0), u_phi(0)
 
     @classmethod
     def from_constants(cls,a,E,L,Q,initial_phases=(0,0,0,0),M=None,mu=None):

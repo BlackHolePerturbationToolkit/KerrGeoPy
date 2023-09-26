@@ -1,4 +1,4 @@
-﻿spacetime
+spacetime
 =========
 
 .. automodule:: kerrgeopy.spacetime

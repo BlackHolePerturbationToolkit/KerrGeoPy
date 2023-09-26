@@ -1,4 +1,4 @@
-﻿stable\_orbit
+stable\_orbit
 =============
 
 .. automodule:: kerrgeopy.stable_orbit

@@ -1,4 +1,4 @@
-﻿plunging\_solutions
+plunging\_solutions
 ===================
 
 .. automodule:: kerrgeopy.plunging_solutions

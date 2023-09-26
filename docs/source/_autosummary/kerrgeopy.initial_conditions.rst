@@ -1,4 +1,4 @@
-﻿initial\_conditions
+initial\_conditions
 ===================
 
 .. automodule:: kerrgeopy.initial_conditions

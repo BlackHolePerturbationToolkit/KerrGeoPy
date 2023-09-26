@@ -22,6 +22,7 @@
       ~PlungingOrbit.four_velocity
       ~PlungingOrbit.four_velocity_norm
       ~PlungingOrbit.is_visible
+      ~PlungingOrbit.orbital_parameters
       ~PlungingOrbit.plot
       ~PlungingOrbit.trajectory
    

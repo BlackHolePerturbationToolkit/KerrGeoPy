@@ -1,4 +1,4 @@
-﻿orbit
+orbit
 =====
 
 .. automodule:: kerrgeopy.orbit

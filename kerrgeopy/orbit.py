@@ -75,7 +75,8 @@ class Orbit:
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
         Computes the components of the trajectory as a function of Mino time
-
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
         :param distance_units: units to compute the radial component of the trajectory in (options are "natural", "mks", "cgs", "au" and "km"), defaults to "natural"
         :type distance_units: str, optional
         :param time_units: units to compute the time component of the trajectory in (options are "natural", "mks", "cgs", and "days"), defaults to "natural"
@@ -87,11 +88,11 @@ class Orbit:
         if initial_phases is None: initial_phases = self.initial_phases
         if self.stable:
             from .stable_orbit import StableOrbit
-            orbit = StableOrbit(self.a,self.p,self.e,self.x,self.M,self.mu)
+            orbit = StableOrbit(self.a,self.p,self.e,self.x,M=self.M,mu=self.mu)
             return orbit.trajectory(initial_phases,distance_units,time_units)
         else:
             from .plunging_orbit import PlungingOrbit
-            orbit = PlungingOrbit(self.a,self.E,self.L,self.Q,self.M,self.mu)
+            orbit = PlungingOrbit(self.a,self.E,self.L,self.Q,M=self.M,mu=self.mu)
             return orbit.trajectory(initial_phases,distance_units,time_units)
         
     def constants_of_motion(self, units="natural"):
@@ -125,7 +126,7 @@ class Orbit:
         r"""
         Computes the four velocity of the orbit as a function of Mino time
 
-        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
 
         :return: components of the four velocity (i.e. :math:`u^t,u^r,u^\theta,u^\phi`)
@@ -142,7 +143,7 @@ class Orbit:
         r"""
         Computes the norm of the four velocity of the orbit as a function of Mino time
 
-        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
 
         :return: norm of the four velocity :math:`g_{\mu\nu}u^\mu u^\nu`
@@ -160,8 +161,8 @@ class Orbit:
 
         return norm
 
-    def plot(self,lambda0=0, lambda1=20, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=1):
-        """
+    def plot(self,lambda0=0, lambda1=20, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, thickness=1):
+        r"""
         Creates a plot of the orbit
 
         :param lambda0: starting mino time
@@ -172,7 +173,7 @@ class Orbit:
         :type elevation: double, optional
         :param azimuth: camera azimuthal angle in degrees
         :type azimuth: double, optional
-        :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
         :param grid: if true, grid lines are shown on plot
         :type grid: bool, optional
@@ -184,6 +185,7 @@ class Orbit:
         :return: matplotlib figure and axes
         :rtype: matplotlib.figure.Figure, matplotlib.axes._subplots.AxesSubplot
         """
+        if initial_phases is None: initial_phases = self.initial_phases
         lambda_range = lambda1 - lambda0
         point_density = 500
         num_pts = int(lambda_range*point_density)
@@ -273,8 +275,8 @@ class Orbit:
         # test if point is outside the event horizon and either in front of the viewing plane or outside the event horizon when projected onto the viewing plane
         return True if (np.linalg.norm(point) > event_horizon) & ((normal_component >= 0) | (np.linalg.norm(projection) > event_horizon)) else False
     
-    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=(0,0,0,0), grid=True, axes=True, thickness=2, tail_length="long"):
-        """
+    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, thickness=2, tail_length="long"):
+        r"""
         Saves an animation of the orbit as an mp4 file. 
         Note that this function requires ffmpeg to be installed and may take several minutes to run depending on the length of the animation.
 
@@ -288,7 +290,7 @@ class Orbit:
         :type elevation: double, optional
         :param azimuth: camera azimuthal angle in degrees, defaults to -60
         :type azimuth: double, optional
-        :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
         :param grid: sets visibility of the grid, defaults to True
         :type grid: bool, optional

@@ -1,4 +1,4 @@
-﻿stable\_solutions
+stable\_solutions
 =================
 
 .. automodule:: kerrgeopy.stable_solutions

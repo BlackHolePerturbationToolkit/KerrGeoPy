@@ -22,6 +22,7 @@
       ~Orbit.four_velocity
       ~Orbit.four_velocity_norm
       ~Orbit.is_visible
+      ~Orbit.orbital_parameters
       ~Orbit.plot
       ~Orbit.trajectory
    

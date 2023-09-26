@@ -1,4 +1,4 @@
-﻿frequencies
+frequencies
 ===========
 
 .. automodule:: kerrgeopy.frequencies

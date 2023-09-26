@@ -18,6 +18,8 @@ class PlungingOrbit(Orbit):
     :type L: double
     :param Q: dimensionless Carter constant
     :type Q: double
+    :param initial_phases: tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`, defaults to (0,0,0,0)
+    :type initial_phases: tuple, optional
     :param M: mass of the primary in solar masses, optional
     :type M: double
     :param mu: mass of the smaller body in solar masses, optional
@@ -48,7 +50,7 @@ class PlungingOrbit(Orbit):
         r"""
         Computes the components of the trajectory as a function of mino time
 
-        :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
         :type initial_phases: tuple, optional
         :param distance_units: units to compute the radial component of the trajectory in (options are "natural", "mks", "cgs", "au" and "km"), defaults to "natural"
         :type distance_units: str, optional
@@ -71,10 +73,10 @@ class PlungingOrbit(Orbit):
             return self._real_trajectory(initial_phases,distance_units,time_units)
     
     def _complex_trajectory(self,initial_phases=None, distance_units="natural",time_units="natural"):
-        """
+        r"""
         Computes the components of the trajectory in the case of two complex and two real radial roots
 
-        :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`, defaults to (0,0,0,0)
         :type initial_phases: tuple, optional
 
         :rtype: tuple(function,function,function,function)
@@ -112,10 +114,10 @@ class PlungingOrbit(Orbit):
         return t, r, theta, phi
     
     def _real_trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
-        """
+        r"""
         Computes the components of the trajectory in the case of four real radial roots
 
-        :param initial_phases: tuple of initial phases, defaults to (0,0,0,0)
+        :param initial_phases: tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
         :type initial_phases: tuple, optional
 
         :rtype: tuple(function,function,function,function)
