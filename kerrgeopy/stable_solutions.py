@@ -5,7 +5,7 @@ from .constants import *
 from .frequencies_from_constants import _ellippi
 from .frequencies_from_constants import *
 from scipy.special import ellipj, ellipeinc
-from numpy import sin, cos, arcsin, arccos, floor, where
+from numpy import pi, sin, cos, arcsin, arccos, floor, where
 
 def _ellippiinc(phi,n,k):
     r"""

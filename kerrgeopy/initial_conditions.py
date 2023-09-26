@@ -7,7 +7,7 @@ from .plunging_solutions import _plunging_radial_roots, plunging_mino_frequencie
 import numpy as np
 from numpy import sin, cos, sqrt, pi, arcsin, arccos
 from numpy.polynomial import Polynomial
-from scipy.special import ellipkinc, ellipk
+from scipy.special import ellipkinc
 
 def apex_from_constants(a,E,L,Q):
     r"""

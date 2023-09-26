@@ -9,7 +9,7 @@ from .frequencies import _radial_roots, _polar_roots
 from .orbit import Orbit
 
 class StableOrbit(Orbit):
-    """
+    r"""
     Class representing a stable bound orbit in Kerr spacetime.
 
     :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
@@ -34,6 +34,8 @@ class StableOrbit(Orbit):
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless carter constant
+    :ivar initial_position: tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
+    :ivar initial_velocity: tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
     :ivar upsilon_r: dimensionless radial orbital frequency in Mino time
     :ivar upsilon_theta: dimensionless polar orbital frequency in Mino time
     :ivar upsilon_phi: dimensionless azimuthal orbital frequency in Mino time
@@ -42,19 +44,25 @@ class StableOrbit(Orbit):
     :ivar omega_theta: dimensionless polar orbital frequency in Boyer-Lindquist time
     :ivar omega_phi: dimensionless azimuthal orbital frequency in Boyer-Lindquist time
     """
-    def __init__(self,a,p,e,x,M = None,mu=None):
+    def __init__(self,a,p,e,x,initial_phases=(0,0,0,0),M = None,mu=None):
         """
         Constructor method
         """
-        self.a, self.p, self.e, self.x, self.M, self.mu = a, p, e, x, M, mu
+        self.a, self.p, self.e, self.x, self.initial_phases, self.M, self.mu = a, p, e, x, initial_phases, M, mu
         constants = constants_of_motion(a,p,e,x)
 
         self.E, self.L, self.Q = constants
         self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(a,p,e,x)
         self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a,p,e,x)
+        self.stable = True
+
+        # u_t, u_r, u_theta, u_phi = self.four_velocity()
+        # t, r, theta, phi = self.trajectory()
+        # self.initial_position = t(0), r(0), theta(0), phi(0)
+        # self.initial_velocity = u_t(0), u_r(0), u_theta(0), u_phi(0)
 
     @classmethod
-    def from_constants(cls,a,E,L,Q,M=None,mu=None):
+    def from_constants(cls,a,E,L,Q,initial_phases=(0,0,0,0),M=None,mu=None):
         """
         Alternative constructor method that takes the constants of motion as arguments.
 
@@ -73,7 +81,7 @@ class StableOrbit(Orbit):
         """
         a, p, e, x = apex_from_constants(a,E,L,Q)
 
-        return cls(a,p,e,x,M,mu)
+        return cls(a,p,e,x,initial_phases,M,mu)
         
     def mino_frequencies(self, units="natural"):
         r"""
@@ -120,7 +128,7 @@ class StableOrbit(Orbit):
         
         raise ValueError("units must be one of 'natural', 'mks', 'cgs', or 'mHz'")
         
-    def trajectory(self,initial_phases=(0,0,0,0),distance_units="natural",time_units="natural"):
+    def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
         Computes the time, radial, polar, and azimuthal coordinates of the orbit as a function of mino time.
 
@@ -134,7 +142,7 @@ class StableOrbit(Orbit):
         :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         :rtype: tuple(function, function, function, function)
         """
-
+        if initial_phases is None: initial_phases = self.initial_phases
         if distance_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert r to physical units")
         if time_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert t to physical units")
         

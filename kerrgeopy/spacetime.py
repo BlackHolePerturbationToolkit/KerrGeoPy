@@ -3,7 +3,6 @@ Module containing the KerrSpacetime class
 """
 from .constants import *
 from numpy import cos, sin
-from numpy.polynomial import Polynomial
 import numpy as np
 
 class KerrSpacetime:

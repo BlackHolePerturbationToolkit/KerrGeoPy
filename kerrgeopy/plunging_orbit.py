@@ -5,10 +5,9 @@ from .plunging_solutions import *
 from .plunging_solutions import _plunging_radial_roots
 from .stable_solutions import *
 from .orbit import Orbit
-import matplotlib.pyplot as plt
 
 class PlungingOrbit(Orbit):
-    """
+    r"""
     Class representing a plunging orbit in Kerr spacetime.
 
     :param a: dimensionaless spin parameter
@@ -28,16 +27,24 @@ class PlungingOrbit(Orbit):
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless Carter constant
+    :ivar initial_position: tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
+    :ivar initial_velocity: tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
     :ivar M: mass of the primary in solar masses
     :ivar mu: mass of the smaller body in solar masses
     :ivar upsilon_r: radial Mino frequency
     :ivar upsilon_theta: polar Mino frequency
     """
-    def __init__(self,a,E,L,Q,M=None,mu=None):
-        self.a, self.E, self.L, self.Q, self.M, self.mu = a, E, L, Q, M, mu
+    def __init__(self,a,E,L,Q,initial_phases=(0,0,0,0),M=None,mu=None):
+        self.a, self.E, self.L, self.Q, self.initial_phases, self.M, self.mu = a, E, L, Q, initial_phases, M, mu
         self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
+        self.stable = False
 
-    def trajectory(self,initial_phases=(0,0,0,0),distance_units="natural",time_units="natural"):
+        u_t, u_r, u_theta, u_phi = self.four_velocity()
+        t, r, theta, phi = self.trajectory()
+        self.initial_position = t(0), r(0), theta(0), phi(0)
+        self.initial_velocity = u_t(0), u_r(0), u_theta(0), u_phi(0)
+
+    def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
         Computes the components of the trajectory as a function of mino time
 
@@ -63,7 +70,7 @@ class PlungingOrbit(Orbit):
         else:
             return self._real_trajectory(initial_phases,distance_units,time_units)
     
-    def _complex_trajectory(self,initial_phases=(0,0,0,0), distance_units="natural",time_units="natural"):
+    def _complex_trajectory(self,initial_phases=None, distance_units="natural",time_units="natural"):
         """
         Computes the components of the trajectory in the case of two complex and two real radial roots
 
@@ -72,6 +79,7 @@ class PlungingOrbit(Orbit):
 
         :rtype: tuple(function,function,function,function)
         """
+        if initial_phases is None: initial_phases = self.initial_phases
         a, E, L, Q = self.a, self.E, self.L, self.Q
         upsilon_r, upsilon_theta = self.upsilon_r, self.upsilon_theta
         r_phases, t_r, phi_r = plunging_radial_solutions_complex(a,E,L,Q)
@@ -90,7 +98,7 @@ class PlungingOrbit(Orbit):
 
 
         def t(mino_time):
-            return time_conversion_func[time_units](t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) + a*L*mino_time - C_t + q_t0, self.M)
+            return time_conversion_func[time_units](t_r(upsilon_r*mino_time+q_r0) + t_theta(upsilon_theta*mino_time+q_theta0) - C_t + q_t0, self.M)
         
         def r(mino_time):
             return distance_conversion_func[distance_units](r_phases(upsilon_r*mino_time+q_r0), self.M)
@@ -99,11 +107,11 @@ class PlungingOrbit(Orbit):
             return theta_phases(upsilon_theta*mino_time+q_theta0)
         
         def phi(mino_time):
-            return phi_r(upsilon_r*mino_time+q_r0) + phi_theta(upsilon_theta*mino_time+q_theta0) - a*E*mino_time - C_phi + q_phi0
+            return phi_r(upsilon_r*mino_time+q_r0) + phi_theta(upsilon_theta*mino_time+q_theta0) - C_phi + q_phi0
         
         return t, r, theta, phi
     
-    def _real_trajectory(self,initial_phases=(0,0,0,0),distance_units="natural",time_units="natural"):
+    def _real_trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         """
         Computes the components of the trajectory in the case of four real radial roots
 
@@ -112,6 +120,7 @@ class PlungingOrbit(Orbit):
 
         :rtype: tuple(function,function,function,function)
         """
+        if initial_phases is None: initial_phases = self.initial_phases
         a, E, L, Q = self.a, self.E, self.L, self.Q
         constants = (E,L,Q)
         radial_roots = _plunging_radial_roots(a,E,L,Q)

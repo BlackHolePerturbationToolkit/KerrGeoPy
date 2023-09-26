@@ -1,7 +1,7 @@
 """
 Module containing functions to compute intermediate terms in the plunging orbit solutions of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_
 """
-from numpy import sort_complex, sqrt, arctan, arctan2, arccos, log, sin, cos, pi
+from numpy import sqrt, arctan, arctan2, arccos, log, pi
 from numpy.polynomial import Polynomial
 import numpy as np
 from scipy.special import ellipj, ellipeinc, ellipk
@@ -132,7 +132,7 @@ def plunging_radial_integrals(a,E,L,Q):
         sn, cn, dn, xi_r = ellipj(2*ellipk(k_r**2)*q_r/pi,k_r**2)
         mino_time = q_r/upsilon_r
         # equation 46
-        return (A*r1-B*r2)/(A-B)*mino_time - 1/sqrt(1-E**2)*arctan((r2-r1)*sn/(2*sqrt(A*B*dn))) \
+        return (A*r1-B*r2)/(A-B)*mino_time - 1/sqrt(1-E**2)*arctan((r2-r1)*sn/(2*sqrt(A*B)*dn)) \
                 + (A+B)*(r2-r1)/(2*(A-B)*sqrt(A*B*(1-E**2)))*_ellippiinc(xi_r,-1/f,k_r)
     
     def I_r2(q_r):
@@ -224,7 +224,7 @@ def plunging_radial_solutions_complex(a,E,L,Q):
             E*(I_r2(q_r)+I_r(q_r)*(r_minus+r_plus)) + \
             ((r_minus**2+a**2)*(E*(r_minus**2+a**2)-a*L)/(r_minus-r_plus)*I_r_minus(q_r) + 
              (r_plus**2+a**2)*(E*(r_plus**2+a**2)-a*L)/(r_plus-r_minus)*I_r_plus(q_r)
-            ) - a*L*mino_time
+            )
 
     def phi_r(q_r):
         mino_time = q_r/upsilon_r
@@ -232,7 +232,7 @@ def plunging_radial_solutions_complex(a,E,L,Q):
         return a*(
             (E*(r_minus**2+a**2)-a*L)/(r_minus-r_plus)*I_r_minus(q_r) +
             (E*(r_plus**2+a**2)-a*L)/(r_plus-r_minus)*I_r_plus(q_r)
-            ) + a*E*mino_time
+            )
     
     return r, t_r, phi_r
 
@@ -277,6 +277,6 @@ def plunging_polar_solutions(a,E,L,Q):
         # equation 28
         sn, cn, dn, xi_theta = ellipj(z2*mino_time,k_theta**2)
         # equation 31
-        return L/z2*_ellippiinc(xi_theta,z1**2,k_theta**2)
+        return L/z2*_ellippiinc(xi_theta,z1**2,k_theta)
     
     return theta, t_theta, phi_theta

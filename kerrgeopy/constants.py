@@ -2,8 +2,7 @@
 Module containing functions for computing the constants of motion for bound orbits using the :math:`(a,p,e,x)` parametrization.
 Constants of motion are computed using the method described in Appendix B of `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_.
 """
-from numpy import sign, sqrt, copysign, inf, nan
-from math import pi
+from numpy import sign, sqrt, copysign, pi, nan, inf
 from scipy.optimize import root_scalar
 from .units import *
 from scipy.interpolate import RectBivariateSpline
