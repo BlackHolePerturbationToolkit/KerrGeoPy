@@ -3,7 +3,7 @@ Module containing functions to compute orbital properties from initial condition
 """
 
 from .frequencies_from_constants import r_frequency_from_constants, theta_frequency_from_constants
-from .plunging_solutions import _plunging_radial_roots, plunging_mino_frequencies
+from .plunging_solutions import plunging_radial_roots, plunging_mino_frequencies
 import numpy as np
 from numpy import sin, cos, sqrt, pi, arcsin, arccos
 from numpy.polynomial import Polynomial
@@ -250,7 +250,7 @@ def plunging_orbit_initial_phases(a,initial_position,initial_velocity,constants=
     E, L, Q = constants
 
     # recompute radial roots if they are not passed in
-    if radial_roots is None: radial_roots = _plunging_radial_roots(a,E,L,Q)
+    if radial_roots is None: radial_roots = plunging_radial_roots(a,E,L,Q)
     r1, r2, r3, r4 = radial_roots
 
 

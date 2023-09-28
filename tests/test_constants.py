@@ -44,8 +44,8 @@ class TestSeparatrix(unittest.TestCase):
         with self.assertRaises(ValueError): separatrix(2,-0.5,-0.5)
 
     def test_separatrix_random(self):
-        sep_values = np.genfromtxt(DATA_DIR / "sep_values.txt",delimiter=",")
-        mathematica_separatrix_output = np.genfromtxt(DATA_DIR / "mathematica_sep_output.txt")
+        sep_values = np.genfromtxt(DATA_DIR / "separatrix_values.txt",delimiter=",")
+        mathematica_separatrix_output = np.genfromtxt(DATA_DIR / "mathematica_separatrix_output.txt")
         python_separatrix_output = np.apply_along_axis(lambda x: separatrix(*x),1,sep_values)
         for i, params in enumerate(sep_values):
             with self.subTest(i=i,params=params):

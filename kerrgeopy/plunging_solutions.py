@@ -6,8 +6,9 @@ from numpy.polynomial import Polynomial
 import numpy as np
 from scipy.special import ellipj, ellipeinc, ellipk
 from .stable_solutions import _ellippiinc
+from .frequencies_from_constants import mino_frequencies_from_constants
 
-def _plunging_radial_roots(a,E,L,Q):
+def plunging_radial_roots(a,E,L,Q):
     """
     Computes the radial roots for a plunging orbit. 
     If all roots are real, roots are sorted such that the motion is between r1 and r2 and roots are otherwise in decreasing order.
@@ -68,25 +69,34 @@ def plunging_mino_frequencies(a,E,L,Q):
     :return: radial and polar mino frequencies :math:`(\Upsilon_r,\Upsilon_\theta)`
     :rtype: tuple(double,double)
     """
-    r1, r2, r3, r4 = _plunging_radial_roots(a,E,L,Q)
+
+    radial_roots = plunging_radial_roots(a,E,L,Q)
+    r1, r2, r3, r4 = radial_roots
     rho_r = np.real(r3)
     rho_i = np.imag(r4)
+    if np.iscomplex(radial_roots[3]):
+        # equation 42
+        A = sqrt((r2-rho_r)**2+rho_i**2)
+        B = sqrt((r1-rho_r)**2+rho_i**2)
+        k_r = sqrt(abs(((r2-r1)**2-(A-B)**2)/(4*A*B)))
 
-    # equation 42
-    A = sqrt((r2-rho_r)**2+rho_i**2)
-    B = sqrt((r1-rho_r)**2+rho_i**2)
-    k_r = sqrt(((r2-r1)**2-(A-B)**2)/(4*A*B))
+        # equation 52
+        upsilon_r = pi*sqrt(A*B*(1-E**2))/(2*ellipk(k_r**2))
 
-    # equation 52
-    upsilon_r = pi*sqrt(A*B*(1-E**2))/(2*ellipk(k_r**2))
+        # equation 14
+        z1 = sqrt(1/2*(1+(L**2+Q)/(a**2*(1-E**2))-sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
+        z2 = sqrt(a**2*(1-E**2)/2*(1+(L**2+Q)/(a**2*(1-E**2))+sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
+        k_theta = a*sqrt(1-E**2)*z1/z2
 
-    # equation 14
-    z1 = sqrt(1/2*(1+(L**2+Q)/(a**2*(1-E**2))-sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
-    z2 = sqrt(a**2*(1-E**2)/2*(1+(L**2+Q)/(a**2*(1-E**2))+sqrt((1+(L**2+Q)/(a**2*(1-E**2)))**2-4*Q/(a**2*(1-E**2)))))
-    k_theta = a*sqrt(1-E**2)*z1/z2
+        # equation 53
+        upsilon_theta = pi/2*z2/ellipk(k_theta**2)
+    else:
+        # polar polynomial written in terms of z = cos^2(theta)
+        Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
+        polar_roots = Z.roots()
+        constants = (E,L,Q)
+        upsilon_r, upsilon_theta, upsilon_phi, gamma = mino_frequencies_from_constants(a,constants,radial_roots,polar_roots)
 
-    # equation 53
-    upsilon_theta = pi/2*z2/ellipk(k_theta**2)
 
     return upsilon_r, upsilon_theta
 
@@ -107,7 +117,7 @@ def plunging_radial_integrals(a,E,L,Q):
     :return: radial integrals :math:`(I_r,I_{r^2},I_{r_+},I_{r_-})`
     :rtype: tuple(function,function,function,function)
     """
-    r1, r2, r3, r4 = _plunging_radial_roots(a,E,L,Q)
+    r1, r2, r3, r4 = plunging_radial_roots(a,E,L,Q)
     rho_r = np.real(r3)
     rho_i = np.imag(r4)
 
@@ -191,7 +201,7 @@ def plunging_radial_solutions_complex(a,E,L,Q):
     :return: tuple of radial solutions :math:`(r(q_r), t_r(q_r), \phi_r(q_r))`
     :rtype: tuple(function, function, function)
     """
-    roots = _plunging_radial_roots(a,E,L,Q)
+    roots = plunging_radial_roots(a,E,L,Q)
     if np.iscomplex(roots).sum() != 2: raise ValueError("There should be two complex roots")
 
     r1, r2, r3, r4 = roots # r1 < r2 are real and r3/r4 are complex conjugates

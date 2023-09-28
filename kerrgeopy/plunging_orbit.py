@@ -2,7 +2,7 @@
 Module containing the PlungingOrbit class
 """
 from .plunging_solutions import *
-from .plunging_solutions import _plunging_radial_roots
+from .plunging_solutions import plunging_radial_roots
 from .stable_solutions import *
 from .orbit import Orbit
 
@@ -38,9 +38,9 @@ class PlungingOrbit(Orbit):
     """
     def __init__(self,a,E,L,Q,initial_phases=(0,0,0,0),M=None,mu=None):
         self.a, self.E, self.L, self.Q, self.initial_phases, self.M, self.mu = a, E, L, Q, initial_phases, M, mu
-        self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
         self.stable = False
-
+        self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
+        
         u_t, u_r, u_theta, u_phi = self.four_velocity()
         t, r, theta, phi = self.trajectory()
         self.initial_position = t(0), r(0), theta(0), phi(0)
@@ -65,7 +65,7 @@ class PlungingOrbit(Orbit):
         if time_units != "natural" and (self.M is None or self.mu is None): raise ValueError("M and mu must be specified to convert t to physical units")
 
         a, E, L, Q = self.a, self.E, self.L, self.Q
-        radial_roots = _plunging_radial_roots(a,E,L,Q)
+        radial_roots = plunging_radial_roots(a,E,L,Q)
 
         if np.iscomplex(radial_roots[3]):
             return self._complex_trajectory(initial_phases,distance_units,time_units)
@@ -125,7 +125,7 @@ class PlungingOrbit(Orbit):
         if initial_phases is None: initial_phases = self.initial_phases
         a, E, L, Q = self.a, self.E, self.L, self.Q
         constants = (E,L,Q)
-        radial_roots = _plunging_radial_roots(a,E,L,Q)
+        radial_roots = plunging_radial_roots(a,E,L,Q)
 
         # polar polynomial written in terms of z = cos^2(theta)
         Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])

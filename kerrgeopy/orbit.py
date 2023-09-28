@@ -121,10 +121,11 @@ class Orbit:
             return energy_in_ergs(E,self.M), angular_momentum_in_cgs(L,self.M), carter_constant_in_cgs(Q,self.M)
         
         raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
+    
 
     def four_velocity(self,initial_phases=None):
         r"""
-        Computes the four velocity of the orbit as a function of Mino time
+        Computes the four velocity of the orbit as a function of Mino time using the geodesic equation.
 
         :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
@@ -139,7 +140,7 @@ class Orbit:
 
         return spacetime.four_velocity(t,r,theta,phi,constants,self.upsilon_r,self.upsilon_theta,initial_phases)
     
-    def four_velocity_norm(self,initial_phases=None):
+    def _four_velocity_norm(self,initial_phases=None):
         r"""
         Computes the norm of the four velocity of the orbit as a function of Mino time
 
@@ -153,13 +154,64 @@ class Orbit:
         t, r, theta, phi = self.trajectory(initial_phases)
         spacetime = KerrSpacetime(self.a)
         constants = self.E, self.L, self.Q
-        t_prime, r_prime, theta_prime, phi_prime = self.four_velocity(initial_phases)
+        t_prime, r_prime, theta_prime, phi_prime = self.four_velocity(initial_phases=initial_phases)
 
         def norm(time):
             u = [t_prime(time),r_prime(time),theta_prime(time),phi_prime(time)]
             return spacetime.norm(t(time),r(time),theta(time),phi(time),u)
 
         return norm
+    
+    def _numerical_four_velocity_norm(self,dx=1e-6,initial_phases=None):
+        r"""
+        Computes the norm of the four velocity of the orbit as a function of Mino time
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
+
+        :return: norm of the four velocity :math:`g_{\mu\nu}u^\mu u^\nu`
+        :rtype: function
+        """
+        if initial_phases is None: initial_phases = self.initial_phases
+        t, r, theta, phi = self.trajectory(initial_phases)
+        spacetime = KerrSpacetime(self.a)
+        constants = self.E, self.L, self.Q
+        t_prime, r_prime, theta_prime, phi_prime = self.numerical_four_velocity(dx=dx,initial_phases=initial_phases)
+
+        def norm(time):
+            u = [t_prime(time),r_prime(time),theta_prime(time),phi_prime(time)]
+            return spacetime.norm(t(time),r(time),theta(time),phi(time),u)
+
+        return norm
+    
+    def numerical_four_velocity(self,dx=1e-6,initial_phases=None):
+        r"""
+        Computes the four velocity of the orbit as a function of Mino time using numerical differentiation
+
+        :param dx: step size, defaults to 1e-6
+        :type dx: double, optional
+        :param initial_phases: initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to None
+        :type initial_phases: tuple(double,double,double,double), optional
+
+        :return: components of the four velocity (i.e. :math:`u^t,u^r,u^\theta,u^\phi`)
+        :rtype: tuple(function, function, function, function)
+        """
+        if initial_phases is None: initial_phases = self.initial_phases
+        t, r, theta, phi = self.trajectory(initial_phases)
+
+        def u_t(mino_time):
+            sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
+            return (t(mino_time+dx)-t(mino_time-dx))/(2*dx*sigma)
+        def u_r(mino_time):
+            sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
+            return (r(mino_time+dx)-r(mino_time-dx))/(2*dx*sigma)
+        def u_theta(mino_time):
+            sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
+            return (theta(mino_time+dx)-theta(mino_time-dx))/(2*dx*sigma)
+        def u_phi(mino_time):
+            sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
+            return (phi(mino_time+dx)-phi(mino_time-dx))/(2*dx*sigma)
+        return u_t, u_r, u_theta, u_phi
 
     def plot(self,lambda0=0, lambda1=20, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, thickness=1):
         r"""
