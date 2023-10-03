@@ -3,7 +3,7 @@ import setuptools
 
 setup(
     name="kerrgeopy",
-    version="0.1.0",
+    version="0.2.0",
     author="Seyong Park",
     description="Library for computing bound and plunging geodesics in Kerr spacetime",
     url="https://github.com/syp2001/KerrGeoPy",
