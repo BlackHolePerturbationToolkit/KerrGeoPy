@@ -65,6 +65,7 @@ class Orbit:
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
         Computes the components of the trajectory as a function of Mino time
+        
         :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
         :param distance_units: units to compute the radial component of the trajectory in (options are "natural", "mks", "cgs", "au" and "km"), defaults to "natural"

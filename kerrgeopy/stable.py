@@ -2,6 +2,7 @@
 Module implementing the stable bound orbit solutions of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_
 """
 from .constants import *
+from .constants import _standardize_params
 from .frequencies import _ellippi, _ellippiinc
 from .frequencies import *
 from scipy.special import ellipj, ellipeinc
@@ -12,13 +13,13 @@ class StableOrbit(Orbit):
     r"""
     Class representing a stable bound orbit in Kerr spacetime.
 
-    :param a: dimensionless angular momentum (must satisfy 0 <= a < 1)
+    :param a: dimensionless angular momentum
     :type a: double
     :param p: semi-latus rectum
     :type p: double
-    :param e: orbital eccentricity (must satisfy 0 <= e < 1)
+    :param e: orbital eccentricity
     :type e: double
-    :param x: cosine of the orbital inclination (must satisfy 0 < x^2 <= 1)
+    :param x: cosine of the orbital inclination
     :type x: double
     :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
     :type initial_phases: tuple, optional
@@ -47,6 +48,7 @@ class StableOrbit(Orbit):
     :ivar omega_phi: dimensionless azimuthal orbital frequency in Boyer-Lindquist time
     """
     def __init__(self,a,p,e,x,initial_phases=(0,0,0,0),M=None,mu=None):
+        a, x = _standardize_params(a,x)
         self.a, self.p, self.e, self.x, self.initial_phases, self.M, self.mu = a, p, e, x, initial_phases, M, mu
         constants = constants_of_motion(a,p,e,x)
 

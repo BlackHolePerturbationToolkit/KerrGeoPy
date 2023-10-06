@@ -272,7 +272,7 @@ plt.ylabel(r"$\phi(\lambda)$")
 ![png](README_files/Getting%20Started_20_1.png)
     
 
-## Credit
+## Authors
 
 * Seyong Park
 * Zach Nasipak
