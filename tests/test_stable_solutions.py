@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-from kerrgeopy.stable_orbit import *
-from kerrgeopy.frequencies import _radial_roots, _polar_roots
+from kerrgeopy.stable import *
+from kerrgeopy.constants import stable_radial_roots, stable_polar_roots
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent
@@ -9,7 +9,7 @@ THIS_DIR = Path(__file__).parent
 DATA_DIR = THIS_DIR.parent / "tests/data"
 
 
-orbit_values = np.genfromtxt(DATA_DIR / "stable_orbit_values.txt", delimiter=",")
+orbit_values = np.genfromtxt(DATA_DIR / "stable_orbit_parameters.txt", delimiter=",")
 orbit_times = np.genfromtxt(DATA_DIR / "stable_orbit_times.txt", delimiter=",")
 
 class TestStableSolutions(unittest.TestCase):
@@ -21,8 +21,8 @@ class TestStableSolutions(unittest.TestCase):
             
             a,p,e,x = orbit
             constants = constants_of_motion(*orbit)
-            radial_roots = _radial_roots(a,p,e,constants)
-            polar_roots = _polar_roots(a,x,constants)
+            radial_roots = stable_radial_roots(a,p,e,x,constants)
+            polar_roots = stable_polar_roots(a,p,e,x,constants)
             r, t_r, phi_r = radial_solutions(a,constants,radial_roots)
             theta, t_theta, phi_theta = polar_solutions(a,constants,polar_roots)
 

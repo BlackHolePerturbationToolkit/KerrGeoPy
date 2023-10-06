@@ -16,9 +16,13 @@ class KerrSpacetime:
 
         :ivar a: dimensionless angular momentum
         :ivar M: mass of the black hole
+        :ivar inner_horizon: radius of the inner horizon
+        :ivar outer_horizon: radius of the outer horizon
     """
     def __init__(self,a,M=None):
         self.a, self.M = a, M
+        self.inner_horizon = 1-sqrt(1-self.a**2)
+        self.outer_horizon = 1+sqrt(1-self.a**2)
 
     def separatrix(self,e,x):
         """
@@ -35,7 +39,7 @@ class KerrSpacetime:
     
     def is_stable(self,p,e,x):
         """
-        Determines whether a given orbit is stable or not.
+        Determines whether a given orbit is stable or not
 
         :param p: dimensionless semi-latus rectum
         :type p: double
@@ -47,24 +51,6 @@ class KerrSpacetime:
         :rtype: bool
         """
         return is_stable(self.a,p,e,x)
-    
-    def inner_horizon(self):
-        """
-        Computes the radius of the inner event horizon
-
-        :return: dimensionless radius of the inner event horizon
-        :rtype: double
-        """
-        return 1-sqrt(1-self.a**2)
-    
-    def outer_horizon(self):
-        """
-        Computes the radius of the outer event horizon
-
-        :return: dimensionless radius of the outer event horizon
-        :rtype: double
-        """
-        return 1+sqrt(1-self.a**2)
     
     def metric(self,t,r,theta,phi):
         """
@@ -149,24 +135,24 @@ class KerrSpacetime:
         # Z = lambda z: Q-z**2*(a**2*(1-E**2)*(1-z**2)+L**2+Q)
         # Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
 
-        def t_prime(time):
+        def u_t(time):
             delta = r(time)**2-2*r(time)+a**2
             sigma = r(time)**2+a**2*cos(theta(time))**2
             return 1/sigma*((r(time)**2+a**2)/delta*(E*(r(time)**2+a**2)-a*L)-a**2*E*(1-cos(theta(time))**2)+a*L)
 
-        def r_prime(time):
+        def u_r(time):
             q_r = upsilon_r*time + q_r0
             sigma = r(time)**2+a**2*cos(theta(time))**2
             return np.copysign(1,sin(q_r))*sqrt(abs(R(r(time))))/sigma
 
-        def theta_prime(time):
+        def u_theta(time):
             q_theta = upsilon_theta*time + q_theta0
             sigma = r(time)**2+a**2*cos(theta(time))**2
             return np.copysign(1,sin(q_theta))*sqrt(abs(Z(cos(theta(time)))))/(sigma*sin(theta(time)))
         
-        def phi_prime(time):
+        def u_phi(time):
             sigma = r(time)**2+a**2*cos(theta(time))**2
             delta = r(time)**2-2*r(time)+a**2
             return 1/sigma*(a/delta*(E*(r(time)**2+a**2)-a*L)+L/(1-cos(theta(time))**2)-a*E)
         
-        return t_prime, r_prime, theta_prime, phi_prime
+        return u_t, u_r, u_theta, u_phi

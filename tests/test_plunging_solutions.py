@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from kerrgeopy.plunging_orbit import *
+from kerrgeopy.plunge import *
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent

@@ -1,6 +1,6 @@
 plunging\_mino\_frequencies
 ===========================
 
-.. currentmodule:: kerrgeopy.plunging_solutions
+.. currentmodule:: kerrgeopy.frequencies
 
 .. autofunction:: plunging_mino_frequencies

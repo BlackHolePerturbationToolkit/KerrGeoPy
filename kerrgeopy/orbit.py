@@ -4,7 +4,7 @@ Module containing the Orbit class
 from .spacetime import KerrSpacetime
 from .initial_conditions import *
 from .units import *
-from .constants import scale_constants
+from .constants import scale_constants, apex_from_constants
 from .frequencies import mino_frequencies, fundamental_frequencies
 from numpy import sin, cos, sqrt, pi
 import numpy as np
@@ -57,20 +57,10 @@ class Orbit:
             self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a,p,e,x)
             self.initial_phases = stable_orbit_initial_phases(a,initial_position,initial_velocity)
         else:
+            if a == 0: raise ValueError("Schwarzschild plunges are not currently supported")
             self.stable = False
             self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
             self.initial_phases = plunging_orbit_initial_phases(a,initial_position,initial_velocity)
-    
-    def orbital_parameters(self):
-        """
-        Returns the orbital parameters :math:`(a,p,e,x)` of the orbit. Raises a ValueError if the orbit is not stable.
-
-        :return: tuple of orbital parameters :math:`(a,p,e,x)`
-        :rtype: tuple(double,double,double,double)
-        """
-        if not self.stable: raise ValueError("Orbit is not stable")
-    
-        return self.a, self.p, self.e, self.x
 
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
@@ -87,13 +77,11 @@ class Orbit:
         """
         if initial_phases is None: initial_phases = self.initial_phases
         if self.stable:
-            from .stable_orbit import StableOrbit
-            orbit = StableOrbit(self.a,self.p,self.e,self.x,M=self.M,mu=self.mu)
-            return orbit.trajectory(initial_phases,distance_units,time_units)
+            from .stable import stable_trajectory
+            return stable_trajectory(self.a,self.p,self.e,self.x,initial_phases,self.M,distance_units,time_units)
         else:
-            from .plunging_orbit import PlungingOrbit
-            orbit = PlungingOrbit(self.a,self.E,self.L,self.Q,M=self.M,mu=self.mu)
-            return orbit.trajectory(initial_phases,distance_units,time_units)
+            from .plunge import plunging_trajectory
+            return plunging_trajectory(self.a,self.E,self.L,self.Q,initial_phases,self.M,distance_units,time_units)
         
     def constants_of_motion(self, units="natural"):
         """

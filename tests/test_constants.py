@@ -27,7 +27,7 @@ class TestConstants(unittest.TestCase):
         with self.assertRaises(ValueError): carter_constant(-0.5,5,-0.5,0.5)
 
     def test_constants_random(self):
-        values = np.genfromtxt(DATA_DIR / "const_values.txt",delimiter=",")
+        values = np.genfromtxt(DATA_DIR / "const_parameters.txt",delimiter=",")
         mathematica_const_output = np.genfromtxt(DATA_DIR / "mathematica_const_output.txt")
         python_const_output = np.apply_along_axis(lambda x: constants_of_motion(*x),1,values)
 
@@ -44,7 +44,7 @@ class TestSeparatrix(unittest.TestCase):
         with self.assertRaises(ValueError): separatrix(2,-0.5,-0.5)
 
     def test_separatrix_random(self):
-        sep_values = np.genfromtxt(DATA_DIR / "separatrix_values.txt",delimiter=",")
+        sep_values = np.genfromtxt(DATA_DIR / "separatrix_parameters.txt",delimiter=",")
         mathematica_separatrix_output = np.genfromtxt(DATA_DIR / "mathematica_separatrix_output.txt")
         python_separatrix_output = np.apply_along_axis(lambda x: separatrix(*x),1,sep_values)
         for i, params in enumerate(sep_values):

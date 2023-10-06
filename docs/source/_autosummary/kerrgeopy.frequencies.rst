@@ -19,6 +19,7 @@ frequencies
       gamma
       mino_frequencies
       phi_frequency
+      plunging_mino_frequencies
       r_frequency
       theta_frequency
    

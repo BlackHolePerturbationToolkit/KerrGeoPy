@@ -20,9 +20,8 @@
       ~Orbit.animate
       ~Orbit.constants_of_motion
       ~Orbit.four_velocity
-      ~Orbit.four_velocity_norm
       ~Orbit.is_visible
-      ~Orbit.orbital_parameters
+      ~Orbit.numerical_four_velocity
       ~Orbit.plot
       ~Orbit.trajectory
    

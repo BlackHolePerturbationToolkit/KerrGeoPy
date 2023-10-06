@@ -1,6 +1,6 @@
 plunging\_radial\_integrals
 ===========================
 
-.. currentmodule:: kerrgeopy.plunging_solutions
+.. currentmodule:: kerrgeopy.plunge
 
 .. autofunction:: plunging_radial_integrals

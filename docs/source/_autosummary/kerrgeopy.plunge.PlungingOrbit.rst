@@ -1,7 +1,7 @@
 ﻿PlungingOrbit
 =============
 
-.. currentmodule:: kerrgeopy.plunging_orbit
+.. currentmodule:: kerrgeopy.plunge
 
 .. autoclass:: PlungingOrbit
    :members:
@@ -20,9 +20,8 @@
       ~PlungingOrbit.animate
       ~PlungingOrbit.constants_of_motion
       ~PlungingOrbit.four_velocity
-      ~PlungingOrbit.four_velocity_norm
       ~PlungingOrbit.is_visible
-      ~PlungingOrbit.orbital_parameters
+      ~PlungingOrbit.numerical_four_velocity
       ~PlungingOrbit.plot
       ~PlungingOrbit.trajectory
    

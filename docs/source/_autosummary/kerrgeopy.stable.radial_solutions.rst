@@ -1,6 +1,6 @@
 radial\_solutions
 =================
 
-.. currentmodule:: kerrgeopy.stable_solutions
+.. currentmodule:: kerrgeopy.stable
 
 .. autofunction:: radial_solutions

@@ -1,6 +1,6 @@
 apex\_from\_constants
 =====================
 
-.. currentmodule:: kerrgeopy.initial_conditions
+.. currentmodule:: kerrgeopy.constants
 
 .. autofunction:: apex_from_constants

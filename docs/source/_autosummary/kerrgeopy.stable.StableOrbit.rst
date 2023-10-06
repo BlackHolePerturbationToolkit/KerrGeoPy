@@ -1,7 +1,7 @@
 ﻿StableOrbit
 ===========
 
-.. currentmodule:: kerrgeopy.stable_orbit
+.. currentmodule:: kerrgeopy.stable
 
 .. autoclass:: StableOrbit
    :members:
@@ -20,12 +20,11 @@
       ~StableOrbit.animate
       ~StableOrbit.constants_of_motion
       ~StableOrbit.four_velocity
-      ~StableOrbit.four_velocity_norm
       ~StableOrbit.from_constants
       ~StableOrbit.fundamental_frequencies
       ~StableOrbit.is_visible
       ~StableOrbit.mino_frequencies
-      ~StableOrbit.orbital_parameters
+      ~StableOrbit.numerical_four_velocity
       ~StableOrbit.plot
       ~StableOrbit.trajectory
    

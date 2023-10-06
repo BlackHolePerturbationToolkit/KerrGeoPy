@@ -7,7 +7,7 @@ THIS_DIR = Path(__file__).parent
 
 DATA_DIR = THIS_DIR.parent / "tests/data"
 
-stable_orbit_values = np.genfromtxt(DATA_DIR / "stable_orbit_values.txt", delimiter=",")
+stable_orbit_values = np.genfromtxt(DATA_DIR / "stable_orbit_parameters.txt", delimiter=",")
 complex_plunging_orbit_values = np.genfromtxt(DATA_DIR / "plunging_orbit_parameters_complex.txt", delimiter=",")
 real_plunging_orbit_values = np.genfromtxt(DATA_DIR / "plunging_orbit_parameters_real.txt", delimiter=",")
 

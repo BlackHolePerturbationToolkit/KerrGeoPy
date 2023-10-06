@@ -1,5 +1,5 @@
 """
-Module containing functions for computing the constants of motion for bound orbits using the :math:`(a,p,e,x)` parametrization.
+Module containing functions for computing the constants of motion for an orbit in Kerr Spacetime.
 Constants of motion are computed using the method described in Appendix B of `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_.
 """
 from numpy import sign, sqrt, copysign, pi, nan, inf
@@ -7,6 +7,115 @@ from scipy.optimize import root_scalar
 from .units import *
 from scipy.interpolate import RectBivariateSpline
 import numpy as np
+from numpy.polynomial import Polynomial
+
+def stable_radial_roots(a,p,e,x,constants=None):
+    """
+    Computes the radial roots for a stable bound orbit as defined in equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_.
+    Roots are given in decreasing order.
+
+    :param a: dimensionless spin of the black hole
+    :type a: double
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param e: orbital eccentricity
+    :type e: double
+    :param x: cosine of the orbital inclination
+    :type x: tuple(double, double, double, double)
+    :param constants: dimensionless constants of motion for the orbit
+    :type constants: tuple(double, double, double)
+
+    :return: tuple containing the four roots of the radial equation
+    :rtype: tuple(double, double, double, double)
+    """
+    if constants is None: constants = constants_of_motion(a,p,e,x)
+    E, L, Q = constants
+    
+    r1 = p/(1-e)
+    r2 = p/(1+e)
+    
+    A_plus_B = 2/(1-E**2)-r1-r2
+    AB = a**2*Q/(r1*r2*(1-E**2))
+    
+    r3 = (A_plus_B+sqrt(A_plus_B**2-4*AB))/2
+    r4 = AB/r3
+    
+    return r1, r2, r3, r4
+
+
+def plunging_radial_roots(a,E,L,Q):
+    """
+    Computes the radial roots for a plunging orbit. 
+    If all roots are real, roots are sorted such that the motion is between r1 and r2 and roots are otherwise in decreasing order.
+    If there are two complex roots, r1 < r2 are real and r3/r4 are complex conjugates.
+
+    :param a: dimensionless spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+
+    :return: tuple of radial roots
+    :rtype: tuple(double,double,double,double)
+    """
+    # standard form of the radial polynomial R(r)
+    R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
+    roots = R.roots()
+    # get the real roots and the complex roots
+    real_roots = np.sort(np.real(roots[np.isreal(roots)]))
+    complex_roots = roots[np.iscomplex(roots)]
+
+    r_minus = 1-sqrt(1-a**2)
+
+    # if there are 4 real roots, by convention r4 < r3 < r2 < r1 (consistent with stable orbits)
+    if len(real_roots) == 4:
+        # if there are three roots outside the event horizon swap r1/r3 and r2/r4
+        if real_roots[1] > r_minus:
+            r1 = real_roots[1]
+            r2 = real_roots[0]
+            r3 = real_roots[3]
+            r4 = real_roots[2]
+        else:
+            r4, r3, r2, r1 = real_roots
+
+    # in the case of two complex roots, r1 < r2 are real and r3/r4 are complex conjugates
+    elif len(real_roots) == 2:
+        r1, r2 = real_roots
+        r3, r4 = complex_roots
+
+    return r1, r2, r3, r4
+
+def stable_polar_roots(a,p,e,x,constants=None):
+    r"""
+    Computes the polar roots for a stable bound orbit as defined in equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_.
+    Roots are given in increasing order.
+
+    :param a: dimensionless spin of the black hole
+    :type a: double
+    :param p: orbital semi-latus rectum
+    :type p: double
+    :param e: orbital eccentricity
+    :type e: double
+    :param x: cosine of the orbital inclination
+    :type x: tuple(double, double, double)
+    :param constants: dimensionless constants of motion for the orbit
+    :type constants: tuple(double, double, double)
+
+    :return: tuple of roots in the form :math:`(z_-, z_+)`
+    :rtype: tuple(double, double, double, double)
+    """
+    if constants is None: constants = constants_of_motion(a,p,e,x)
+    E, L, Q = constants
+    epsilon0 = a**2*(1-E**2)/L**2
+    z_minus = 1-x**2
+    #z_plus = a**2*(1-E**2)/(L**2*epsilon0)+1/(epsilon0*(1-z_minus))
+    # simplified using definition of carter constant
+    z_plus = nan if a == 0 else 1+1/(epsilon0*(1-z_minus)) 
+    
+    return z_minus, z_plus
 
 def _coefficients(r,a,x):
     """
@@ -224,6 +333,40 @@ def constants_of_motion(a,p,e,x):
     L = angular_momentum(a,p,e,x,E)
     Q = carter_constant(a,p,e,x,E,L)
     return E, L, Q
+
+def apex_from_constants(a,E,L,Q):
+    r"""
+    Computes the orbital parameters :math:`(a,p,e,x)` for a stable bound orbit with the given constants of motion
+    
+    :param a: spin parameter
+    :type a: double
+    :param E: dimensionless energy
+    :type E: double
+    :param L: dimensionless angular momentum
+    :type L: double
+    :param Q: dimensionless Carter constant
+    :type Q: double
+
+    :return: tuple of orbital parameters :math:`(a,p,e,x)`
+    :rtype: tuple(double,double,double,double)
+    """
+    # radial polynomial written in terms of z = cos^2(theta)
+    R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
+    radial_roots = R.roots()
+    # numpy returns roots in increasing order
+    r4, r3, r2, r1 = radial_roots
+
+    # polar polynomial written in terms of z = cos^2(theta)
+    Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
+    polar_roots = Z.roots()
+    if a == 0: polar_roots = [polar_roots[0], polar_roots[0]]
+    z_minus, z_plus = polar_roots
+
+    p = 2*r1*r2/(r1+r2)
+    e = (r1-r2)/(r1+r2)
+    x = np.sign(L)*sqrt(1-z_minus)
+
+    return a, p, e, x
 
 def _S_polar(p,a,e):
     """

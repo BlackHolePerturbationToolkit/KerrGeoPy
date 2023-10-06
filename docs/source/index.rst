@@ -18,10 +18,6 @@ The library also provides a set of methods for computing constants of motion and
    :align: right
    :width: 45%
 
-.. note::
-
-   This project is under active development. 
-
 .. _Installation:
 
 Installation
@@ -61,8 +57,8 @@ API Reference
    :template: custom-module-template.rst
    :recursive:
    
-   ~kerrgeopy.stable_orbit.StableOrbit
-   ~kerrgeopy.plunging_orbit.PlungingOrbit
+   ~kerrgeopy.stable.StableOrbit
+   ~kerrgeopy.plunge.PlungingOrbit
    ~kerrgeopy.orbit.Orbit
    ~kerrgeopy.spacetime.KerrSpacetime
    ~kerrgeopy.constants

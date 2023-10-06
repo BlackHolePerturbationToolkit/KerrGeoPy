@@ -1,7 +1,7 @@
-plunging\_solutions
-===================
+plunge
+======
 
-.. automodule:: kerrgeopy.plunging_solutions
+.. automodule:: kerrgeopy.plunge
   
    
    
@@ -15,14 +15,22 @@ plunging\_solutions
       :toctree:
       :template: custom-base-template.rst
    
-      plunging_mino_frequencies
       plunging_polar_solutions
       plunging_radial_integrals
       plunging_radial_solutions_complex
+      plunging_trajectory
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      PlungingOrbit
    
    
 

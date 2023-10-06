@@ -1,7 +1,7 @@
-stable\_solutions
-=================
+stable
+======
 
-.. automodule:: kerrgeopy.stable_solutions
+.. automodule:: kerrgeopy.stable
   
    
    
@@ -17,10 +17,19 @@ stable\_solutions
    
       polar_solutions
       radial_solutions
+      stable_trajectory
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      StableOrbit
    
    
 

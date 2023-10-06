@@ -1,46 +1,12 @@
 """
 Module containing functions to compute orbital properties from initial conditions
 """
-
-from .frequencies_from_constants import r_frequency_from_constants, theta_frequency_from_constants
-from .plunging_solutions import plunging_radial_roots, plunging_mino_frequencies
+from .frequencies import _r_frequency_from_constants, _theta_frequency_from_constants, plunging_mino_frequencies
+from .constants import plunging_radial_roots
 import numpy as np
 from numpy import sin, cos, sqrt, pi, arcsin, arccos
 from numpy.polynomial import Polynomial
 from scipy.special import ellipkinc
-
-def apex_from_constants(a,E,L,Q):
-    r"""
-    Computes the orbital parameters :math:`(a,p,e,x)` for a stable bound orbit with the given constants of motion
-    
-    :param a: spin parameter
-    :type a: double
-    :param E: dimensionless energy
-    :type E: double
-    :param L: dimensionless angular momentum
-    :type L: double
-    :param Q: dimensionless Carter constant
-    :type Q: double
-
-    :return: tuple of orbital parameters :math:`(a,p,e,x)`
-    :rtype: tuple(double,double,double,double)
-    """
-    # radial polynomial written in terms of z = cos^2(theta)
-    R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
-    radial_roots = R.roots()
-    # numpy returns roots in increasing order
-    r4, r3, r2, r1 = radial_roots
-
-    # polar polynomial written in terms of z = cos^2(theta)
-    Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
-    polar_roots = Z.roots()
-    z_minus, z_plus = polar_roots
-
-    p = 2*r1*r2/(r1+r2)
-    e = (r1-r2)/(r1+r2)
-    x = np.sign(L)*sqrt(1-z_minus)
-
-    return a, p, e, x
 
 def constants_from_initial_conditions(a,initial_position,initial_velocity):
     r"""
@@ -146,6 +112,10 @@ def stable_orbit_initial_phases(a,initial_position,initial_velocity,constants=No
     :type constants: tuple(double,double,double), optional
     :param radial_roots: radial roots :math:`(r_1,r_2,r_3,r_4)` can be passed in to avoid recomputing them
     :type radial_roots: tuple(double,double,double,double), optional
+    :param upsilon_r: radial frequency :math:`\Upsilon_r` can be passed in to avoid recomputing it
+    :type upsilon_r: double, optional
+    :param upsilon_theta: polar frequency :math:`\Upsilon_\theta` can be passed in to avoid recomputing it
+    :type upsilon_theta: double, optional
     :param tol: numerical tolerance used when checking for turning points, defaults to 1e-4
     :type tol: double, optional
 
@@ -162,6 +132,7 @@ def stable_orbit_initial_phases(a,initial_position,initial_velocity,constants=No
     # polar polynomial written in terms of z = cos^2(theta)
     Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
     polar_roots = Z.roots()
+    if a == 0: polar_roots = [polar_roots[0], polar_roots[0]]
     z_minus, z_plus = polar_roots
 
     # recompute radial roots if they are not passed in
@@ -180,7 +151,7 @@ def stable_orbit_initial_phases(a,initial_position,initial_velocity,constants=No
         q_r0 = pi
     else:
         # compute r frequency
-        if upsilon_r is None: upsilon_r = r_frequency_from_constants(constants,radial_roots)
+        if upsilon_r is None: upsilon_r = _r_frequency_from_constants(constants,radial_roots)
 
         # Fujita and Hikida equation 13
         k_r = sqrt((r1-r2)*(r3-r4)/((r1-r3)*(r2-r4)))
@@ -202,7 +173,7 @@ def stable_orbit_initial_phases(a,initial_position,initial_velocity,constants=No
         q_theta0 = pi
     else:
         # compute theta frequency
-        if upsilon_theta is None: upsilon_theta = theta_frequency_from_constants(a,constants,radial_roots,polar_roots)
+        if upsilon_theta is None: upsilon_theta = _theta_frequency_from_constants(a,constants,radial_roots,polar_roots)
 
         k_theta = sqrt(z_minus/z_plus)
         y_theta = cos(theta0)/sqrt(z_minus)
