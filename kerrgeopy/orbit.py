@@ -212,9 +212,9 @@ class Orbit:
         :type lambda0: double, optional
         :param lambda1: ending mino time
         :type lambda1: double, optional
-        :param elevation: camera elevation angle in degrees
+        :param elevation: camera elevation angle in degrees, defaults to 30
         :type elevation: double, optional
-        :param azimuth: camera azimuthal angle in degrees
+        :param azimuth: camera azimuthal angle in degrees, defaults to -60
         :type azimuth: double, optional
         :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
         :type initial_phases: tuple, optional
@@ -222,10 +222,14 @@ class Orbit:
         :type grid: bool, optional
         :param axes: if true, axes are shown on plot
         :type axes: bool, optional
-        :param lw: linewidth of the orbital trajectory, defaults to 2
+        :param lw: linewidth of the orbital trajectory, defaults to 1
         :type lw: double, optional
         :param color: color of the orbital trajectory, defaults to "red"
         :type color: str, optional
+        :param tau: time constant for the exponential decay of the linewidth, defaults to infinity
+        :type tau: double, optional
+        :param point_density: number of points to plot per unit of mino time, defaults to 200
+        :type point_density: int, optional
 
         :return: matplotlib figure and axes
         :rtype: matplotlib.figure.Figure, matplotlib.axes._subplots.AxesSubplot
@@ -327,7 +331,7 @@ class Orbit:
         # find points in front of the viewing plane or outside the event horizon when projected onto the viewing plane
         return ((normal_component >= 0) | (np.linalg.norm(projection,axis=1) > event_horizon)) & (np.linalg.norm(points) > event_horizon)
     
-    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, lw=0.9, color="red",tau=np.inf, tail_length=5, 
+    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, color="red",tau=np.inf, tail_length=5, 
                 azimuthal_pan=None, elevation_pan=None, speed=1, background_color=None):
         r"""
         Saves an animation of the orbit as an mp4 file. 
@@ -349,8 +353,20 @@ class Orbit:
         :type grid: bool, optional
         :param axes: sets visibility of axes, defaults to True
         :type axes: bool, optional
-        :param linewidth: thickness of the tail of the orbit, defaults to 2
-        :type linewidth: double, optional
+        :param color: color of the orbital tail, defaults to "red"
+        :type color: str, optional
+        :param tau: time constant for the exponential decay in the opacity of the tail, defaults to infinity
+        :type tau: double, optional
+        :param tail_length: length of the tail in units of mino time, defaults to 5
+        :type tail_length: double, optional
+        :param azimuthal_pan: function defining the azimuthal angle of the camera in degrees as a function of mino time, defaults to None
+        :type azimuthal_pan: function, optional
+        :param elevation_pan: function defining the elevation angle of the camera in degrees as a function of mino time, defaults to None
+        :type elevation_pan: function, optional
+        :param speed: playback speed of the animation in units of mino time per second (must be a multiple of 1/8), defaults to 1
+        :type speed: double, optional
+        :param background_color: color of the background, defaults to None
+        :type background_color: str, optional
         """
         lambda_range = lambda1 - lambda0
         point_density = 240 # number of points per unit of mino time
@@ -382,7 +398,7 @@ class Orbit:
         black_hole_color = "#333" if background_color == "black" else "black"
         ax.plot_surface(x_sphere, y_sphere, z_sphere, color=black_hole_color,shade=(background_color == "black"),zorder=0)
         # create tail
-        decay = np.flip(0.1+lw*np.exp(-time/tau)) # exponential decay
+        decay = np.flip(0.1+0.9*np.exp(-time/tau)) # exponential decay
         tail = Line3DCollection([], color=color, zorder=1)
         ax.add_collection(tail)
         # plot smaller body
