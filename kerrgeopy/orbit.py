@@ -262,7 +262,7 @@ class Orbit:
         trajectory_z_visible[~visible] = np.nan
 
         # compute linewidths using exponential decay
-        decay = np.flip(0.1+lw*np.exp(-time/tau))
+        decay = np.flip(0.1+lw*np.exp(-(time-time[0])/tau))
 
         # https://stackoverflow.com/questions/19390895/matplotlib-plot-with-variable-line-width
         points = np.array([[[x, y, z]] for x, y, z in zip(trajectory_x,trajectory_y,trajectory_z_visible)])
@@ -270,7 +270,7 @@ class Orbit:
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
         tail = Line3DCollection(segments, linewidth=decay, color=color)
 
-        fig = plt.figure()
+        fig = plt.figure(dpi=100)
         ax = fig.add_subplot(projection='3d')
         
         # plot black hole
@@ -331,8 +331,8 @@ class Orbit:
         # find points in front of the viewing plane or outside the event horizon when projected onto the viewing plane
         return ((normal_component >= 0) | (np.linalg.norm(projection,axis=1) > event_horizon)) & (np.linalg.norm(points) > event_horizon)
     
-    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, color="red",tau=np.inf, tail_length=5, 
-                azimuthal_pan=None, elevation_pan=None, speed=1, background_color=None):
+    def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, color="red", tau=2, tail_length=5, 
+                lw=2, azimuthal_pan=None, elevation_pan=None, speed=1, background_color=None):
         r"""
         Saves an animation of the orbit as an mp4 file. 
         Note that this function requires ffmpeg to be installed and may take several minutes to run depending on the length of the animation.
@@ -359,6 +359,8 @@ class Orbit:
         :type tau: double, optional
         :param tail_length: length of the tail in units of mino time, defaults to 5
         :type tail_length: double, optional
+        :param lw: linewidth of the orbital trajectory, defaults to 2
+        :type lw: double, optional
         :param azimuthal_pan: function defining the azimuthal angle of the camera in degrees as a function of mino time, defaults to None
         :type azimuthal_pan: function, optional
         :param elevation_pan: function defining the elevation angle of the camera in degrees as a function of mino time, defaults to None
@@ -396,15 +398,15 @@ class Orbit:
 
         # plot black hole
         black_hole_color = "#333" if background_color == "black" else "black"
-        ax.plot_surface(x_sphere, y_sphere, z_sphere, color=black_hole_color,shade=(background_color == "black"),zorder=0)
+        ax.plot_surface(x_sphere, y_sphere, z_sphere, color=black_hole_color,shade=(background_color == "black"), zorder=0)
         # create tail
-        decay = np.flip(0.1+0.9*np.exp(-time/tau)) # exponential decay
-        tail = Line3DCollection([], color=color, zorder=1)
+        decay = np.flip(0.1+0.9*np.exp(-(time-time[0])/tau)) # exponential decay
+        tail = Line3DCollection([], color=color, linewidths=lw, zorder=1)
         ax.add_collection(tail)
         # plot smaller body
         body = ax.scatter([],[],[],c="black")
 
-        # set axis limits
+        # set axis limits so that the black hole is centered
         x_values = np.concatenate((trajectory_x,x_sphere.flatten()))
         y_values = np.concatenate((trajectory_y,y_sphere.flatten()))
         z_values = np.concatenate((trajectory_z,z_sphere.flatten()))
@@ -450,7 +452,7 @@ class Orbit:
                 # update tail
                 tail.set_segments(segments)
                 tail.set_alpha(decay[-(j-j0):])
-                tail.set_array(decay[-(j-j0):])
+                #tail.set_array(decay[-(j-j0):])
                 # update body
                 body._offsets3d = ([trajectory_x[j]],[trajectory_y[j]],[trajectory_z[j]])
                                 

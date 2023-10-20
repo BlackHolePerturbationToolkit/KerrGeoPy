@@ -10,11 +10,11 @@ Overview
 It implements the analytical solutions for plunging orbits from `Dyson and van de Meent <https://arxiv.org/abs/2302.03704>`_, as well as solutions for stable orbits from `Fujita and Hikida <https://arxiv.org/abs/0906.1420>`_. 
 The library also provides a set of methods for computing constants of motion and orbital frequencies, and can generate plots and animations like those shown below.
 
-.. image:: images/orbit.png
+.. image:: images/thumbnail.png
     :align: left
     :width: 45%
 
-.. image:: images/orbit.gif
+.. image:: images/thumbnail.gif
    :align: right
    :width: 45%
 

@@ -22,7 +22,7 @@ copyright = '2023, Seyong Park'
 author = 'Seyong Park'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.0'
+release = '0.9.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -33,7 +33,8 @@ release = '1.0.0'
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "myst_nb"
+    "myst_nb",
+    "sphinx.ext.viewcode"
 ]
 myst_enable_extensions = ["dollarmath", "amsmath"]
 nb_execution_mode = "off"
