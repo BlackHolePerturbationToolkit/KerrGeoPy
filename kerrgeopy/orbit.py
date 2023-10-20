@@ -270,7 +270,7 @@ class Orbit:
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
         tail = Line3DCollection(segments, linewidth=decay, color=color)
 
-        fig = plt.figure(dpi=100)
+        fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
         
         # plot black hole
@@ -332,7 +332,7 @@ class Orbit:
         return ((normal_component >= 0) | (np.linalg.norm(projection,axis=1) > event_horizon)) & (np.linalg.norm(points) > event_horizon)
     
     def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, color="red", tau=2, tail_length=5, 
-                lw=2, azimuthal_pan=None, elevation_pan=None, speed=1, background_color=None):
+                lw=2, azimuthal_pan=None, elevation_pan=None, roll=None, speed=1, background_color=None):
         r"""
         Saves an animation of the orbit as an mp4 file. 
         Note that this function requires ffmpeg to be installed and may take several minutes to run depending on the length of the animation.
@@ -365,6 +365,8 @@ class Orbit:
         :type azimuthal_pan: function, optional
         :param elevation_pan: function defining the elevation angle of the camera in degrees as a function of mino time, defaults to None
         :type elevation_pan: function, optional
+        :param roll: function defining the roll angle of the camera in degrees as a function of mino time, defaults to None
+        :type roll: function, optional
         :param speed: playback speed of the animation in units of mino time per second (must be a multiple of 1/8), defaults to 1
         :type speed: double, optional
         :param background_color: color of the background, defaults to None
@@ -437,13 +439,14 @@ class Orbit:
                 mino_time = time[j]
 
                 # update camera angles
-                new_azimuth = azimuthal_pan(mino_time) if azimuthal_pan is not None else azimuth
-                new_elevation = elevation_pan(mino_time) if elevation_pan is not None else elevation
+                updated_azimuth = azimuthal_pan(mino_time) if azimuthal_pan is not None else azimuth
+                updated_elevation = elevation_pan(mino_time) if elevation_pan is not None else elevation
+                updated_roll = roll(mino_time) if roll is not None else 0
   
-                ax.view_init(new_elevation,new_azimuth)
+                ax.view_init(updated_elevation,updated_azimuth,updated_roll)
 
                 # filter out points behind the black hole
-                visible = self.is_visible(trajectory[j0:j],new_elevation,new_azimuth)
+                visible = self.is_visible(trajectory[j0:j],updated_elevation,updated_azimuth)
                 trajectory_z_visible = trajectory_z[j0:j].copy()
                 trajectory_z_visible[~visible] = np.nan
                 # create segments connecting every consecutive pair of points
