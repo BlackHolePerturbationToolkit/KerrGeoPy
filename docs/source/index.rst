@@ -14,9 +14,16 @@ The library also provides a set of methods for computing constants of motion and
     :align: left
     :width: 45%
 
-.. image:: images/thumbnail.gif
-   :align: right
-   :width: 45%
+.. raw:: html
+
+   <video width="45%" autoplay loop>
+      <source src="https://kerrgeopy.readthedocs.io/en/latest/_downloads/e0f5e701241a3dc4ff27d031b7edad24/animation4.mp4" type="video/mp4">
+      <p>
+
+      [](animation4.mp4)
+      
+      </p>
+   </video>
 
 .. _Installation:
 
@@ -50,7 +57,7 @@ API Reference
    :caption: API Reference
    :hidden:
 
-   Full List of Modules <https://kerrgeopy.readthedocs.io/en/latest/_autosummary/kerrgeopy.html>
+   Modules <https://kerrgeopy.readthedocs.io/en/latest/_autosummary/kerrgeopy.html>
 
 .. autosummary::
    :toctree: _autosummary
