@@ -58,7 +58,7 @@ exclude_patterns = []
 html_theme = 'sphinx_book_theme'
 
 html_theme_options = {
-    "repository_url": "https://github.com/syp2001/KerrGeoPy",
+    "repository_url": "https://github.com/BlackHolePerturbationToolkit/KerrGeoPy",
     "use_repository_button": True,
     "navbar_end": ["navbar-icon-links"],
 }
