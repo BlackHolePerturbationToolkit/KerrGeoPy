@@ -75,7 +75,7 @@ class Orbit:
         :param time_units: units to compute the time component of the trajectory in (options are "natural", "mks", "cgs", and "days"), defaults to "natural"
         :type time_units: str, optional
 
-        :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
+        :return: tuple of functions :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         :rtype: tuple(function, function, function, function)
         """
         if initial_phases is None: initial_phases = self.initial_phases
@@ -332,7 +332,7 @@ class Orbit:
         return ((normal_component >= 0) | (np.linalg.norm(projection,axis=1) > event_horizon)) & (np.linalg.norm(points) > event_horizon)
     
     def animate(self,filename,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, color="red", tau=2, tail_length=5, 
-                lw=2, azimuthal_pan=None, elevation_pan=None, roll=None, speed=1, background_color=None):
+                lw=2, azimuthal_pan=None, elevation_pan=None, roll=None, speed=1, background_color=None, axis_limit=None, plot_components=False):
         r"""
         Saves an animation of the orbit as an mp4 file. 
         Note that this function requires ffmpeg to be installed and may take several minutes to run depending on the length of the animation.
@@ -355,7 +355,7 @@ class Orbit:
         :type axes: bool, optional
         :param color: color of the orbital tail, defaults to "red"
         :type color: str, optional
-        :param tau: time constant for the exponential decay in the opacity of the tail, defaults to infinity
+        :param tau: time constant for the exponential decay in the opacity of the tail, defaults to 2
         :type tau: double, optional
         :param tail_length: length of the tail in units of mino time, defaults to 5
         :type tail_length: double, optional
@@ -367,10 +367,14 @@ class Orbit:
         :type elevation_pan: function, optional
         :param roll: function defining the roll angle of the camera in degrees as a function of mino time, defaults to None
         :type roll: function, optional
+        :param axis_limit: sets the axis limit as a function of mino time, defaults to None
+        :type axis_limit: function, optional
         :param speed: playback speed of the animation in units of mino time per second (must be a multiple of 1/8), defaults to 1
         :type speed: double, optional
         :param background_color: color of the background, defaults to None
         :type background_color: str, optional
+        :param plot_components: if true, plots the components of the trajectory in addition to the trajectory itself, defaults to False
+        :type plot_components: bool, optional
         """
         lambda_range = lambda1 - lambda0
         point_density = 240 # number of points per unit of mino time
@@ -378,14 +382,38 @@ class Orbit:
         time = np.linspace(lambda0,lambda1,num_pts)
         speed_multiplier = int(speed*8)
         num_frames = int(num_pts/speed_multiplier)
-
-        fig = plt.figure(figsize=(10,10))
-        ax = fig.add_subplot(projection='3d')
-        eh = 1+sqrt(1-self.a**2)
-
+        # compute trajectory
         t, r, theta, phi = self.trajectory(initial_phases)
 
-        ax.view_init(elevation,azimuth)
+        fig = plt.figure(figsize=((18,12) if plot_components else (12,12)))
+        if plot_components:
+            ax_dict = fig.subplot_mosaic(
+            """
+            OOOOTT
+            OOOORR
+            OOOOΘΘ
+            OOOOΦΦ
+            """,
+            per_subplot_kw={"O":{"projection":"3d"},"T":{"facecolor":"none"},"R":{"facecolor":"none"},"Θ":{"facecolor":"none"},"Φ":{"facecolor":"none"}}
+            )
+            ax = ax_dict["O"]
+            ax_dict["T"].set_ylabel("$t$")
+            ax_dict["R"].set_ylabel("$r$")
+            ax_dict["Θ"].set_ylabel(r"$\theta$")
+            ax_dict["Φ"].set_ylabel(r"$\phi$")
+            t_plot, = ax_dict["T"].plot(time,t(time))
+            r_plot, = ax_dict["R"].plot(time,r(time))
+            theta_plot, = ax_dict["Θ"].plot(time,theta(time))
+            phi_plot, = ax_dict["Φ"].plot(time,phi(time))
+            # add text with parameters and time
+            text = ax.text2D(0.05, 0.95, "", transform=ax.transAxes, fontsize=20, bbox=dict(facecolor='none', pad=10.0))
+        
+        else:
+            ax = fig.add_subplot(projection='3d')
+
+        eh = 1+sqrt(1-self.a**2) # event horizon radius
+
+        # compute trajectory in cartesian coordinates
         trajectory_x = r(time)*sin(theta(time))*cos(phi(time))
         trajectory_y = r(time)*sin(theta(time))*sin(phi(time))
         trajectory_z = r(time)*cos(theta(time))
@@ -401,7 +429,7 @@ class Orbit:
         # plot black hole
         black_hole_color = "#333" if background_color == "black" else "black"
         ax.plot_surface(x_sphere, y_sphere, z_sphere, color=black_hole_color,shade=(background_color == "black"), zorder=0)
-        # create tail
+        # create orbital tail
         decay = np.flip(0.1+0.9*np.exp(-(time-time[0])/tau)) # exponential decay
         tail = Line3DCollection([], color=color, linewidths=lw, zorder=1)
         ax.add_collection(tail)
@@ -420,13 +448,22 @@ class Orbit:
         ax.set_aspect("equal")
         # https://matplotlib.org/stable/gallery/mplot3d/projections.html
         ax.set_proj_type('ortho')
-        # set viewing angle
-        ax.view_init(elevation,azimuth)
-         # turn off grid and axes if specified
-        if not grid or background_color is not None: ax.grid(False)
-        if not axes or background_color is not None: ax.axis("off")
+
+        # turn off grid and axes if specified
+        if not grid: ax.grid(False)
+        if not axes: ax.axis("off")
+
+        # remove margins
+        fig.tight_layout()
+            
         # set background color if specified
-        if background_color is not None: ax.set_facecolor(background_color)
+        if background_color is not None: 
+            fig.set_facecolor(background_color)
+            ax.set_facecolor(background_color)
+            # make the panes transparent so that the background color shows through the grid
+            ax.xaxis.pane.fill = False
+            ax.yaxis.pane.fill = False
+            ax.zaxis.pane.fill = False
 
         # start progress bar
         with tqdm(total=num_frames,ncols=80) as pbar:
@@ -436,14 +473,20 @@ class Orbit:
 
                 j = speed_multiplier*i
                 j0 = max(0,j-tail_length*point_density)
-                mino_time = time[j]
+                current_time = time[j]
 
                 # update camera angles
-                updated_azimuth = azimuthal_pan(mino_time) if azimuthal_pan is not None else azimuth
-                updated_elevation = elevation_pan(mino_time) if elevation_pan is not None else elevation
-                updated_roll = roll(mino_time) if roll is not None else 0
-  
+                updated_azimuth = azimuthal_pan(current_time) if azimuthal_pan is not None else azimuth
+                updated_elevation = elevation_pan(current_time) if elevation_pan is not None else elevation
+                updated_roll = roll(current_time) if roll is not None else 0
                 ax.view_init(updated_elevation,updated_azimuth,updated_roll)
+
+                # update axis limits
+                if axis_limit is not None:
+                    updated_limit = axis_limit(current_time)
+                    ax.set_xlim(-updated_limit,updated_limit)
+                    ax.set_ylim(-updated_limit,updated_limit)
+                    ax.set_zlim(-updated_limit,updated_limit)
 
                 # filter out points behind the black hole
                 visible = self.is_visible(trajectory[j0:j],updated_elevation,updated_azimuth)
@@ -455,13 +498,28 @@ class Orbit:
                 # update tail
                 tail.set_segments(segments)
                 tail.set_alpha(decay[-(j-j0):])
-                #tail.set_array(decay[-(j-j0):])
                 # update body
                 body._offsets3d = ([trajectory_x[j]],[trajectory_y[j]],[trajectory_z[j]])
+
+                # update plots
+                if plot_components:
+                    t_plot.set_data(time[:j],t(time[:j]))
+                    r_plot.set_data(time[:j],r(time[:j]))
+                    theta_plot.set_data(time[:j],theta(time[:j]))
+                    phi_plot.set_data(time[:j],phi(time[:j]))
+                    # set text
+                    if self.stable:
+                        text.set_text(f"$a = {self.a}\quad p = {self.p}\quad e = {self.e}\quad x = {self.x:.3f}\quad \lambda = {current_time:.2f}$")
+                    else:
+                        text.set_text(f"$a = {self.a}\quad E = {self.E:.3f}\quad L = {self.L:.3f}\quad Q = {self.Q:.3f}\quad \lambda = {current_time:.2f}$")
                                 
             # save to file
             ani = FuncAnimation(fig,draw_frame,num_frames,fargs=(body,tail))
             FFwriter = FFMpegWriter(fps=30)
-            ani.save(filename, writer = FFwriter)
+            # savefig overrides the facecolor so we need to set it again
+            if background_color is not None:
+                ani.save(filename,savefig_kwargs={"facecolor":background_color}, writer = FFwriter)
+            else:
+                ani.save(filename, writer = FFwriter)
             # close figure so it doesn't show up in notebook
             plt.close(fig)

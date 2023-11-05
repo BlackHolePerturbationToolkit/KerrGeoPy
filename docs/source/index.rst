@@ -14,15 +14,12 @@ The library also provides a set of methods for computing constants of motion and
     :align: left
     :width: 45%
 
+.. https://github.com/sphinx-doc/sphinx/issues/823
+
 .. raw:: html
 
    <video width="45%" autoplay loop>
-      <source src="https://kerrgeopy.readthedocs.io/en/latest/_downloads/e0f5e701241a3dc4ff27d031b7edad24/animation4.mp4" type="video/mp4">
-      <p>
-
-      [](animation4.mp4)
-      
-      </p>
+      <source src="https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/docs/source/notebooks/animation4.mp4" type="video/mp4">
    </video>
 
 .. _Installation:

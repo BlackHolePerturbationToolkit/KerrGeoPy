@@ -13,5 +13,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Natural Language :: English",
     ),
-    install_requires=["scipy>=1.8","numpy","matplotlib>=3.3","tqdm"]
+    install_requires=["scipy>=1.8","numpy","matplotlib>=3.7","tqdm"]
 )
