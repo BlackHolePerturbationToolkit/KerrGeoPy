@@ -104,7 +104,7 @@ def stable_polar_roots(a,p,e,x,constants=None):
     :param constants: dimensionless constants of motion for the orbit
     :type constants: tuple(double, double, double)
 
-    :return: tuple of roots in the form :math:`(z_-, z_+)`
+    :return: tuple of roots :math:`(z_-, z_+)`
     :rtype: tuple(double, double, double, double)
     """
     if constants is None: constants = constants_of_motion(a,p,e,x)
@@ -326,7 +326,7 @@ def constants_of_motion(a,p,e,x):
     :param x: cosine of the orbital inclination (must satisfy 0 <= x^2 <= 1)
     :type x: double
     
-    :return: tuple of constants in the form :math:`(E, L, Q)`
+    :return: tuple of constants of motion :math:`(E, L, Q)`
     :rtype: tuple(double, double, double)
     """
     E = energy(a,p,e,x)
@@ -350,7 +350,7 @@ def apex_from_constants(a,E,L,Q):
     :return: tuple of orbital parameters :math:`(a,p,e,x)`
     :rtype: tuple(double,double,double,double)
     """
-    # radial polynomial written in terms of z = cos^2(theta)
+    # Radial polynomial
     R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
     radial_roots = R.roots()
     # numpy returns roots in increasing order

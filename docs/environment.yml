@@ -5,6 +5,7 @@ channels:
 dependencies:
   - ipython
   - sphinx
+  - tqdm
   - scipy
   - numpy
   - matplotlib

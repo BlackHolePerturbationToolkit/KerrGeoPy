@@ -22,7 +22,7 @@ copyright = '2023, Seyong Park'
 author = 'Seyong Park'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.0'
+release = '0.9.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -33,7 +33,8 @@ release = '1.0.0'
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "myst_nb"
+    "myst_nb",
+    "sphinx.ext.viewcode"
 ]
 myst_enable_extensions = ["dollarmath", "amsmath"]
 nb_execution_mode = "off"
@@ -57,7 +58,7 @@ exclude_patterns = []
 html_theme = 'sphinx_book_theme'
 
 html_theme_options = {
-    "repository_url": "https://github.com/syp2001/KerrGeoPy",
+    "repository_url": "https://github.com/BlackHolePerturbationToolkit/KerrGeoPy",
     "use_repository_button": True,
     "navbar_end": ["navbar-icon-links"],
 }
