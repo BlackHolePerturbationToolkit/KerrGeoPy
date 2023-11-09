@@ -207,6 +207,8 @@ def radial_solutions(a,constants,radial_roots):
         # equation 27
         u_r = ellipk(k_r**2)*q_r/pi
         sn, cn, dn, psi_r = ellipj(u_r,k_r**2)
+        # adding 1e-14 to avoid strange discontinuity in ellipeinc when q_r is set to specific ratios of pi
+        psi_r = psi_r+1e-14
         # equation 28
         return 2/sqrt((1-E**2)*(r1-r3)*(r2-r4))* \
         (
