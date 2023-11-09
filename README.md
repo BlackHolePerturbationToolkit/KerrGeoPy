@@ -13,7 +13,7 @@ pip install kerrgeopy
 
 Kerrgeopy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
 
-$a$ - spin of the primary body 
+$a$ - spin of the primary body
 <br>
 $p$ - orbital semilatus rectum
 <br>
