@@ -64,6 +64,43 @@ class Orbit:
             self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
             self.initial_phases = plunging_orbit_initial_phases(a,initial_position,initial_velocity)
 
+    def trajectory_deltas(self,initial_phases=None):
+        r"""
+        Computes the trajectory deltas :math:`t_r(q_r)`, :math:`t_\theta(q_\theta)`, :math:`\phi_r(q_r)` and :math:`\phi_\theta(q_\theta)`
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
+
+        :return: tuple of trajectory deltas :math:`(t_r(q_r), t_\theta(q_\theta), \phi_r(q_r),\phi_\theta(q_\theta))`
+        :rtype: tuple(function, function, function, function)
+        """
+        if initial_phases is None: initial_phases = self.initial_phases
+        q_t0, q_r0, q_theta0, q_phi0 = initial_phases
+
+        if self.stable:
+            from .stable import radial_solutions, polar_solutions
+
+            r, t_r, phi_r = radial_solutions(self.a,self.constants,self.radial_roots)
+            theta, t_theta, phi_theta = polar_solutions(self.a,self.constants,self.polar_roots)
+        else:
+            radial_roots = plunging_radial_roots(self.a,self.E,self.L,self.Q)
+            if np.iscomplex(radial_roots[3]):
+                from .plunge import plunging_radial_solutions_complex, plunging_polar_solutions
+
+                # adjust q_theta0 so that initial conditions are consistent with stable orbits
+                q_theta0 = q_theta0 + pi/2
+                r, t_r, phi_r = plunging_radial_solutions_complex(self.a,self.E,self.L,self.Q)
+                theta, t_theta, phi_theta = plunging_polar_solutions(self.a,self.E,self.L,self.Q)
+            else:
+                from .stable import radial_solutions, polar_solutions
+                
+                constants = (self.E,self.L,self.Q)
+                r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+                theta, t_theta, phi_theta = polar_solutions(self.a,constants,radial_roots)
+        
+        return (lambda q_r: t_r(q_r+q_r0), lambda q_theta: t_theta(q_theta+q_theta0),
+                lambda q_r: phi_r(q_r+q_r0), lambda q_theta: phi_theta(q_theta+q_theta0))
+
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
         Computes the components of the trajectory as a function of Mino time
@@ -397,6 +434,10 @@ class Orbit:
             per_subplot_kw={"O":{"projection":"3d"},"T":{"facecolor":"none"},"R":{"facecolor":"none"},"Θ":{"facecolor":"none"},"Φ":{"facecolor":"none"}}
             )
             ax = ax_dict["O"]
+            # remove top and right spines from plots
+            for plot in ["T","R","Θ","Φ"]:
+                ax_dict[plot].spines[['right', 'top']].set_visible(False)
+
             ax_dict["T"].set_ylabel("$t$")
             ax_dict["R"].set_ylabel("$r$")
             ax_dict["Θ"].set_ylabel(r"$\theta$")
