@@ -3,9 +3,9 @@ Module implementing the stable bound orbit solutions of `Fujita and Hikida <http
 """
 from .constants import *
 from .constants import _standardize_params
-from .frequencies import _ellippi, _ellippiinc
+from .frequencies import _ellippi, _ellippiinc, _ellipeinc
 from .frequencies import *
-from scipy.special import ellipj, ellipeinc
+from scipy.special import ellipj
 from .orbit import Orbit
 from numpy import pi, arccos
 
@@ -208,13 +208,13 @@ def radial_solutions(a,constants,radial_roots):
         u_r = ellipk(k_r**2)*q_r/pi
         sn, cn, dn, psi_r = ellipj(u_r,k_r**2)
         # adding 1e-14 to avoid strange discontinuity in ellipeinc when q_r is set to specific ratios of pi
-        psi_r = psi_r+1e-14
+        #psi_r = psi_r+1e-14
         # equation 28
         return 2/sqrt((1-E**2)*(r1-r3)*(r2-r4))* \
         (
         E/2*(
             (r2-r3)*(r1+r2+r3+r4)*(_ellippiinc(psi_r,h_r,k_r**2)-q_r/pi*_ellippi(h_r,k_r**2)) \
-            + (r1-r3)*(r2-r4)*(ellipeinc(psi_r,k_r**2)+h_r*sn*cn*sqrt(1-k_r**2*sn**2)/(h_r*sn**2-1) - q_r/pi*ellipe(k_r**2))
+            + (r1-r3)*(r2-r4)*(_ellipeinc(psi_r,k_r**2)+h_r*sn*cn*sqrt(1-k_r**2*sn**2)/(h_r*sn**2-1) - q_r/pi*ellipe(k_r**2))
             ) 
         + 2*E*(r2-r3)*(_ellippiinc(psi_r,h_r,k_r**2)-q_r/pi*_ellippi(h_r,k_r**2)) 
         - 2/(r_plus-r_minus) * \
@@ -274,7 +274,7 @@ def polar_solutions(a,constants,polar_roots):
         u_theta = 2/pi*ellipk(k_theta**2)*(q_theta+pi/2)
         sn, cn, dn, psi_theta = ellipj(u_theta,k_theta**2)
         # equation 39
-        return sign(L)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-ellipeinc(psi_theta,k_theta**2))
+        return sign(L)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-_ellipeinc(psi_theta,k_theta**2))
     
     def phi_theta(q_theta):
         sn, cn, dn, psi_theta = ellipj(2/pi*ellipk(k_theta**2)*(q_theta+pi/2),k_theta**2)

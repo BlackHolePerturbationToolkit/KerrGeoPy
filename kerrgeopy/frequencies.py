@@ -4,8 +4,25 @@ Frequencies are computed using the method derived in `Fujita and Hikida <https:/
 """
 from .constants import _standardize_params
 from .constants import *
-from scipy.special import ellipk, ellipe, elliprj, elliprf
+from scipy.special import ellipk, ellipe, elliprj, elliprf, elliprd
 from numpy import sin, cos, sqrt, pi, arcsin, floor, where
+
+def _ellipeinc(phi,m):
+    r"""
+    Incomplete elliptic integral of the second kind defined as :math:`E(\phi,m) = \int_0^{\phi} \sqrt{1-m\sin^2\theta}d\theta`.
+    """
+    # count the number of half periods
+    num_cycles = floor(phi/(pi/2))
+    # map phi to [0,pi/2]
+    phi = abs(arcsin(sin(phi)))
+
+    # makes this work for array input without throwing a division by zero warning
+    c = 1/np.where(phi == 0, np.nan, sin(phi)**2)
+    c = np.where(np.isnan(c),np.inf,c)
+
+    # formula from https://en.wikipedia.org/wiki/Carlson_symmetric_form
+    integral = elliprf(c-1,c-m,c)-1/3*m*elliprd(c-1,c-m,c)
+    return where(num_cycles % 2 == 0, num_cycles*ellipe(m)+integral, (num_cycles+1)*ellipe(m)-integral)
 
 def _ellippi(n,m):
     r"""
