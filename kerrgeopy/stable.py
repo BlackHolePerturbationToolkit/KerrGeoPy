@@ -37,6 +37,8 @@ class StableOrbit(Orbit):
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless carter constant
+    :ivar initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+    :ivar stable: boolean indicating whether the orbit is stable
     :ivar initial_position: tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
     :ivar initial_velocity: tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
     :ivar upsilon_r: dimensionless radial orbital frequency in Mino time
@@ -92,7 +94,7 @@ class StableOrbit(Orbit):
         :param units: units to return the frequencies in (options are "natural", "mks" and "cgs"), defaults to "natural"
         :type units: str, optional
 
-        :return: tuple of orbital frequencies in the form :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
+        :return: tuple of orbital frequencies :math:`(\Upsilon_r, \Upsilon_\theta, \Upsilon_\phi, \Gamma)`
         :rtype: tuple(double, double, double, double)
         """
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
@@ -113,7 +115,7 @@ class StableOrbit(Orbit):
 
         :param units: units to return the frequencies in (options are "natural", "mks", "cgs" and "mHz"), defaults to "natural"
         :type units: str, optional
-        :return: tuple of orbital frequencies in the form :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
+        :return: tuple of orbital frequencies :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
         :rtype: tuple(double, double, double)
         """
         upsilon_r, upsilon_theta, upsilon_phi, gamma = self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma
@@ -162,7 +164,7 @@ class StableOrbit(Orbit):
         :param time_units: units to compute the time component of the trajectory in (options are "natural", "mks", "cgs", and "days"), defaults to "natural"
         :type time_units: str, optional
 
-        :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
+        :return: tuple of functions :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         :rtype: tuple(function, function, function, function)
         """
         if initial_phases is None: initial_phases = self.initial_phases
@@ -183,7 +185,7 @@ def radial_solutions(a,constants,radial_roots):
     :param radial_roots: tuple of roots :math:`(r_1,r_2,r_3,r_4)`. Assumes that motion is between :math:`r_1` and :math:`r_2` and that roots are otherwise in decreasing order.
     :type radial_roots: tuple(double,double,double,double)
 
-    :return: tuple of functions in the form :math:`(r, t^{(r)}, \phi^{(r)})`
+    :return: tuple of functions :math:`(r, t^{(r)}, \phi^{(r)})`
     :rtype: tuple(function, function, function)
     """
     E, L, Q = constants
@@ -253,7 +255,7 @@ def polar_solutions(a,constants,polar_roots):
     :param polar_roots: tuple of roots :math:`(z_-,z_+)`
     :type polar_roots: tuple(double,double)
 
-    :return: tuple of functions in the form :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
+    :return: tuple of functions :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
     :rtype: tuple(function, function, function)
     """
     E, L, Q = constants
@@ -307,7 +309,7 @@ def stable_trajectory(a,p,e,x,initial_phases=(0,0,0,0),M=None,distance_units="na
     :param time_units: units to compute the time component of the trajectory in (options are "natural", "mks", "cgs", and "days"), defaults to "natural"
     :type time_units: str, optional
 
-    :return: tuple of functions in the form :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
+    :return: tuple of functions :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
     :rtype: tuple(function, function, function, function)
     """
     if ((distance_units != "natural") or (time_units != "natural")) and M is None: raise ValueError("M must be specified to convert to physical units")
