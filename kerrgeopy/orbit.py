@@ -229,16 +229,16 @@ class Orbit:
 
         def u_t(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (t(mino_time+dx)-t(mino_time-dx))/(2*dx*sigma)
+            return (-t(mino_time+2*dx)+8*t(mino_time+dx)-8*t(mino_time-dx)+t(mino_time-2*dx))/(12*dx*sigma)
         def u_r(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (r(mino_time+dx)-r(mino_time-dx))/(2*dx*sigma)
+            return (-r(mino_time+2*dx)+8*r(mino_time+dx)-8*r(mino_time-dx)+r(mino_time-2*dx))/(12*dx*sigma)
         def u_theta(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (theta(mino_time+dx)-theta(mino_time-dx))/(2*dx*sigma)
+            return (-theta(mino_time+2*dx)+8*theta(mino_time+dx)-8*theta(mino_time-dx)+theta(mino_time-2*dx))/(12*dx*sigma)
         def u_phi(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (phi(mino_time+dx)-phi(mino_time-dx))/(2*dx*sigma)
+            return (-phi(mino_time+2*dx)+8*phi(mino_time+dx)-8*phi(mino_time-dx)+phi(mino_time-2*dx))/(12*dx*sigma)
         return u_t, u_r, u_theta, u_phi
 
     def plot(self,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, lw=1,color="red",tau=np.inf,point_density=200):
