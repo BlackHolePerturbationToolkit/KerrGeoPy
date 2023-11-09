@@ -1,6 +1,6 @@
 # KerrGeoPy
 
-KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) Mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies.
+KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies. See the [documentation](https://kerrgeopy.readthedocs.io/en/latest/) for more information.
 
 ## Installation
 
@@ -13,7 +13,7 @@ pip install kerrgeopy
 
 Kerrgeopy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
 
-$a$ - spin of the primary body
+$a$ - spin of the primary body 
 <br>
 $p$ - orbital semilatus rectum
 <br>
