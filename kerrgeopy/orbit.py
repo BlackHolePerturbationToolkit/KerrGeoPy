@@ -4,7 +4,7 @@ Module containing the Orbit class
 from .spacetime import KerrSpacetime
 from .initial_conditions import *
 from .units import *
-from .constants import scale_constants, apex_from_constants
+from .constants import scale_constants, apex_from_constants, stable_polar_roots, stable_radial_roots
 from .frequencies import mino_frequencies, fundamental_frequencies
 from numpy import sin, cos, sqrt, pi
 import numpy as np
@@ -80,8 +80,11 @@ class Orbit:
         if self.stable:
             from .stable import radial_solutions, polar_solutions
 
-            r, t_r, phi_r = radial_solutions(self.a,self.constants,self.radial_roots)
-            theta, t_theta, phi_theta = polar_solutions(self.a,self.constants,self.polar_roots)
+            constants = (self.E,self.L,self.Q)
+            radial_roots = stable_radial_roots(self.a,self.p,self.e,self.x,constants)
+            polar_roots = stable_polar_roots(self.a,self.p,self.e,self.x,constants)
+            r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+            theta, t_theta, phi_theta = polar_solutions(self.a,constants,polar_roots)
         else:
             radial_roots = plunging_radial_roots(self.a,self.E,self.L,self.Q)
             if np.iscomplex(radial_roots[3]):

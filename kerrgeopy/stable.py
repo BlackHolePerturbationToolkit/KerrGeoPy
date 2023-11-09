@@ -142,8 +142,11 @@ class StableOrbit(Orbit):
         if initial_phases is None: initial_phases = self.initial_phases
         q_t0, q_r0, q_theta0, q_phi0 = initial_phases
 
-        r, t_r, phi_r = radial_solutions(self.a,self.constants,self.radial_roots)
-        theta, t_theta, phi_theta = polar_solutions(self.a,self.constants,self.polar_roots)
+        constants = (self.E,self.L,self.Q)
+        radial_roots = stable_radial_roots(self.a,self.p,self.e,self.x,constants)
+        polar_roots = stable_polar_roots(self.a,self.p,self.e,self.x,constants)
+        r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+        theta, t_theta, phi_theta = polar_solutions(self.a,constants,polar_roots)
 
         return (lambda q_r: t_r(q_r+q_r0), lambda q_theta: t_theta(q_theta+q_theta0),
                 lambda q_r: phi_r(q_r+q_r0), lambda q_theta: phi_theta(q_theta+q_theta0))
