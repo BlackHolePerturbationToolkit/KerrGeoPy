@@ -33,8 +33,6 @@ class PlungingOrbit(Orbit):
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless Carter constant
-    :ivar initial_phases: tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
-    :ivar stable: boolean indicating whether the orbit is stable
     :ivar initial_position: tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
     :ivar initial_velocity: tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
     :ivar M: mass of the primary in solar masses
@@ -54,6 +52,33 @@ class PlungingOrbit(Orbit):
         t, r, theta, phi = self.trajectory()
         self.initial_position = t(0), r(0), theta(0), phi(0)
         self.initial_velocity = u_t(0), u_r(0), u_theta(0), u_phi(0)
+    
+    def trajectory_deltas(self,initial_phases=None):
+        r"""
+        Computes the trajectory deltas :math:`t_r(q_r)`, :math:`t_\theta(q_\theta)`, :math:`\phi_r(q_r)` and :math:`\phi_\theta(q_\theta)`
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
+
+        :return: tuple of trajectory deltas :math:`(t_r(q_r), t_\theta(q_\theta), \phi_r(q_r),\phi_\theta(q_\theta))`
+        :rtype: tuple(function, function, function, function)
+        """
+        if initial_phases is None: initial_phases = self.initial_phases
+        q_t0, q_r0, q_theta0, q_phi0 = initial_phases
+
+        radial_roots = plunging_radial_roots(self.a,self.E,self.L,self.Q)
+        if np.iscomplex(radial_roots[3]):
+            # adjust q_theta0 so that initial conditions are consistent with stable orbits
+            q_theta0 = q_theta0 + pi/2
+            r, t_r, phi_r = plunging_radial_solutions_complex(self.a,self.E,self.L,self.Q)
+            theta, t_theta, phi_theta = plunging_polar_solutions(self.a,self.E,self.L,self.Q)
+        else:
+            constants = (self.E,self.L,self.Q)
+            r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+            theta, t_theta, phi_theta = polar_solutions(self.a,constants,radial_roots)
+
+        return (lambda q_r: t_r(q_r+q_r0), lambda q_theta: t_theta(q_theta+q_theta0),
+                lambda q_r: phi_r(q_r+q_r0), lambda q_theta: phi_theta(q_theta+q_theta0))
 
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
