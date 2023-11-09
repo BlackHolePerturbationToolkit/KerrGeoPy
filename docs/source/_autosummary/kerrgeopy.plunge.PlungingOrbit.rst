@@ -24,6 +24,7 @@
       ~PlungingOrbit.numerical_four_velocity
       ~PlungingOrbit.plot
       ~PlungingOrbit.trajectory
+      ~PlungingOrbit.trajectory_deltas
    
    
 

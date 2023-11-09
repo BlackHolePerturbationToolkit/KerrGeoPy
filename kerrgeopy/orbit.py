@@ -93,7 +93,7 @@ class Orbit:
                 theta, t_theta, phi_theta = plunging_polar_solutions(self.a,self.E,self.L,self.Q)
             else:
                 from .stable import radial_solutions, polar_solutions
-                
+
                 constants = (self.E,self.L,self.Q)
                 r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
                 theta, t_theta, phi_theta = polar_solutions(self.a,constants,radial_roots)
@@ -434,9 +434,6 @@ class Orbit:
             per_subplot_kw={"O":{"projection":"3d"},"T":{"facecolor":"none"},"R":{"facecolor":"none"},"Θ":{"facecolor":"none"},"Φ":{"facecolor":"none"}}
             )
             ax = ax_dict["O"]
-            # remove top and right spines from plots
-            for plot in ["T","R","Θ","Φ"]:
-                ax_dict[plot].spines[['right', 'top']].set_visible(False)
 
             ax_dict["T"].set_ylabel("$t$")
             ax_dict["R"].set_ylabel("$r$")
