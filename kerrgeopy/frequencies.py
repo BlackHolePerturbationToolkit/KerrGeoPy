@@ -12,17 +12,17 @@ def _ellipeinc(phi,m):
     Incomplete elliptic integral of the second kind defined as :math:`E(\phi,m) = \int_0^{\phi} \sqrt{1-m\sin^2\theta}d\theta`.
     """
     # count the number of half periods
+    
     num_cycles = floor(phi/(pi/2))
     # map phi to [0,pi/2]
     phi = abs(arcsin(sin(phi)))
 
-    # makes this work for array input without throwing a division by zero warning
-    c = 1/np.where(phi == 0, np.nan, sin(phi)**2)
-    c = np.where(np.isnan(c),np.inf,c)
-
     # formula from https://en.wikipedia.org/wiki/Carlson_symmetric_form
-    integral = elliprf(c-1,c-m,c)-1/3*m*elliprd(c-1,c-m,c)
-    return where(num_cycles % 2 == 0, num_cycles*ellipe(m)+integral, (num_cycles+1)*ellipe(m)-integral)
+    integral = sin(phi)*elliprf(cos(phi)**2,1-m*sin(phi)**2,1)-1/3*m*sin(phi)**3*elliprd(cos(phi)**2,1-m*sin(phi)**2,1)
+    result = where(num_cycles % 2 == 0, num_cycles*ellipe(m)+integral, (num_cycles+1)*ellipe(m)-integral)
+    
+    # return scalar for scalar input
+    return result.item() if np.isscalar(phi) else result
 
 def _ellippi(n,m):
     r"""
@@ -57,7 +57,10 @@ def _ellippiinc(phi,n,m):
     # formula from https://en.wikipedia.org/wiki/Carlson_symmetric_form
     integral = sin(phi)*elliprf(cos(phi)**2,1-m*sin(phi)**2,1)+1/3*n*sin(phi)**3*elliprj(cos(phi)**2,1-m*sin(phi)**2,1,1-n*sin(phi)**2)
 
-    return where(num_cycles % 2 == 0, num_cycles*_ellippi(n,m)+integral, (num_cycles+1)*_ellippi(n,m)-integral)
+    result =  where(num_cycles % 2 == 0, num_cycles*_ellippi(n,m)+integral, (num_cycles+1)*_ellippi(n,m)-integral)
+
+    # return scalar for scalar input
+    return result.item() if np.isscalar(phi) else result
 
 def r_frequency(a,p,e,x,constants=None):
     """
