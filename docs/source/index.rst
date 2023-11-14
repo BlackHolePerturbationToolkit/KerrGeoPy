@@ -19,7 +19,7 @@ The library also provides a set of methods for computing constants of motion and
 .. raw:: html
 
    <video width="45%" autoplay loop>
-      <source src="https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/docs/source/notebooks/animation4.mp4" type="video/mp4">
+      <source src="https://cdn.jsdelivr.net/gh/BlackHolePerturbationToolkit/KerrGeoPy@main/docs/source/notebooks/animation4.mp4" type="video/mp4">
    </video>
 
 .. _Installation:

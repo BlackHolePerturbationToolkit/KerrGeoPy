@@ -3,9 +3,9 @@ Module implementing the stable bound orbit solutions of `Fujita and Hikida <http
 """
 from .constants import *
 from .constants import _standardize_params
-from .frequencies import _ellippi, _ellippiinc
+from .frequencies import _ellippi, _ellippiinc, _ellipeinc
 from .frequencies import *
-from scipy.special import ellipj, ellipeinc
+from scipy.special import ellipj
 from .orbit import Orbit
 from numpy import pi, arccos
 
@@ -37,6 +37,7 @@ class StableOrbit(Orbit):
     :ivar E: dimensionless energy
     :ivar L: dimensionless angular momentum
     :ivar Q: dimensionless carter constant
+    :ivar initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
     :ivar stable: boolean indicating whether the orbit is stable
     :ivar initial_position: tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
     :ivar initial_velocity: tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
@@ -129,6 +130,28 @@ class StableOrbit(Orbit):
             return frequency_in_mHz(upsilon_r/gamma,self.M), frequency_in_mHz(upsilon_theta/gamma,self.M), frequency_in_mHz(upsilon_phi/gamma,self.M)
         
         raise ValueError("units must be one of 'natural', 'mks', 'cgs', or 'mHz'")
+    
+    def trajectory_deltas(self,initial_phases=None):
+        r"""
+        Computes the trajectory deltas :math:`t_r(q_r)`, :math:`t_\theta(q_\theta)`, :math:`\phi_r(q_r)` and :math:`\phi_\theta(q_\theta)`
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
+
+        :return: tuple of trajectory deltas :math:`(t_r(q_r), t_\theta(q_\theta), \phi_r(q_r),\phi_\theta(q_\theta))`
+        :rtype: tuple(function, function, function, function)
+        """
+        if initial_phases is None: initial_phases = self.initial_phases
+        q_t0, q_r0, q_theta0, q_phi0 = initial_phases
+
+        constants = (self.E,self.L,self.Q)
+        radial_roots = stable_radial_roots(self.a,self.p,self.e,self.x,constants)
+        polar_roots = stable_polar_roots(self.a,self.p,self.e,self.x,constants)
+        r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+        theta, t_theta, phi_theta = polar_solutions(self.a,constants,polar_roots)
+
+        return (lambda q_r: t_r(q_r+q_r0), lambda q_theta: t_theta(q_theta+q_theta0),
+                lambda q_r: phi_r(q_r+q_r0), lambda q_theta: phi_theta(q_theta+q_theta0))
         
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
@@ -189,12 +212,14 @@ def radial_solutions(a,constants,radial_roots):
         # equation 27
         u_r = ellipk(k_r**2)*q_r/pi
         sn, cn, dn, psi_r = ellipj(u_r,k_r**2)
+        # adding 1e-14 to avoid strange discontinuity in ellipeinc when q_r is set to specific ratios of pi
+        #psi_r = psi_r+1e-14
         # equation 28
         return 2/sqrt((1-E**2)*(r1-r3)*(r2-r4))* \
         (
         E/2*(
             (r2-r3)*(r1+r2+r3+r4)*(_ellippiinc(psi_r,h_r,k_r**2)-q_r/pi*_ellippi(h_r,k_r**2)) \
-            + (r1-r3)*(r2-r4)*(ellipeinc(psi_r,k_r**2)+h_r*sn*cn*sqrt(1-k_r**2*sn**2)/(h_r*sn**2-1) - q_r/pi*ellipe(k_r**2))
+            + (r1-r3)*(r2-r4)*(_ellipeinc(psi_r,k_r**2)+h_r*sn*cn*sqrt(1-k_r**2*sn**2)/(h_r*sn**2-1) - q_r/pi*ellipe(k_r**2))
             ) 
         + 2*E*(r2-r3)*(_ellippiinc(psi_r,h_r,k_r**2)-q_r/pi*_ellippi(h_r,k_r**2)) 
         - 2/(r_plus-r_minus) * \
@@ -254,7 +279,7 @@ def polar_solutions(a,constants,polar_roots):
         u_theta = 2/pi*ellipk(k_theta**2)*(q_theta+pi/2)
         sn, cn, dn, psi_theta = ellipj(u_theta,k_theta**2)
         # equation 39
-        return sign(L)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-ellipeinc(psi_theta,k_theta**2))
+        return sign(L)*a2sqrt_zp_over_e0*E/L*(2/pi*ellipe(k_theta**2)*(q_theta+pi/2)-_ellipeinc(psi_theta,k_theta**2))
     
     def phi_theta(q_theta):
         sn, cn, dn, psi_theta = ellipj(2/pi*ellipk(k_theta**2)*(q_theta+pi/2),k_theta**2)

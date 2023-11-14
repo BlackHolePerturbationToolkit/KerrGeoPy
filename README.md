@@ -1,6 +1,6 @@
 # KerrGeoPy
 
-KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) Mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies.
+KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) Mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies. See the [documentation](https://kerrgeopy.readthedocs.io/en/latest/) for more information.
 
 ## Installation
 

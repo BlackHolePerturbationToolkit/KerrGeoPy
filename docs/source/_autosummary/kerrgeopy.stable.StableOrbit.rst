@@ -27,6 +27,7 @@
       ~StableOrbit.numerical_four_velocity
       ~StableOrbit.plot
       ~StableOrbit.trajectory
+      ~StableOrbit.trajectory_deltas
    
    
 

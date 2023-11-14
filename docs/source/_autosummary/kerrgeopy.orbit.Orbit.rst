@@ -24,6 +24,7 @@
       ~Orbit.numerical_four_velocity
       ~Orbit.plot
       ~Orbit.trajectory
+      ~Orbit.trajectory_deltas
    
    
 

@@ -4,7 +4,7 @@ Module containing the Orbit class
 from .spacetime import KerrSpacetime
 from .initial_conditions import *
 from .units import *
-from .constants import scale_constants, apex_from_constants
+from .constants import scale_constants, apex_from_constants, stable_polar_roots, stable_radial_roots
 from .frequencies import mino_frequencies, fundamental_frequencies
 from numpy import sin, cos, sqrt, pi
 import numpy as np
@@ -63,6 +63,46 @@ class Orbit:
             self.stable = False
             self.upsilon_r, self.upsilon_theta = plunging_mino_frequencies(a,E,L,Q)
             self.initial_phases = plunging_orbit_initial_phases(a,initial_position,initial_velocity)
+
+    def trajectory_deltas(self,initial_phases=None):
+        r"""
+        Computes the trajectory deltas :math:`t_r(q_r)`, :math:`t_\theta(q_\theta)`, :math:`\phi_r(q_r)` and :math:`\phi_\theta(q_\theta)`
+
+        :param initial_phases: tuple of initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`
+        :type initial_phases: tuple, optional
+
+        :return: tuple of trajectory deltas :math:`(t_r(q_r), t_\theta(q_\theta), \phi_r(q_r),\phi_\theta(q_\theta))`
+        :rtype: tuple(function, function, function, function)
+        """
+        if initial_phases is None: initial_phases = self.initial_phases
+        q_t0, q_r0, q_theta0, q_phi0 = initial_phases
+
+        if self.stable:
+            from .stable import radial_solutions, polar_solutions
+
+            constants = (self.E,self.L,self.Q)
+            radial_roots = stable_radial_roots(self.a,self.p,self.e,self.x,constants)
+            polar_roots = stable_polar_roots(self.a,self.p,self.e,self.x,constants)
+            r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+            theta, t_theta, phi_theta = polar_solutions(self.a,constants,polar_roots)
+        else:
+            radial_roots = plunging_radial_roots(self.a,self.E,self.L,self.Q)
+            if np.iscomplex(radial_roots[3]):
+                from .plunge import plunging_radial_solutions_complex, plunging_polar_solutions
+
+                # adjust q_theta0 so that initial conditions are consistent with stable orbits
+                q_theta0 = q_theta0 + pi/2
+                r, t_r, phi_r = plunging_radial_solutions_complex(self.a,self.E,self.L,self.Q)
+                theta, t_theta, phi_theta = plunging_polar_solutions(self.a,self.E,self.L,self.Q)
+            else:
+                from .stable import radial_solutions, polar_solutions
+
+                constants = (self.E,self.L,self.Q)
+                r, t_r, phi_r = radial_solutions(self.a,constants,radial_roots)
+                theta, t_theta, phi_theta = polar_solutions(self.a,constants,radial_roots)
+        
+        return (lambda q_r: t_r(q_r+q_r0), lambda q_theta: t_theta(q_theta+q_theta0),
+                lambda q_r: phi_r(q_r+q_r0), lambda q_theta: phi_theta(q_theta+q_theta0))
 
     def trajectory(self,initial_phases=None,distance_units="natural",time_units="natural"):
         r"""
@@ -192,16 +232,16 @@ class Orbit:
 
         def u_t(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (t(mino_time+dx)-t(mino_time-dx))/(2*dx*sigma)
+            return (-t(mino_time+2*dx)+8*t(mino_time+dx)-8*t(mino_time-dx)+t(mino_time-2*dx))/(12*dx*sigma)
         def u_r(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (r(mino_time+dx)-r(mino_time-dx))/(2*dx*sigma)
+            return (-r(mino_time+2*dx)+8*r(mino_time+dx)-8*r(mino_time-dx)+r(mino_time-2*dx))/(12*dx*sigma)
         def u_theta(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (theta(mino_time+dx)-theta(mino_time-dx))/(2*dx*sigma)
+            return (-theta(mino_time+2*dx)+8*theta(mino_time+dx)-8*theta(mino_time-dx)+theta(mino_time-2*dx))/(12*dx*sigma)
         def u_phi(mino_time):
             sigma = r(mino_time)**2 + self.a**2*cos(theta(mino_time))**2
-            return (phi(mino_time+dx)-phi(mino_time-dx))/(2*dx*sigma)
+            return (-phi(mino_time+2*dx)+8*phi(mino_time+dx)-8*phi(mino_time-dx)+phi(mino_time-2*dx))/(12*dx*sigma)
         return u_t, u_r, u_theta, u_phi
 
     def plot(self,lambda0=0, lambda1=10, elevation=30 ,azimuth=-60, initial_phases=None, grid=True, axes=True, lw=1,color="red",tau=np.inf,point_density=200):
@@ -397,6 +437,7 @@ class Orbit:
             per_subplot_kw={"O":{"projection":"3d"},"T":{"facecolor":"none"},"R":{"facecolor":"none"},"Θ":{"facecolor":"none"},"Φ":{"facecolor":"none"}}
             )
             ax = ax_dict["O"]
+
             ax_dict["T"].set_ylabel("$t$")
             ax_dict["R"].set_ylabel("$r$")
             ax_dict["Θ"].set_ylabel(r"$\theta$")
