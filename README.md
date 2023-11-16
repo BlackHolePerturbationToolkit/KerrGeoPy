@@ -1,3 +1,10 @@
+![GitHub release (with filter)](https://img.shields.io/github/v/release/BlackHolePerturbationToolkit/KerrGeoPy)
+[![Test Status](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/actions/workflows/tests.yml/badge.svg)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/actions)
+![PyPI - Version](https://img.shields.io/pypi/v/kerrgeopy)
+[![Documentation Status](https://readthedocs.org/projects/kerrgeopy/badge/?version=latest)](https://kerrgeopy.readthedocs.io/en/latest/?badge=latest)
+![GitHub License](https://img.shields.io/github/license/BlackHolePerturbationToolkit/KerrGeoPy)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10126824.svg)](https://doi.org/10.5281/zenodo.10126824)
+
 # KerrGeoPy
 
 KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) Mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies. See the [documentation](https://kerrgeopy.readthedocs.io/en/latest/) for more information.
@@ -9,6 +16,11 @@ Install the latest version of kerrgeopy using pip
 ```bash
 pip install kerrgeopy
 ```
+
+> **Note**
+>
+> KerrGeoPy uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running `pip install scipy -U`, although in most cases this should be done automatically by pip. Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on [ffmpeg](https://ffmpeg.org/download.html), which can be easily installed using [homebrew](https://formulae.brew.sh/formula/ffmpeg) or [anaconda](https://anaconda.org/conda-forge/ffmpeg).
+
 ## Stable Bound Orbits
 
 Kerrgeopy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
@@ -46,7 +58,7 @@ fig, ax = orbit.plot(0,10)
 
 
     
-![png](README_files/Getting%20Started_3_0.png)
+![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_3_0.png)
     
 
 
@@ -91,7 +103,7 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 
     
-![png](README_files/Getting%20Started_6_1.png)
+![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_6_1.png)
     
 
 
@@ -218,7 +230,7 @@ plt.ylabel(r"$\phi(\lambda)$")
 
 
     
-![png](README_files/Getting%20Started_15_1.png)
+![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_15_1.png)
     
 
 
@@ -273,7 +285,7 @@ plt.xlabel("$\lambda$")
 plt.ylabel(r"$\phi(\lambda)$")
 ```
     
-![png](README_files/Getting%20Started_20_1.png)
+![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_20_1.png)
     
 
 ## Authors
