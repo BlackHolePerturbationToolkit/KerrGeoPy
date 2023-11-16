@@ -32,6 +32,10 @@ Install the latest version of kerrgeopy using pip
 
    pip install kerrgeopy
 
+.. note::
+   KerrGeoPy uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running :code:`pip install scipy -U`, although in most cases this should be done automatically by pip.
+   Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on `ffmpeg <https://ffmpeg.org/download.html>`_, which can be easily installed using `homebrew <https://formulae.brew.sh/formula/ffmpeg>`_ or `anaconda <https://anaconda.org/conda-forge/ffmpeg>`_.
+
 See `Getting Started <notebooks/Getting%20Started.html>`_ for basic usage. See the `API Reference`_ below or the `Modules <_autosummary/kerrgeopy.html>`_ page for a complete list of classes and methods.
 
 
