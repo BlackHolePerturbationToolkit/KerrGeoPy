@@ -1,6 +1,4 @@
-"""
-Module containing functions to convert between geometrized units and physical units.
-"""
+"""Module containing functions to convert between geometrized units and physical units."""
 # https://en.wikipedia.org/wiki/Geometrized_unit_system
 
 # speed of light in m/s
@@ -9,6 +7,7 @@ c = 299792458.0
 G = 6.67408e-11
 # solar mass in kg
 solar_mass = 1.98847e30
+
 
 def mass_in_kg(M):
     """
@@ -20,213 +19,270 @@ def mass_in_kg(M):
     :return: mass in kg
     :rtype: double
     """
-    return M*solar_mass
+    return M * solar_mass
 
-def distance_in_meters(d,M):
+
+def distance_in_meters(d, M):
+    """Converts distance in geometrized units to meters
+
+    Parameters
+    ----------
+    d : double
+        distance in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        distance in meters
     """
-    Converts distance in geometrized units to meters
+    return d * G / c**2 * mass_in_kg(M)
 
-    :param d: distance in multiples of M
-    :type d: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
 
-    :return: distance in meters
-    :rtype: double
+def distance_in_cm(d, M):
+    """Converts distance in geometrized units to centimeters
+
+    Parameters
+    ----------
+    d : double
+        distance in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        distance in centimeters
     """
-    return d*G/c**2*mass_in_kg(M)
+    return distance_in_meters(d, M) * 100
 
-def distance_in_cm(d,M):
+
+def distance_in_km(d, M):
+    """Converts distance in geometrized units to kilometers
+
+    Parameters
+    ----------
+    d : double
+        distance in multiples of M
+
+    Returns
+    -------
+    double
+        distance in kilometers
     """
-    Converts distance in geometrized units to centimeters
+    return distance_in_meters(d, M) / 1000
 
-    :param d: distance in multiples of M
-    :type d: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
 
-    :return: distance in centimeters
-    :rtype: double
+def distance_in_lightyears(d, M):
+    """Converts distance in geometrized units to lightyears
+
+    Parameters
+    ----------
+    d : double
+        distance in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        distance in lightyears
     """
-    return distance_in_meters(d,M)*100
+    return distance_in_meters(d, M) / 9.461e15
 
-def distance_in_km(d,M):
+
+def distance_in_au(d, M):
+    """Converts distance in geometrized units to astronomical units
+
+    Parameters
+    ----------
+    d : double
+        distance in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        distance in astronomical units
     """
-    Converts distance in geometrized units to kilometers
+    return distance_in_meters(d, M) / 1.496e11
 
-    :param d: distance in multiples of M
-    :type d: double
 
-    :return: distance in kilometers
-    :rtype: double
+def time_in_seconds(t, M):
+    """Converts time in geometrized units to seconds
+
+    Parameters
+    ----------
+    t : double
+        time in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        time in seconds
     """
-    return distance_in_meters(d,M)/1000
+    return t * G / c**3 * mass_in_kg(M)
 
-def distance_in_lightyears(d,M):
+
+def time2_in_seconds2(t, M):
+    """Converts time^2 in geometrized units to seconds^2
+
+    Parameters
+    ----------
+    t : double
+        time^2 in multiples of M^2
+    M : double
+        mass of the primary body in solar masses
     """
-    Converts distance in geometrized units to lightyears
+    return t * (G / c**3) ** 2 * mass_in_kg(M) ** 2
 
-    :param d: distance in multiples of M
-    :type d: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
 
-    :return: distance in lightyears
-    :rtype: double
+def time_in_days(t, M):
+    """Converts time in geometrized units to days
+
+    Parameters
+    ----------
+    t : double
+        time in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        time in days
     """
-    return distance_in_meters(d,M)/9.461e15
+    return time_in_seconds(t, M) / 86400
 
-def distance_in_au(d,M):
+
+def energy_in_joules(E, M):
+    """Converts energy in geometrized units to joules
+
+    Parameters
+    ----------
+    E : double
+        energy in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        energy in joules
     """
-    Converts distance in geometrized units to astronomical units
+    return E * c**2 * mass_in_kg(M)
 
-    :param d: distance in multiples of M
-    :type d: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
 
-    :return: distance in astronomical units
-    :rtype: double
+def energy_in_ergs(E, M):
+    """Converts energy in geometrized units to ergs
+
+    Parameters
+    ----------
+    E : double
+        energy in multiples of M
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        energy in ergs
     """
-    return distance_in_meters(d,M)/1.496e11
+    return energy_in_joules(E, M) * 1e7
 
-def time_in_seconds(t,M):
+
+def angular_momentum_in_mks(L, M):
+    """Converts angular momentum in geometrized units to kg m^2 s^-1
+
+    Parameters
+    ----------
+    L : double
+        angular momentum in multiples of M^2
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        angular momentum in kg m^2 s^-1
     """
-    Converts time in geometrized units to seconds
+    return L * G / c * mass_in_kg(M) ** 2
 
-    :param t: time in multiples of M
-    :type t: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
 
-    :return: time in seconds
-    :rtype: double
+def angular_momentum_in_cgs(L, M):
+    """Converts angular momentum in geometrized units to g cm^2 s^-1
+
+    Parameters
+    ----------
+    L : double
+        angular momentum in multiples of M^2
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        angular momentum in g cm^2 s^-1
     """
-    return t*G/c**3*mass_in_kg(M)
+    return angular_momentum_in_mks(L, M) * 1e7
 
-def time2_in_seconds2(t,M):
+
+def carter_constant_in_mks(Q, M):
+    """Converts Carter constant in geometrized units to kg^2 m^4 s^-2
+
+    Parameters
+    ----------
+    Q : double
+        Carter constant in multiples of M^4
+    M : double
+        mass of the primary body in solar masses
     """
-    Converts time^2 in geometrized units to seconds^2
+    return Q * G**2 / c**2 * mass_in_kg(M) ** 4
 
-    :param t: time^2 in multiples of M^2
-    :type t: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
+
+def carter_constant_in_cgs(Q, M):
+    """Converts Carter constant in geometrized units to g^2 cm^4 s^-2
+
+    Parameters
+    ----------
+    Q : double
+        Carter constant in multiples of M^4
+    M : double
+        mass of the primary body in solar masses
     """
-    return t*(G/c**3)**2*mass_in_kg(M)**2
+    return carter_constant_in_mks(Q, M) * 1e14
 
-def time_in_days(t,M):
+
+def frequency_in_Hz(f, M):
+    """Converts frequency in geometrized units to hertz
+
+    Parameters
+    ----------
+    f : _type_
+        frequency in multiples of M^-1
+    M : _type_
+        _description_
     """
-    Converts time in geometrized units to days
+    return f * c**3 / G / mass_in_kg(M)
 
-    :param t: time in multiples of M
-    :type t: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-    :return: time in days
-    :rtype: double
+
+def frequency_in_mHz(f, M):
+    """Converts frequency in geometrized units to millihertz
+
+    Parameters
+    ----------
+    f : double
+        frequency in multiples of M^-1
+    M : double
+        mass of the primary body in solar masses
+
+    Returns
+    -------
+    double
+        frequency in millihertz
     """
-    return time_in_seconds(t,M)/86400
-
-def energy_in_joules(E,M):
-    """
-    Converts energy in geometrized units to joules
-
-    :param E: energy in multiples of M
-    :type E: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-
-    :return: energy in joules
-    :rtype: double
-    """
-    return E*c**2*mass_in_kg(M)
-
-def energy_in_ergs(E,M):
-    """
-    Converts energy in geometrized units to ergs
-
-    :param E: energy in multiples of M
-    :type E: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-
-    :return: energy in ergs
-    :rtype: double
-    """
-    return energy_in_joules(E,M)*1e7
-
-def angular_momentum_in_mks(L,M):
-    """
-    Converts angular momentum in geometrized units to kg m^2 s^-1
-
-    :param L: angular momentum in multiples of M^2
-    :type L: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-
-    :return: angular momentum in kg m^2 s^-1
-    :rtype: double
-    """
-    return L*G/c*mass_in_kg(M)**2
-
-def angular_momentum_in_cgs(L,M):
-    """
-    Converts angular momentum in geometrized units to g cm^2 s^-1
-
-    :param L: angular momentum in multiples of M^2
-    :type L: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-
-    :return: angular momentum in g cm^2 s^-1
-    :rtype: double
-    """
-    return angular_momentum_in_mks(L,M)*1e7
-
-def carter_constant_in_mks(Q,M):
-    """
-    Converts Carter constant in geometrized units to kg^2 m^4 s^-2
-
-    :param Q: Carter constant in multiples of M^4
-    :type Q: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-    """
-    return Q*G**2/c**2*mass_in_kg(M)**4
-
-def carter_constant_in_cgs(Q,M):
-    """
-    Converts Carter constant in geometrized units to g^2 cm^4 s^-2
-
-    :param Q: Carter constant in multiples of M^4
-    :type Q: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-    """
-    return carter_constant_in_mks(Q,M)*1e14
-
-def frequency_in_Hz(f,M):
-    """
-    Converts frequency in geometrized units to hertz
-
-    :param f: frequency in multiples of M^-1
-    :type f: _type_
-    :param M: _description_
-    :type M: _type_
-    """
-    return f*c**3/G/mass_in_kg(M)
-
-def frequency_in_mHz(f,M):
-    """
-    Converts frequency in geometrized units to millihertz
-
-    :param f: frequency in multiples of M^-1
-    :type f: double
-    :param M: mass of the primary body in solar masses
-    :type M: double
-
-    :return: frequency in millihertz
-    :rtype: double
-    """
-    return frequency_in_Hz(f,M)*1e3
+    return frequency_in_Hz(f, M) * 1e3
