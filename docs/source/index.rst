@@ -14,13 +14,9 @@ The library also provides a set of methods for computing constants of motion and
     :align: left
     :width: 45%
 
-.. https://github.com/sphinx-doc/sphinx/issues/823
-
-.. raw:: html
-
-   <video width="45%" autoplay loop>
-      <source src="https://cdn.jsdelivr.net/gh/BlackHolePerturbationToolkit/KerrGeoPy@main/docs/source/notebooks/animation4.mp4" type="video/mp4">
-   </video>
+.. image:: images/thumbnail.gif
+    :align: right
+    :width: 45%
 
 .. _Installation:
 
