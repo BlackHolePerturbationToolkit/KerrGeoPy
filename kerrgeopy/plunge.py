@@ -41,16 +41,13 @@ class PlungingOrbit(Orbit):
     Q
         dimensionless Carter constant
     initial_phases
-        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0,
-        q^\phi_0)`
+        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
     stable
         boolean indicating whether the orbit is stable
     initial_position
-        tuple of initial position coordinates :math:`(t_0, r_0,
-        \theta_0, \phi_0)`
+        tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
     initial_velocity
-        tuple of initial four-velocity components :math:`(u^t_0, u^r_0,
-        u^\theta_0, u^\phi_0)`
+        tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
     M
         mass of the primary in solar masses
     mu
@@ -127,8 +124,7 @@ class PlungingOrbit(Orbit):
         Parameters
         ----------
         initial_phases : tuple, optional
-            tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0,
-            q^\phi_0)`
+            tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
         distance_units : str, optional
             units to compute the radial component of the trajectory in
             (options are "natural", "mks", "cgs", "au" and "km"),
@@ -336,8 +332,7 @@ def plunging_radial_solutions_complex(a, E, L, Q):
     Returns
     -------
     tuple(function, function, function)
-        tuple of radial solutions :math:`(r(q_r), t_r(q_r),
-        \phi_r(q_r))`
+        tuple of radial solutions :math:`(r(q_r), t_r(q_r), \phi_r(q_r))`
     """
     roots = plunging_radial_roots(a, E, L, Q)
     if np.iscomplex(roots).sum() != 2:
@@ -495,8 +490,7 @@ def plunging_trajectory(
     Q : double
         dimensionless Carter constant
     initial_phases : tuple, optional
-        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0,
-        q^\phi_0)`
+        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
     M : double, optional
         mass of the primary in solar masses
     distance_units : str, optional
@@ -541,8 +535,7 @@ def _complex_plunge_trajectory(
     Q : double
         dimensionless Carter constant
     initial_phases : tuple, optional
-        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0,
-        q^\phi_0)`
+        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
     M : double, optional
         mass of the primary in solar masses
     distance_units : str, optional
@@ -632,8 +625,7 @@ def _real_plunge_trajectory(
     Q : double
         dimensionless Carter constant
     initial_phases : tuple, optional
-        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0,
-        q^\phi_0)`
+        tuple of initial phases :math:`(q^t_0, q^r_0, q^\theta_0, q^\phi_0)`
     M : double, optional
         mass of the primary in solar masses
     distance_units : str, optional

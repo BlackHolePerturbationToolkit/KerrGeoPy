@@ -531,7 +531,7 @@ def _r_frequency_from_constants(constants, radial_roots):
     ----------
     constants : tuple(double, double, double)
         dimensionless constants of motion for the orbit in the form
-        :math:`(E,L,Q)`
+        :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double, double, double, double)
         tuple containing the four roots of the radial equation
         :math:`(r_1, r_2, r_3, r_4)`.
@@ -558,7 +558,7 @@ def _theta_frequency_from_constants(a, constants, radial_roots, polar_roots):
         dimensionless spin of the black hole
     constants : tuple(double, double, double)
         dimensionless constants of motion for the orbit in the form
-        :math:`(E,L,Q)`
+        :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double, double, double, double)
         tuple containing the four roots of the radial polynomial
         :math:`(r_1, r_2, r_3, r_4)`.
@@ -600,13 +600,12 @@ def _phi_frequency_from_constants(
         dimensionless spin of the black hole
     constants : tuple(double, double, double)
         dimensionless constants of motion for the orbit in the form
-        :math:`(E,L,Q)`
+        :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double, double, double, double)
         tuple containing the four roots of the radial polynomial
         :math:`(r_1, r_2, r_3, r_4)`.
     polar_roots : tuple(double, double)
-        tuple containing the roots of the polar equation :math:`(z_-,
-        z_+)`
+        tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     upsilon_r : double, optional
         Mino frequency of motion in r can be passed in to speed
         computation if it is already known
@@ -674,13 +673,12 @@ def _gamma_from_constants(
         dimensionless spin of the black hole
     constants : tuple(double, double, double)
         dimensionless constants of motion for the orbit in the form
-        :math:`(E,L,Q)`
+        :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double, double, double, double)
         tuple containing the four roots of the radial polynomial
         :math:`(r_1, r_2, r_3, r_4)`.
     polar_roots : tuple(double, double)
-        tuple containing the roots of the polar equation :math:`(z_-,
-        z_+)`
+        tuple containing the roots of the polar equation :math:`(z_-, z_+)`
     upsilon_r : double, optional
         Mino frequency of motion in r can be passed in to speed
         computation if it is already known
@@ -771,13 +769,12 @@ def _mino_frequencies_from_constants(a, constants, radial_roots, polar_roots):
         dimensionless spin of the black hole (must satisfy -1 < a < 1)
     constants : tuple(double, double, double)
         dimensionless constants of motion for the orbit in the form
-        :math:`(E,L,Q)`
+        :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double, double, double, double)
         tuple containing the four roots of the radial polynomial
         :math:`(r_1, r_2, r_3, r_4)`.
     polar_roots : tuple(double, double)
-        tuple containing the roots of the polar equation :math:`(z_-,
-        z_+)`
+        tuple containing the roots of the polar equation :math:`(z_-, z_+)`
 
     Returns
     -------
@@ -806,13 +803,12 @@ def _fundamental_frequencies_from_constants(a, constants, radial_roots, polar_ro
         dimensionless spin of the black hole (must satisfy -1 < a < 1)
     constants : tuple(double, double, double)
         dimensionless constants of motion for the orbit in the form
-        :math:`(E,L,Q)`
+        :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double, double, double, double)
         tuple containing the four roots of the radial polynomial
         :math:`(r_1, r_2, r_3, r_4)`.
     polar_roots : tuple(double, double)
-        tuple containing the roots of the polar equation :math:`(z_-,
-        z_+)`
+        tuple containing the roots of the polar equation :math:`(z_-, z_+)`
 
     Returns
     -------

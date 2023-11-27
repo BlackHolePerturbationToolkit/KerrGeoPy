@@ -137,7 +137,7 @@ class KerrSpacetime:
         phi : function
             azimuthal component of trajectory
         constants : tuple(double, double, double)
-            tuple of constants of motion in the form :math:`(E,L,Q)`
+            tuple of constants of motion in the form :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
         upsilon_r : double
             radial frequency
         upsilon_theta : double

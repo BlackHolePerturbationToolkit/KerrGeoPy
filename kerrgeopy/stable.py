@@ -23,8 +23,7 @@ class StableOrbit(Orbit):
         cosine of the orbital inclination
     initial_phases : tuple, optional
         tuple of initial phases
-        :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to
-        (0,0,0,0)
+        :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
     M : double
         mass of the primary in solar masses, optional
     mu : double
@@ -56,11 +55,9 @@ class StableOrbit(Orbit):
     stable
         boolean indicating whether the orbit is stable
     initial_position
-        tuple of initial position coordinates :math:`(t_0, r_0,
-        \theta_0, \phi_0)`
+        tuple of initial position coordinates :math:`(t_0, r_0, \theta_0, \phi_0)`
     initial_velocity
-        tuple of initial four-velocity components :math:`(u^t_0, u^r_0,
-        u^\theta_0, u^\phi_0)`
+        tuple of initial four-velocity components :math:`(u^t_0, u^r_0, u^\theta_0, u^\phi_0)`
     upsilon_r
         dimensionless radial orbital frequency in Mino time
     upsilon_theta
@@ -165,8 +162,8 @@ class StableOrbit(Orbit):
         raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
 
     def fundamental_frequencies(self, units="natural"):
-        r"""Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless frequencies in geometrized units by default.
-        M and mu must be defined in order to convert to physical units.
+        r"""Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless frequencies 
+        in geometrized units by default. M and mu must be defined in order to convert to physical units.
 
         Parameters
         ----------
@@ -177,8 +174,7 @@ class StableOrbit(Orbit):
         Returns
         -------
         tuple(double, double, double)
-            tuple of orbital frequencies :math:`(\Omega_r,
-            \Omega_\theta, \Omega_\phi)`
+            tuple of orbital frequencies :math:`(\Omega_r, \Omega_\theta, \Omega_\phi)`
         """
         upsilon_r, upsilon_theta, upsilon_phi, gamma = (
             self.upsilon_r,
@@ -208,7 +204,8 @@ class StableOrbit(Orbit):
         raise ValueError("units must be one of 'natural', 'mks', 'cgs', or 'mHz'")
 
     def trajectory_deltas(self, initial_phases=None):
-        r"""Computes the trajectory deltas :math:`t_r(q_r)`, :math:`t_\theta(q_\theta)`, :math:`\phi_r(q_r)` and :math:`\phi_\theta(q_\theta)`
+        r"""Computes the trajectory deltas :math:`t_r(q_r)`, :math:`t_\theta(q_\theta)`, 
+        :math:`\phi_r(q_r)` and :math:`\phi_\theta(q_\theta)`
 
         Parameters
         ----------
@@ -259,8 +256,7 @@ class StableOrbit(Orbit):
         Returns
         -------
         tuple(function, function, function, function)
-            tuple of functions :math:`(t(\lambda), r(\lambda),
-            \theta(\lambda), \phi(\lambda))`
+            tuple of functions :math:`(t(\lambda), r(\lambda), \theta(\lambda), \phi(\lambda))`
         """
         if initial_phases is None:
             initial_phases = self.initial_phases
@@ -281,7 +277,7 @@ def radial_solutions(a, constants, radial_roots):
     a : double
         dimensionless spin parameter
     constants : tuple(double,double,double)
-        tuple of constants :math:`(E,L,Q)`
+        tuple of constants :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     radial_roots : tuple(double,double,double,double)
         tuple of roots :math:`(r_1,r_2,r_3,r_4)`. Assumes that motion is
         between :math:`r_1` and :math:`r_2` and that roots are otherwise
@@ -316,8 +312,7 @@ def radial_solutions(a, constants, radial_roots):
         # equation 27
         u_r = ellipk(k_r**2) * q_r / pi
         sn, cn, dn, psi_r = ellipj(u_r, k_r**2)
-        # adding 1e-14 to avoid strange discontinuity in ellipeinc when q_r is set to specific ratios of pi
-        # psi_r = psi_r+1e-14
+
         # equation 28
         return (
             2
@@ -397,15 +392,14 @@ def polar_solutions(a, constants, polar_roots):
     a : double
         dimensionless spin parameter
     constants : tuple(double,double,double)
-        tuple of constants :math:`(E,L,Q)`
+        tuple of constants :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
     polar_roots : tuple(double,double)
         tuple of roots :math:`(z_-,z_+)`
 
     Returns
     -------
     tuple(function, function, function)
-        tuple of functions :math:`(\theta, t^{(\theta)},
-        \phi^{(\theta)})`
+        tuple of functions :math:`(\theta, t^{(\theta)}, \phi^{(\theta)})`
     """
     E, L, Q = constants
     z_minus, z_plus = polar_roots
@@ -479,8 +473,7 @@ def stable_trajectory(
         cosine of the orbital inclination
     initial_phases : tuple, optional
         tuple of initial phases
-        :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to
-        (0,0,0,0)
+        :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})`, defaults to (0,0,0,0)
     M : double, optional
         mass of the primary in solar masses
     distance_units : str, optional
