@@ -11,8 +11,11 @@ KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.o
 
 ## Installation
 
-Install the latest version of kerrgeopy using pip
-
+Install using anaconda
+```bash
+conda install -c conda-forge kerrgeopy
+```
+or using pip
 ```bash
 pip install kerrgeopy
 ```

@@ -86,19 +86,15 @@ class KerrSpacetime:
         a = self.a
         sigma = r**2 + a**2 * cos(theta) ** 2
         delta = r**2 - 2 * r + a**2
+        # fmt: off
         return np.array(
-            [
-                [-(1 - 2 * r / sigma), 0, 0, -2 * a * r * sin(theta) ** 2 / sigma],
-                [0, sigma / delta, 0, 0],
-                [0, 0, sigma, 0],
-                [
-                    -2 * a * r * sin(theta) ** 2 / sigma,
-                    0,
-                    0,
-                    sin(theta) ** 2 * (r**2 + a**2 + 2 * a**2 * r * sin(theta) ** 2 / sigma),
-                ],
-            ]
+            [[-(1-2*r/sigma),               0,              0,      -2*a*r*sin(theta)**2/sigma],
+             [0,                            sigma/delta,    0,      0],
+             [0,                            0,              sigma,  0],
+             [-2*a*r*sin(theta)**2/sigma,   0,              0,      sin(theta)**2*(r**2+a**2+2*a**2*r*sin(theta)**2/sigma)]
+             ]
         )
+        # fmt: on
 
     def norm(self, t, r, theta, phi, v):
         """Computes the norm of a vector at a given point in spacetime expressed in Boyer-Lindquist coordinates

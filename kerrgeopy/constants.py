@@ -10,8 +10,8 @@ from numpy.polynomial import Polynomial
 
 
 def stable_radial_roots(a, p, e, x, constants=None):
-    """Computes the radial roots for a stable bound orbit as defined in equation 10 of 
-    `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. Roots are given in 
+    """Computes the radial roots for a stable bound orbit as defined in equation 10 of
+    `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. Roots are given in
     decreasing order.
 
     Parameters
@@ -49,8 +49,8 @@ def stable_radial_roots(a, p, e, x, constants=None):
 
 
 def plunging_radial_roots(a, E, L, Q):
-    """Computes the radial roots for a plunging orbit. If all roots are real, roots are sorted such 
-    that the motion is between r1 and r2 and roots are otherwise in decreasing order. If there are 
+    """Computes the radial roots for a plunging orbit. If all roots are real, roots are sorted such
+    that the motion is between r1 and r2 and roots are otherwise in decreasing order. If there are
     two complex roots, r1 < r2 are real and r3/r4 are complex conjugates.
 
     Parameters
@@ -106,7 +106,7 @@ def plunging_radial_roots(a, E, L, Q):
 
 
 def stable_polar_roots(a, p, e, x, constants=None):
-    r"""Computes the polar roots for a stable bound orbit as defined in equation 10 of 
+    r"""Computes the polar roots for a stable bound orbit as defined in equation 10 of
     `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. Roots are given in increasing order.
 
     Parameters
@@ -166,7 +166,7 @@ def _coefficients(r, a, x):
 
 
 def _coefficients_derivative(r, a, x):
-    """Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in 
+    """Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in
     `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
 
     Parameters
@@ -408,7 +408,7 @@ def carter_constant(a, p, e, x, E=None, L=None):
 
 
 def constants_of_motion(a, p, e, x):
-    """Computes the dimensionless energy, angular momentum, and Carter constant of a bound orbit 
+    """Computes the dimensionless energy, angular momentum, and Carter constant of a bound orbit
     with the given parameters
 
     Parameters
@@ -434,7 +434,7 @@ def constants_of_motion(a, p, e, x):
 
 
 def apex_from_constants(a, E, L, Q):
-    r"""Computes the orbital parameters :math:`(a,p,e,x)` for a stable bound orbit with the given 
+    r"""Computes the orbital parameters :math:`(a,p,e,x)` for a stable bound orbit with the given
     constants of motion
 
     Parameters
@@ -482,7 +482,7 @@ def apex_from_constants(a, E, L, Q):
 
 
 def _S_polar(p, a, e):
-    """Separatrix polynomial for a polar orbit from equation 37 in 
+    """Separatrix polynomial for a polar orbit from equation 37 in
     `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     Parameters
@@ -510,7 +510,7 @@ def _S_polar(p, a, e):
 
 
 def _S_equatorial(p, a, e):
-    """Separatrix polynomial for an equatorial orbit from equation 23 in 
+    """Separatrix polynomial for an equatorial orbit from equation 23 in
     `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     Parameters
@@ -534,7 +534,7 @@ def _S_equatorial(p, a, e):
 
 
 def _S(p, a, e, x):
-    """Full separatrix polynomial from equation A1 in 
+    """Full separatrix polynomial from equation A1 in
     `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     Parameters
@@ -550,6 +550,7 @@ def _S(p, a, e, x):
     -------
     double
     """
+    # fmt: off
     return -4*(3 + e)*p**11 + p**12 + \
        a**12*(-1 + e)**4*(1 + e)**8*(-1 + x)**4*(1 + x)**4 - \
        4*a**10*(-3 + e)*(-1 + e)**3*(1 + e)**7*p*(-1 + x**2)**4 - \
@@ -578,10 +579,11 @@ def _S(p, a, e, x):
           a**2*(15 - 36*x**2 + 30*x**4 + e**4*(15 - 20*x**2 + 6*x**4) + \
              4*e**3*(5 - 12*x**2 + 6*x**4) + 4*e*(5 - 12*x**2 + 10*x**4) + \
              e**2*(26 - 72*x**2 + 44*x**4)))
+    # fmt: on
 
 
 def separatrix(a, e, x):
-    """Returns the value of p at the separatrix for the given orbital parameters computed using the 
+    """Returns the value of p at the separatrix for the given orbital parameters computed using the
     bracked root finding method described in `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     Parameters
@@ -637,7 +639,7 @@ def separatrix(a, e, x):
 
 
 def fast_separatrix(a, grid_spacing=0.01):
-    """Constructs a faster separatrix function for a given value of :math:`a` by interpolating over 
+    """Constructs a faster separatrix function for a given value of :math:`a` by interpolating over
     a grid of :math:`e` and :math:`x` values.
 
     Parameters

@@ -22,7 +22,13 @@ The library also provides a set of methods for computing constants of motion and
 
 Installation
 ------------
-Install the latest version of kerrgeopy using pip
+Install using anaconda
+
+.. code-block:: bash
+
+   conda install -c conda-forge kerrgeopy
+
+or using pip
 
 .. code-block:: bash
 
