@@ -124,8 +124,9 @@ class StableOrbit(Orbit):
         return cls(a, p, e, x, initial_phases, M, mu)
 
     def mino_frequencies(self, units="natural"):
-        r"""Computes orbital frequencies in Mino time. Returns dimensionless frequencies in geometrized units by default.
-        M and mu must be defined in order to convert to physical units.
+        r"""Computes orbital frequencies in Mino time. Returns dimensionless frequencies 
+        in geometrized units by default. M and mu must be defined in order to convert 
+        to physical units.
 
         Parameters
         ----------
@@ -162,8 +163,9 @@ class StableOrbit(Orbit):
         raise ValueError("units must be one of 'natural', 'mks', or 'cgs'")
 
     def fundamental_frequencies(self, units="natural"):
-        r"""Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless frequencies 
-        in geometrized units by default. M and mu must be defined in order to convert to physical units.
+        r"""Computes orbital frequencies in Boyer-Lindquist time. Returns dimensionless 
+        frequencies in geometrized units by default. M and mu must be defined in order 
+        to convert to physical units.
 
         Parameters
         ----------
@@ -237,7 +239,8 @@ class StableOrbit(Orbit):
         )
 
     def trajectory(self, initial_phases=None, distance_units="natural", time_units="natural"):
-        r"""Computes the time, radial, polar, and azimuthal coordinates of the orbit as a function of mino time.
+        r"""Computes the time, radial, polar, and azimuthal coordinates of the orbit 
+        as a function of mino time.
 
         Parameters
         ----------
@@ -267,10 +270,11 @@ class StableOrbit(Orbit):
 
 
 def radial_solutions(a, constants, radial_roots):
-    r"""Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` from equation 6 of 
-    `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. :math:`q_r` is defined as 
-    :math:`q_r = \Upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`. Assumes the initial conditions 
-    :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
+    r"""Computes the radial solutions :math:`r(q_r), t^{(r)}(q_r), \phi^{(r)}(q_r)` 
+    from equation 6 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. 
+    :math:`q_r` is defined as :math:`q_r = \Upsilon_r \lambda = 2\pi \frac{\lambda}{\Lambda_r}`. 
+    Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and 
+    :math:`\theta(0) = \theta_{\text{min}}`.
 
     Parameters
     ----------
@@ -382,10 +386,12 @@ def radial_solutions(a, constants, radial_roots):
 
 
 def polar_solutions(a, constants, polar_roots):
-    r"""Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), \phi^{(\theta)}(q_\theta)` 
-    from equation 6 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_.
-    :math:`q_\theta` is defined as :math:`q_\theta = \Upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
-    Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and :math:`\theta(0) = \theta_{\text{min}}`.
+    r"""Computes the polar solutions :math:`\theta(q_\theta), t^{(\theta)}(q_\theta), 
+    \phi^{(\theta)}(q_\theta)` from equation 6 of `Fujita and Hikida 
+    <https://doi.org/10.48550/arXiv.0906.1420>`_. :math:`q_\theta` is defined as 
+    :math:`q_\theta = \Upsilon_\theta \lambda = 2\pi \frac{\lambda}{\Lambda_\theta}`.
+    Assumes the initial conditions :math:`r(0) = r_{\text{min}}` and 
+    :math:`\theta(0) = \theta_{\text{min}}`.
 
     Parameters
     ----------
@@ -533,7 +539,9 @@ def stable_trajectory(
         )
 
     def r(mino_time):
-        return distance_conversion_func[distance_units](r_phases(upsilon_r * mino_time + q_r0), M)
+        return distance_conversion_func[distance_units](
+            r_phases(upsilon_r * mino_time + q_r0), 
+            M)
 
     def theta(mino_time):
         return theta_phases(upsilon_theta * mino_time + q_theta0)

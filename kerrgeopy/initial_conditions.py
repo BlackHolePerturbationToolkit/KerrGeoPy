@@ -12,8 +12,8 @@ from scipy.special import ellipkinc
 
 
 def constants_from_initial_conditions(a, initial_position, initial_velocity):
-    r"""Computes the constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` of the orbit 
-    with the given initial conditions.
+    r"""Computes the constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` 
+    of the orbit with the given initial conditions.
 
     Parameters
     ----------
@@ -70,8 +70,8 @@ def is_stable(a, initial_position, initial_velocity, constants=None, tol=1e-4):
     initial_velocity : tuple(double,double,double,double)
         initial four-velocity :math:`(u^t_0,u^r_0,u^\theta_0,u^\phi_0)`
     constants : tuple(double,double,double), optional
-        tuple of constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` can be passed in to
-        avoid recomputing them
+        tuple of constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` 
+        can be passed in to avoid recomputing them
     tol : double, optional
         numerical tolerance used when comparing :math:`r_0` to radial
         roots, defaults to 1e-4
@@ -137,9 +137,10 @@ def stable_orbit_initial_phases(
     upsilon_theta=None,
     tol=1e-4,
 ):
-    r"""Computes the initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})` of a stable 
-    bound orbit with the given initial conditions. Computes phases with respect to the starting 
-    point :math:`(t_0,r_0,\theta_0,\phi_0) = (0,r_\text{min},\theta_\text{min},0)`.
+    r"""Computes the initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})` 
+    of a stable bound orbit with the given initial conditions. Computes phases 
+    with respect to the starting point :math:`(t_0,r_0,\theta_0,\phi_0) = 
+    (0,r_\text{min},\theta_\text{min},0)`.
 
     Parameters
     ----------
@@ -150,8 +151,8 @@ def stable_orbit_initial_phases(
     initial_velocity : tuple(double,double,double,double)
         initial four-velocity :math:`(u^t_0,u^r_0,u^\theta_0,u^\phi_0)`
     constants : tuple(double,double,double), optional
-        constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` can be passed in to avoid
-        recomputing them
+        constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` 
+        can be passed in to avoid recomputing them
     radial_roots : tuple(double,double,double,double), optional
         radial roots :math:`(r_1,r_2,r_3,r_4)` can be passed in to avoid
         recomputing them
@@ -268,9 +269,10 @@ def stable_orbit_initial_phases(
 def plunging_orbit_initial_phases(
     a, initial_position, initial_velocity, constants=None, radial_roots=None, tol=1e-4
 ):
-    r"""Computes the initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})` of a plunging 
-    orbit with the given initial conditions. Computes phases with respect to the starting point 
-    :math:`(t_0,r_0,\theta_0,\phi_0) = (0,r_\text{min},\theta_{\text{min}},0)`.
+    r"""Computes the initial phases :math:`(q_{t_0},q_{r_0},q_{\theta_0},q_{\phi_0})` 
+    of a plunging orbit with the given initial conditions. Computes phases with 
+    respect to the starting point :math:`(t_0,r_0,\theta_0,\phi_0) = 
+    (0,r_\text{min},\theta_{\text{min}},0)`.
 
     Parameters
     ----------
@@ -281,8 +283,8 @@ def plunging_orbit_initial_phases(
     initial_velocity : tuple(double,double,double,double)
         initial four-velocity :math:`(u^t_0,u^r_0,u^\theta_0,u^\phi_0)`
     constants : tuple(double,double,double), optional
-        constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` can be passed in to avoid
-        recomputing them
+        constants of motion :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})` 
+        can be passed in to avoid recomputing them
     radial_roots : tuple(double,double,double,double), optional
         radial roots :math:`(r_1,r_2,r_3,r_4)` can be passed in to avoid
         recomputing them

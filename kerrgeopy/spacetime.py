@@ -5,7 +5,8 @@ import numpy as np
 
 
 class KerrSpacetime:
-    """Class representing spacetime around a black hole with mass :math:`M` and spin parameter :math:`a`
+    """Class representing spacetime around a black hole with mass :math:`M` 
+    and spin parameter :math:`a`
 
     Parameters
     ----------
@@ -66,7 +67,8 @@ class KerrSpacetime:
         return is_stable(self.a, p, e, x)
 
     def metric(self, t, r, theta, phi):
-        """Returns the matrix representation of the metric at a given point expressed in Boyer-Lindquist coordinates.
+        """Returns the matrix representation of the metric at a given point 
+        expressed in Boyer-Lindquist coordinates.
 
         Parameters
         ----------
@@ -97,7 +99,8 @@ class KerrSpacetime:
         # fmt: on
 
     def norm(self, t, r, theta, phi, v):
-        """Computes the norm of a vector at a given point in spacetime expressed in Boyer-Lindquist coordinates
+        """Computes the norm of a vector at a given point in spacetime 
+        expressed in Boyer-Lindquist coordinates
 
         Parameters
         ----------
@@ -133,7 +136,8 @@ class KerrSpacetime:
         phi : function
             azimuthal component of trajectory
         constants : tuple(double, double, double)
-            tuple of constants of motion in the form :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
+            tuple of constants of motion in the form 
+            :math:`(\mathcal{E},\mathcal{L},\mathcal{Q})`
         upsilon_r : double
             radial frequency
         upsilon_theta : double
@@ -156,17 +160,13 @@ class KerrSpacetime:
         R = lambda r: (E * (r**2 + a**2) - a * L) ** 2 - (r**2 - 2 * r + a**2) * (
             r**2 + (a * E - L) ** 2 + Q
         )
-        # R = Polynomial([-a**2*Q, 2*L**2+2*Q+2*a**2*E**2-4*a*E*L, a**2*E**2-L**2-Q-a**2, 2, E**2-1])
-
         # polar polynomial
         Z = (
             lambda z: Q
             - (Q + a**2 * (1 - E**2) + L**2) * z**2
             + a**2 * (1 - E**2) * z**4
         )
-        # Z = lambda z: Q-z**2*(a**2*(1-E**2)*(1-z**2)+L**2+Q)
-        # Z = Polynomial([Q,-(Q+a**2*(1-E**2)+L**2),a**2*(1-E**2)])
-
+        
         def u_t(time):
             delta = r(time) ** 2 - 2 * r(time) + a**2
             sigma = r(time) ** 2 + a**2 * cos(theta(time)) ** 2

@@ -15,7 +15,7 @@ class PlungingOrbit(Orbit):
     Parameters
     ----------
     a : double
-        dimensionaless spin parameter
+        dimensionless spin parameter
     E : double
         dimensionless energy
     L : double
@@ -33,7 +33,7 @@ class PlungingOrbit(Orbit):
     Attributes
     ----------
     a
-        dimensionaless spin parameter
+        dimensionless spin parameter
     E
         dimensionless energy
     L
@@ -148,9 +148,11 @@ class PlungingOrbit(Orbit):
 
 
 def plunging_radial_integrals(a, E, L, Q):
-    r"""Computes the radial integrals :math:`I_r`, :math:`I_{r^2}` and :math:`I_{r_\pm}` defined 
-    in equation 39 of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_ as a 
-    function of the radial phase. Used to compute the radial solutions for the case of two complex roots.
+    r"""Computes the radial integrals :math:`I_r`, :math:`I_{r^2}` and 
+    :math:`I_{r_\pm}` defined in equation 39 of `Dyson and van de Meent 
+    <https://doi.org/10.48550/arXiv.2302.03704>`_ as a function of the 
+    radial phase. Used to compute the radial solutions for the case of 
+    two complex roots.
 
     Parameters
     ----------
@@ -314,9 +316,9 @@ def plunging_radial_integrals(a, E, L, Q):
 
 
 def plunging_radial_solutions_complex(a, E, L, Q):
-    r"""Computes the radial solutions :math:`r(q_r), t_r(q_r), \phi_r(q_r)` from equation 50 and 51 
-    of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_ for the case of 
-    two complex radial roots.
+    r"""Computes the radial solutions :math:`r(q_r), t_r(q_r), \phi_r(q_r)` 
+    from equation 50 and 51 of `Dyson and van de Meent <https://doi.org/10.48550
+    /arXiv.2302.03704>`_ for the case of two complex radial roots.
 
     Parameters
     ----------
@@ -395,8 +397,9 @@ def plunging_radial_solutions_complex(a, E, L, Q):
 
 
 def plunging_polar_solutions(a, E, L, Q):
-    r"""Computes the polar solutions :math:`\theta(q_\theta), t_\theta(q_\theta), \phi_\theta(q_\theta)` 
-    from equation 33 and 37 of `Dyson and van de Meent <https://doi.org/10.48550/arXiv.2302.03704>`_
+    r"""Computes the polar solutions :math:`\theta(q_\theta), t_\theta(q_\theta), 
+    \phi_\theta(q_\theta)` from equation 33 and 37 of `Dyson and van de Meent 
+    <https://doi.org/10.48550/arXiv.2302.03704>`_
 
     Parameters
     ----------

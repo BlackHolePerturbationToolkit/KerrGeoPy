@@ -75,17 +75,24 @@ class Orbit:
         if abs(initial_norm + 1) > 1e-6:
             raise ValueError("Initial velocity is not normalized")
 
-        E, L, Q = constants_from_initial_conditions(a, initial_position, initial_velocity)
+        E, L, Q = constants_from_initial_conditions(
+            a, initial_position, initial_velocity
+        )
         self.E, self.L, self.Q = E, L, Q
 
         if is_stable(a, initial_position, initial_velocity):
             self.stable = True
             a, p, e, x = apex_from_constants(a, E, L, Q)
             self.a, self.p, self.e, self.x = a, p, e, x
-            self.upsilon_r, self.upsilon_theta, self.upsilon_phi, self.gamma = mino_frequencies(
+            (
+                self.upsilon_r,
+                self.upsilon_theta,
+                self.upsilon_phi,
+                self.gamma,
+            ) = mino_frequencies(a, p, e, x)
+            self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(
                 a, p, e, x
             )
-            self.omega_r, self.omega_theta, self.omega_phi = fundamental_frequencies(a, p, e, x)
             self.initial_phases = stable_orbit_initial_phases(
                 a, initial_position, initial_velocity
             )
@@ -122,18 +129,25 @@ class Orbit:
             from .stable import radial_solutions, polar_solutions
 
             constants = (self.E, self.L, self.Q)
-            radial_roots = stable_radial_roots(self.a, self.p, self.e, self.x, constants)
+            radial_roots = stable_radial_roots(
+                self.a, self.p, self.e, self.x, constants
+            )
             polar_roots = stable_polar_roots(self.a, self.p, self.e, self.x, constants)
             r, t_r, phi_r = radial_solutions(self.a, constants, radial_roots)
             theta, t_theta, phi_theta = polar_solutions(self.a, constants, polar_roots)
         else:
             radial_roots = plunging_radial_roots(self.a, self.E, self.L, self.Q)
             if np.iscomplex(radial_roots[3]):
-                from .plunge import plunging_radial_solutions_complex, plunging_polar_solutions
+                from .plunge import (
+                    plunging_radial_solutions_complex,
+                    plunging_polar_solutions,
+                )
 
                 # adjust q_theta0 so that initial conditions are consistent with stable orbits
                 q_theta0 = q_theta0 + pi / 2
-                r, t_r, phi_r = plunging_radial_solutions_complex(self.a, self.E, self.L, self.Q)
+                r, t_r, phi_r = plunging_radial_solutions_complex(
+                    self.a, self.E, self.L, self.Q
+                )
                 theta, t_theta, phi_theta = plunging_polar_solutions(
                     self.a, self.E, self.L, self.Q
                 )
@@ -142,7 +156,9 @@ class Orbit:
 
                 constants = (self.E, self.L, self.Q)
                 r, t_r, phi_r = radial_solutions(self.a, constants, radial_roots)
-                theta, t_theta, phi_theta = polar_solutions(self.a, constants, radial_roots)
+                theta, t_theta, phi_theta = polar_solutions(
+                    self.a, constants, radial_roots
+                )
 
         return (
             lambda q_r: t_r(q_r + q_r0),
@@ -151,7 +167,9 @@ class Orbit:
             lambda q_theta: phi_theta(q_theta + q_theta0),
         )
 
-    def trajectory(self, initial_phases=None, distance_units="natural", time_units="natural"):
+    def trajectory(
+        self, initial_phases=None, distance_units="natural", time_units="natural"
+    ):
         r"""Computes the components of the trajectory as a function of Mino time
 
         Parameters
@@ -180,13 +198,27 @@ class Orbit:
             from .stable import stable_trajectory
 
             return stable_trajectory(
-                self.a, self.p, self.e, self.x, initial_phases, self.M, distance_units, time_units
+                self.a,
+                self.p,
+                self.e,
+                self.x,
+                initial_phases,
+                self.M,
+                distance_units,
+                time_units,
             )
         else:
             from .plunge import plunging_trajectory
 
             return plunging_trajectory(
-                self.a, self.E, self.L, self.Q, initial_phases, self.M, distance_units, time_units
+                self.a,
+                self.E,
+                self.L,
+                self.Q,
+                initial_phases,
+                self.M,
+                distance_units,
+                time_units,
             )
 
     def constants_of_motion(self, units="natural"):
@@ -255,7 +287,14 @@ class Orbit:
         constants = self.E, self.L, self.Q
 
         return spacetime.four_velocity(
-            t, r, theta, phi, constants, self.upsilon_r, self.upsilon_theta, initial_phases
+            t,
+            r,
+            theta,
+            phi,
+            constants,
+            self.upsilon_r,
+            self.upsilon_theta,
+            initial_phases,
         )
 
     def _four_velocity_norm(self, initial_phases=None):
@@ -459,7 +498,10 @@ class Orbit:
 
         # https://stackoverflow.com/questions/19390895/matplotlib-plot-with-variable-line-width
         points = np.array(
-            [[[x, y, z]] for x, y, z in zip(trajectory_x, trajectory_y, trajectory_z_visible)]
+            [
+                [[x, y, z]]
+                for x, y, z in zip(trajectory_x, trajectory_y, trajectory_z_visible)
+            ]
         )
         # create a segment connecting every pair of consecutive points
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
@@ -473,7 +515,9 @@ class Orbit:
         # plot orbit
         ax.add_collection(tail)
         # plot smaller body
-        ax.scatter(trajectory_x[-1], trajectory_y[-1], trajectory_z[-1], color="black", s=20)
+        ax.scatter(
+            trajectory_x[-1], trajectory_y[-1], trajectory_z[-1], color="black", s=20
+        )
 
         # set axis limits
         x_values = np.concatenate((trajectory_x, x_sphere.flatten()))
@@ -534,12 +578,14 @@ class Orbit:
         normal_component = points.dot(view_plane_normal)
         # compute the projection of each trajectory point onto the viewing plane
         projection = points - np.transpose(
-            normal_component * np.transpose(np.broadcast_to(view_plane_normal, (len(points), 3)))
+            normal_component
+            * np.transpose(np.broadcast_to(view_plane_normal, (len(points), 3)))
         )
         # find points in front of the viewing plane or outside the event horizon when projected onto the viewing plane
-        return ((normal_component >= 0) | (np.linalg.norm(projection, axis=1) > event_horizon)) & (
-            np.linalg.norm(points) > event_horizon
-        )
+        return (
+            (normal_component >= 0)
+            | (np.linalg.norm(projection, axis=1) > event_horizon)
+        ) & (np.linalg.norm(points) > event_horizon)
 
     def animate(
         self,
@@ -691,7 +737,9 @@ class Orbit:
             zorder=0,
         )
         # create orbital tail
-        decay = np.flip(0.1 + 0.9 * np.exp(-(time - time[0]) / tau))  # exponential decay
+        decay = np.flip(
+            0.1 + 0.9 * np.exp(-(time - time[0]) / tau)
+        )  # exponential decay
         tail = Line3DCollection([], color=color, linewidths=lw, zorder=1)
         ax.add_collection(tail)
         # plot smaller body
@@ -751,10 +799,14 @@ class Orbit:
 
                 # update camera angles
                 updated_azimuth = (
-                    azimuthal_pan(current_time) if azimuthal_pan is not None else azimuth
+                    azimuthal_pan(current_time)
+                    if azimuthal_pan is not None
+                    else azimuth
                 )
                 updated_elevation = (
-                    elevation_pan(current_time) if elevation_pan is not None else elevation
+                    elevation_pan(current_time)
+                    if elevation_pan is not None
+                    else elevation
                 )
                 updated_roll = roll(current_time) if roll is not None else 0
                 ax.view_init(updated_elevation, updated_azimuth, updated_roll)
@@ -767,7 +819,9 @@ class Orbit:
                     ax.set_zlim(-updated_limit, updated_limit)
 
                 # filter out points behind the black hole
-                visible = self.is_visible(trajectory[j0:j], updated_elevation, updated_azimuth)
+                visible = self.is_visible(
+                    trajectory[j0:j], updated_elevation, updated_azimuth
+                )
                 trajectory_z_visible = trajectory_z[j0:j].copy()
                 trajectory_z_visible[~visible] = np.nan
                 # create segments connecting every consecutive pair of points
@@ -780,13 +834,19 @@ class Orbit:
                     ]
                 )
                 segments = (
-                    np.concatenate([points[:-1], points[1:]], axis=1) if len(points) > 1 else []
+                    np.concatenate([points[:-1], points[1:]], axis=1)
+                    if len(points) > 1
+                    else []
                 )
                 # update tail
                 tail.set_segments(segments)
                 tail.set_alpha(decay[-(j - j0) :])
                 # update body
-                body._offsets3d = ([trajectory_x[j]], [trajectory_y[j]], [trajectory_z[j]])
+                body._offsets3d = (
+                    [trajectory_x[j]],
+                    [trajectory_y[j]],
+                    [trajectory_z[j]],
+                )
 
                 # update plots
                 if plot_components:
@@ -809,7 +869,11 @@ class Orbit:
             FFwriter = FFMpegWriter(fps=30)
             # savefig overrides the facecolor so we need to set it again
             if background_color is not None:
-                ani.save(filename, savefig_kwargs={"facecolor": background_color}, writer=FFwriter)
+                ani.save(
+                    filename,
+                    savefig_kwargs={"facecolor": background_color},
+                    writer=FFwriter,
+                )
             else:
                 ani.save(filename, writer=FFwriter)
             # close figure so it doesn't show up in notebook

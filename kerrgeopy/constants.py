@@ -10,9 +10,9 @@ from numpy.polynomial import Polynomial
 
 
 def stable_radial_roots(a, p, e, x, constants=None):
-    """Computes the radial roots for a stable bound orbit as defined in equation 10 of
-    `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. Roots are given in
-    decreasing order.
+    """Computes the radial roots for a stable bound orbit as defined in 
+    equation 10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. 
+    Roots are given in decreasing order.
 
     Parameters
     ----------
@@ -49,9 +49,10 @@ def stable_radial_roots(a, p, e, x, constants=None):
 
 
 def plunging_radial_roots(a, E, L, Q):
-    """Computes the radial roots for a plunging orbit. If all roots are real, roots are sorted such
-    that the motion is between r1 and r2 and roots are otherwise in decreasing order. If there are
-    two complex roots, r1 < r2 are real and r3/r4 are complex conjugates.
+    """Computes the radial roots for a plunging orbit. If all roots are real, 
+    roots are sorted such that the motion is between r1 and r2 and roots are 
+    otherwise in decreasing order. If there are two complex roots, 
+    r1 < r2 are real and r3/r4 are complex conjugates.
 
     Parameters
     ----------
@@ -86,7 +87,8 @@ def plunging_radial_roots(a, E, L, Q):
 
     r_minus = 1 - sqrt(1 - a**2)
 
-    # if there are 4 real roots, by convention r4 < r3 < r2 < r1 (consistent with stable orbits)
+    # if there are 4 real roots, by convention r4 < r3 < r2 < r1 
+    # (consistent with stable orbits)
     if len(real_roots) == 4:
         # if there are three roots outside the event horizon swap r1/r3 and r2/r4
         if real_roots[1] > r_minus:
@@ -106,8 +108,9 @@ def plunging_radial_roots(a, E, L, Q):
 
 
 def stable_polar_roots(a, p, e, x, constants=None):
-    r"""Computes the polar roots for a stable bound orbit as defined in equation 10 of
-    `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. Roots are given in increasing order.
+    r"""Computes the polar roots for a stable bound orbit as defined in equation 
+    10 of `Fujita and Hikida <https://doi.org/10.48550/arXiv.0906.1420>`_. 
+    Roots are given in increasing order.
 
     Parameters
     ----------
@@ -140,7 +143,8 @@ def stable_polar_roots(a, p, e, x, constants=None):
 
 
 def _coefficients(r, a, x):
-    """Computes the coefficients f, g, h and d from equation B.5 in `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
+    """Computes the coefficients f, g, h and d from equation B.5 in 
+    `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
 
     Parameters
     ----------
@@ -166,8 +170,8 @@ def _coefficients(r, a, x):
 
 
 def _coefficients_derivative(r, a, x):
-    """Computes the derivatives f', g', h' and d' of the coefficients from equation B.5 in
-    `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
+    """Computes the derivatives f', g', h' and d' of the coefficients from 
+    equation B.5 in `Schmidt <https://doi.org/10.48550/arXiv.gr-qc/0202090>`_
 
     Parameters
     ----------
@@ -192,7 +196,8 @@ def _coefficients_derivative(r, a, x):
 
 
 def _standardize_params(a, x):
-    """Changes signs of a and x so that a is positive and x encodes the direction of the orbit.
+    """Changes signs of a and x so that a is positive 
+    and x encodes the direction of the orbit.
 
     Parameters
     ----------
@@ -293,7 +298,8 @@ def energy(a, p, e, x):
 
 
 def angular_momentum(a, p, e, x, E=None):
-    """Computes the dimensionless angular momentum of a bound orbit with the given parameters
+    """Computes the dimensionless angular momentum 
+    of a bound orbit with the given parameters
 
     Parameters
     ----------
@@ -346,7 +352,8 @@ def angular_momentum(a, p, e, x, E=None):
 
 
 def carter_constant(a, p, e, x, E=None, L=None):
-    """Computes the dimensionless carter constant of a bound orbit with the given parameters
+    """Computes the dimensionless carter constant 
+    of a bound orbit with the given parameters
 
     Parameters
     ----------
@@ -408,8 +415,8 @@ def carter_constant(a, p, e, x, E=None, L=None):
 
 
 def constants_of_motion(a, p, e, x):
-    """Computes the dimensionless energy, angular momentum, and Carter constant of a bound orbit
-    with the given parameters
+    """Computes the dimensionless energy, angular momentum, and 
+    Carter constant of a bound orbit with the given parameters
 
     Parameters
     ----------
@@ -434,8 +441,8 @@ def constants_of_motion(a, p, e, x):
 
 
 def apex_from_constants(a, E, L, Q):
-    r"""Computes the orbital parameters :math:`(a,p,e,x)` for a stable bound orbit with the given
-    constants of motion
+    r"""Computes the orbital parameters :math:`(a,p,e,x)` for a 
+    stable bound orbit with the given constants of motion
 
     Parameters
     ----------
@@ -583,8 +590,9 @@ def _S(p, a, e, x):
 
 
 def separatrix(a, e, x):
-    """Returns the value of p at the separatrix for the given orbital parameters computed using the
-    bracked root finding method described in `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
+    """Returns the value of p at the separatrix for the given orbital parameters 
+    computed using the bracked root finding method described in 
+    `Stein and Warburton <https://doi.org/10.48550/arXiv.1912.07609>`_
 
     Parameters
     ----------
@@ -639,8 +647,8 @@ def separatrix(a, e, x):
 
 
 def fast_separatrix(a, grid_spacing=0.01):
-    """Constructs a faster separatrix function for a given value of :math:`a` by interpolating over
-    a grid of :math:`e` and :math:`x` values.
+    """Constructs a faster separatrix function for a given value of :math:`a` 
+    by interpolating over a grid of :math:`e` and :math:`x` values.
 
     Parameters
     ----------
