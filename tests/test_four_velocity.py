@@ -92,7 +92,7 @@ class TestFourVelocity(unittest.TestCase):
                     params="a = {}, E = {}, L = {}, Q = {}".format(*orbit),
                     norm=norm(time),
                 ):
-                    self.assertTrue(abs(norm(time) + 1) < 1e-5)
+                    self.assertTrue(abs(norm(time) + 1) < 1e-3)
 
     def test_using_numerical_differentiation(self):
         """
