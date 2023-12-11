@@ -23,11 +23,11 @@ pip install kerrgeopy
 
 > **Note**
 >
-> KerrGeoPy uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running `pip install scipy -U`, although in most cases this should be done automatically by pip. Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on [ffmpeg](https://ffmpeg.org/download.html), which can be easily installed using [homebrew](https://formulae.brew.sh/formula/ffmpeg) or [anaconda](https://anaconda.org/conda-forge/ffmpeg).
+> This library uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running `pip install scipy -U`, although in most cases this should be done automatically by pip. Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on [ffmpeg](https://ffmpeg.org/download.html), which can be easily installed using [homebrew](https://formulae.brew.sh/formula/ffmpeg) or [anaconda](https://anaconda.org/conda-forge/ffmpeg).
 
 ## Stable Bound Orbits
 
-Kerrgeopy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
+KerrGeoPy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
 
 $a$ - spin of the primary body
 <br>
