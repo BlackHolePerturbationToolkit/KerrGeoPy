@@ -50,15 +50,22 @@ class TestConstants(unittest.TestCase):
 
     def test_constants_random(self):
         """
-        Test constants_of_motion method against output from the KerrGeodesics Mathematica library for a random set of orbits.
+        Test constants_of_motion method against output from the KerrGeodesics
+        Mathematica library for a random set of orbits.
         """
-        values = np.genfromtxt(DATA_DIR / "const_parameters.txt", delimiter=",")
-        mathematica_const_output = np.genfromtxt(DATA_DIR / "mathematica_const_output.txt")
-        python_const_output = np.apply_along_axis(lambda x: constants_of_motion(*x), 1, values)
+        parameters = np.genfromtxt(DATA_DIR / "const_parameters.txt", delimiter=",")
+        mathematica_const_output = np.genfromtxt(
+            DATA_DIR / "mathematica_const_output.txt"
+        )
+        python_const_output = np.apply_along_axis(
+            lambda x: constants_of_motion(*x), 1, parameters
+        )
 
-        for i, params in enumerate(values):
+        for i, params in enumerate(parameters):
             with self.subTest(i=i, params=params):
-                self.assertTrue(np.allclose(mathematica_const_output[i], python_const_output[i]))
+                self.assertTrue(
+                    np.allclose(mathematica_const_output[i], python_const_output[i])
+                )
 
 
 class TestSeparatrix(unittest.TestCase):
@@ -78,15 +85,22 @@ class TestSeparatrix(unittest.TestCase):
 
     def test_separatrix_random(self):
         """
-        Test separatrix method against output from the KerrGeodesics Mathematica library for a random set of inputs.
+        Test separatrix method against output from the KerrGeodesics
+        Mathematica library for a random set of inputs.
         """
-        sep_values = np.genfromtxt(DATA_DIR / "separatrix_parameters.txt", delimiter=",")
+        sep_parameters = np.genfromtxt(
+            DATA_DIR / "separatrix_parameters.txt", delimiter=","
+        )
         mathematica_separatrix_output = np.genfromtxt(
             DATA_DIR / "mathematica_separatrix_output.txt"
         )
-        python_separatrix_output = np.apply_along_axis(lambda x: separatrix(*x), 1, sep_values)
-        for i, params in enumerate(sep_values):
+        python_separatrix_output = np.apply_along_axis(
+            lambda x: separatrix(*x), 1, sep_parameters
+        )
+        for i, params in enumerate(sep_parameters):
             with self.subTest(i=i, params=params):
                 self.assertTrue(
-                    np.allclose(python_separatrix_output[i], mathematica_separatrix_output[i])
+                    np.allclose(
+                        python_separatrix_output[i], mathematica_separatrix_output[i]
+                    )
                 )

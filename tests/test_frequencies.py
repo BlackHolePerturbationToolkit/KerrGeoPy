@@ -46,14 +46,20 @@ class TestFrequencies(unittest.TestCase):
 
     def test_random(self):
         """
-        Test mino_frequencies method against output from the KerrGeodesics Mathematica library for a random set of orbits.
+        Test mino_frequencies method against output from the KerrGeodesics 
+        Mathematica library for a random set of orbits.
         """
-        values = np.genfromtxt(DATA_DIR / "freq_parameters.txt", delimiter=",")
-        mathematica_freq_output = np.genfromtxt(DATA_DIR / "mathematica_freq_output.txt")
-        python_freq_output = np.apply_along_axis(lambda x: mino_frequencies(*x), 1, values)
-        for i, params in enumerate(values):
+        parameters = np.genfromtxt(DATA_DIR / "freq_parameters.txt", delimiter=",")
+        mathematica_freq_output = np.genfromtxt(
+            DATA_DIR / "mathematica_freq_output.txt"
+        )
+        python_freq_output = np.apply_along_axis(
+            lambda x: mino_frequencies(*x), 1, parameters
+        )
+        for i, params in enumerate(parameters):
             with self.subTest(i=i, params=params):
-                E, L, Q = constants_of_motion(*params)
                 self.assertTrue(
-                    np.allclose(abs(mathematica_freq_output[i]), abs(python_freq_output[i]))
+                    np.allclose(
+                        abs(mathematica_freq_output[i]), abs(python_freq_output[i])
+                    )
                 )

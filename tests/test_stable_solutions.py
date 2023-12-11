@@ -9,7 +9,7 @@ THIS_DIR = Path(__file__).parent
 DATA_DIR = THIS_DIR.parent / "tests/data"
 
 
-orbit_values = np.genfromtxt(DATA_DIR / "stable_orbit_parameters.txt", delimiter=",")
+orbit_parameters = np.genfromtxt(DATA_DIR / "stable_orbit_parameters.txt", delimiter=",")
 orbit_times = np.genfromtxt(DATA_DIR / "stable_orbit_times.txt", delimiter=",")
 
 
@@ -20,7 +20,7 @@ class TestStableSolutions(unittest.TestCase):
         """
         components = ["t_r", "t_theta", "phi_r", "phi_theta"]
 
-        for i, orbit in enumerate(orbit_values):
+        for i, orbit in enumerate(orbit_parameters):
             mathematica_trajectory = np.genfromtxt(
                 DATA_DIR / f"stable_solutions/trajectory{i}.txt", delimiter=","
             )
@@ -45,10 +45,14 @@ class TestStableSolutions(unittest.TestCase):
                     i=i,
                     component=component,
                     params="a = {}, p = {}, e = {}, x = {}".format(*orbit),
-                    diff=np.max(np.abs(mathematica_trajectory[:, j] - python_trajectory[:, j])),
+                    diff=np.max(
+                        np.abs(mathematica_trajectory[:, j] - python_trajectory[:, j])
+                    ),
                 ):
                     self.assertTrue(
-                        np.allclose(mathematica_trajectory[:, j], python_trajectory[:, j])
+                        np.allclose(
+                            mathematica_trajectory[:, j], python_trajectory[:, j]
+                        )
                     )
 
 
@@ -96,7 +100,7 @@ class TestStableOrbit(unittest.TestCase):
         """
         components = ["t", "r", "theta", "phi"]
 
-        for i, orbit in enumerate(orbit_values):
+        for i, orbit in enumerate(orbit_parameters):
             mathematica_trajectory = np.genfromtxt(
                 DATA_DIR / f"stable_orbits/trajectory{i}.txt", delimiter=","
             )
@@ -113,8 +117,12 @@ class TestStableOrbit(unittest.TestCase):
                     i=i,
                     component=component,
                     params="a = {}, p = {}, e = {}, x = {}".format(*orbit),
-                    diff=np.max(np.abs(mathematica_trajectory[:, j] - python_trajectory[:, j])),
+                    diff=np.max(
+                        np.abs(mathematica_trajectory[:, j] - python_trajectory[:, j])
+                    ),
                 ):
                     self.assertTrue(
-                        np.allclose(mathematica_trajectory[:, j], python_trajectory[:, j])
+                        np.allclose(
+                            mathematica_trajectory[:, j], python_trajectory[:, j]
+                        )
                     )
