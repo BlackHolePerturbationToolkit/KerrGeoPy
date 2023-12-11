@@ -22,7 +22,7 @@ The library also provides a set of methods for computing constants of motion and
 
 Installation
 ------------
-Install using anaconda
+Install using Anaconda
 
 .. code-block:: bash
 
