@@ -1,6 +1,7 @@
 [![GitHub release (with filter)](https://img.shields.io/github/v/release/BlackHolePerturbationToolkit/KerrGeoPy)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/releases)
 [![Test Status](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/actions/workflows/tests.yml/badge.svg)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/actions)
 [![PyPI - Version](https://img.shields.io/pypi/v/kerrgeopy)](https://pypi.org/project/kerrgeopy/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/kerrgeopy.svg)](https://anaconda.org/conda-forge/kerrgeopy)
 [![Documentation Status](https://readthedocs.org/projects/kerrgeopy/badge/?version=latest)](https://kerrgeopy.readthedocs.io/en/latest/?badge=latest)
 [![GitHub License](https://img.shields.io/github/license/BlackHolePerturbationToolkit/KerrGeoPy)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10126824.svg)](https://doi.org/10.5281/zenodo.10126824)
@@ -11,19 +12,22 @@ KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.o
 
 ## Installation
 
-Install the latest version of kerrgeopy using pip
-
+Install using Anaconda
+```bash
+conda install -c conda-forge kerrgeopy
+```
+or using pip
 ```bash
 pip install kerrgeopy
 ```
 
 > **Note**
 >
-> KerrGeoPy uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running `pip install scipy -U`, although in most cases this should be done automatically by pip. Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on [ffmpeg](https://ffmpeg.org/download.html), which can be easily installed using [homebrew](https://formulae.brew.sh/formula/ffmpeg) or [anaconda](https://anaconda.org/conda-forge/ffmpeg).
+> This library uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running `pip install scipy -U`, although in most cases this should be done automatically by pip. Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on [ffmpeg](https://ffmpeg.org/download.html), which can be easily installed using [homebrew](https://formulae.brew.sh/formula/ffmpeg) or [anaconda](https://anaconda.org/conda-forge/ffmpeg).
 
 ## Stable Bound Orbits
 
-Kerrgeopy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
+KerrGeoPy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
 
 $a$ - spin of the primary body
 <br>
