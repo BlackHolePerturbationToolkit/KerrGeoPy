@@ -29,17 +29,17 @@ The geodesics of Kerr spacetime are of particular interest in the field of black
 hole perturbation theory because they describe the zeroth order motion of a small object 
 moving through the background spacetime of a large spinning black hole. For this reason, computing
 geodesics is an important step in modelling the gravitational radiation emitted by an
-extreme mass ratio inspiral (EMRI) - a type of gravitational wave event in which a stellar mass
+extreme mass ratio inspiral (EMRI) - an astrophysical binary in which a stellar mass
 compact object, such as a neutron star or a small ($10^1 - 10^2 M_\odot$) black hole, 
 spirals into a massive ($10^4 - 10^7 M_\odot$) black hole.
 
 Kerr spacetime has several nice properties which simplify the problem of computing geodesics. Since 
 it has both time translation symmetry and rotational symmetry, energy and angular momentum are conserved quantities. It is also
 equipped with a higher order symmetry which gives rise to a third constant of motion called the Carter
-constant. These three constants of motion, along with the spin of the black hole, uniquely define a geodesic [@schmidt].
-Alternatively, geodesics can be identified using a suitably generalized version of the parameters used to define
-a Keplerian orbit (eccentricity, semi-latus rectum and inclination angle). Bound geodesics also possess fundamental
-frequencies since their radial, azimuthal and polar motion is periodic.
+constant. These three constants of motion, along with the spin of the black hole, uniquely define a geodesic up to 
+initial conditions [@schmidt].Alternatively, geodesics can be identified using a suitably generalized 
+version of the parameters used to define a Keplerian orbit (eccentricity, semi-latus rectum and inclination angle). 
+Bound geodesics also possess fundamental frequencies since their radial, azimuthal and polar motion is periodic.
 
 `KerrGeoPy` is a Python implementation of the `KerrGeodesics` [@kerrgeodesics] Mathematica library 
 which computes both stable and plunging geodesics in Kerr spacetime using the 
@@ -49,7 +49,7 @@ evaluated using `SciPy`. Users can construct a geodesic by providing the initial
 four-velocity, or by providing either the constants of motion or the Keplerian parameters described above. 
 `KerrGeoPy` also provides methods for computing the fundamental frequencies 
 and constants of motion associated with a given geodesic and implements the algorithm described 
-in [@stein] for finding the separatrix, i.e the location of the last stable orbit.
+in [@stein] for finding the location of the last stable orbit orbit, known as the separatrix.
 
 ![Example of an equatorial (left), spherical (center) and generic (right) orbit computed by `KerrGeoPy`](orbits.png)
 
