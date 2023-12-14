@@ -62,14 +62,13 @@ constellation of three satellites in orbit around the sun. LISA is an ESA-led mi
 with significant contributions from NASA which is set to launch in the 2030s. It will
 complement existing ground-based detectors by opening up the millihertz band of the 
 gravitational wave spectrum [@lisa]. Because sources in this band evolve slowly over time and remain observable 
-for a period of months to years, LISA is expected to detect many overlapping signals at all times. 
-Thus, accurate waveform models are needed in order to identify individual sources and 
-perform parameter estimation - the process of approximating characteristics of the objects 
-involved in a gravitational wave event.
+for a period of days to years, LISA is expected to detect many overlapping signals at all times. 
+Thus, accurate waveform models are needed in order to identify gravitational wave sources and 
+perform parameter estimation - the process of approximating characteristics of a source.
 
-Unlike other LISA sources which can be modelled using either
-numerical relativity or post-Newtonian theory, EMRIs are most amenable to analysis
-using black hole perturbation theory - a comparatively underdeveloped area of research. 
+For most LISA sources, well developed models based on either numerical relativity or post-Newtonian theory already exist. 
+Extreme mass ratio inspirals are instead best described by black hole perturbation theory, 
+and the waveform models that currently exist are comparatively underdeveloped.
 In a perturbation theory model, the orbital trajectory is assumed to be a geodesic at 
 leading order. Higher order corrections are then computed by introducing the gravitational 
 field of the inspiralling object as a perturbation to the background spacetime of the massive black hole, 
@@ -86,7 +85,7 @@ researchers to build on in their own projects.
 
 Although other Python packages [@kerrgeodesicgw] with similar functionality do exist, they mostly rely on numerical 
 integration to compute geodesics. The analytic solutions used by `KerrGeoPy` have two main advantages
-over this approach. First, they are guaranteed to be stable and can be quickly evaluated at
+over this approach. First, they are guaranteed to be numerically stable and can be quickly evaluated at
 any point in time. Second, they produce several useful intermediate terms which cannot easily be
 computed using numerical integration.
 
