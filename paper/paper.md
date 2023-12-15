@@ -66,10 +66,10 @@ for a period of days to years, LISA is expected to detect many overlapping signa
 Thus, accurate waveform models are needed in order to identify gravitational wave sources and 
 perform parameter estimation - the process of approximating characteristics of a source.
 
-For most LISA sources, well developed models based on either numerical relativity or post-Newtonian theory already exist. 
-Extreme mass ratio inspirals are instead best described by black hole perturbation theory, 
-and the waveform models that currently exist are comparatively underdeveloped.
-In a perturbation theory model, the orbital trajectory is assumed to be a geodesic at 
+For most LISA sources, well-developed waveform models based on either numerical relativity 
+or post-Newtonian theory already exist. However, EMRIs are instead best 
+described by black hole perturbation theory, and the EMRI waveform models that currently exist 
+are comparatively underdeveloped. In a perturbation theory model, the orbital trajectory is assumed to be a geodesic at 
 leading order. Higher order corrections are then computed by introducing the gravitational 
 field of the inspiralling object as a perturbation to the background spacetime of the massive black hole, 
 expanded in powers of the mass ratio.
