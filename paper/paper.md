@@ -24,32 +24,34 @@ bibliography: paper.bib
 # Summary
 
 In general relativity, the motion of a free falling test particle in a curved spacetime is 
-described by a geodesic - the generalization of a "straight line" path to a curved space. 
+described by a geodesic - the generalization of a "straight line" path to a curved space.
+[comment: maybe we just say "...by a geodesic - the minimal path between two points in a curved space"] 
 The geodesics of Kerr spacetime are of particular interest in the field of black 
 hole perturbation theory because they describe the zeroth order motion of a small object 
-moving through the background spacetime of a large spinning black hole. For this reason, computing
-geodesics is an important step in modelling the gravitational radiation emitted by an
+moving through the background spacetime of a much more massive spinning black hole. For this reason, computing
+geodesics is an important step in modeling the gravitational radiation emitted by an
 extreme mass ratio inspiral (EMRI) - an astrophysical binary in which a stellar mass
-compact object, such as a neutron star or a small ($10^1 - 10^2 M_\odot$) black hole, 
-spirals into a massive ($10^4 - 10^7 M_\odot$) black hole.
+compact object, such as a neutron star or black hole (with mass $10^1 - 10^2 M_\odot$), 
+spirals into a massive black hole (with mass $10^4 - 10^7 M_\odot$).
 
 Kerr spacetime has several nice properties which simplify the problem of computing geodesics. Since 
-it has both time translation symmetry and rotational symmetry, energy and angular momentum are conserved quantities. It is also
+it has both time-translation symmetry and rotational symmetry, energy and angular momentum are conserved quantities. It is also
 equipped with a higher order symmetry which gives rise to a third constant of motion called the Carter
 constant. These three constants of motion, along with the spin of the black hole, uniquely define a geodesic up to 
-initial conditions [@schmidt].Alternatively, geodesics can be identified using a suitably generalized 
-version of the parameters used to define a Keplerian orbit (eccentricity, semi-latus rectum and inclination angle). 
-Bound geodesics also possess fundamental frequencies since their radial, azimuthal and polar motion is periodic.
+initial conditions [@schmidt]. Alternatively, geodesics can be identified using a suitably generalized 
+version of the parameters used to define a Keplerian orbit (eccentricity, semi-latus rectum, and inclination angle). 
+Bound geodesics also possess fundamental frequencies since their radial, azimuthal, and polar motions are periodic.
 
-`KerrGeoPy` is a Python implementation of the `KerrGeodesics` [@kerrgeodesics] Mathematica library 
-which computes both stable and plunging geodesics in Kerr spacetime using the 
+`KerrGeoPy` is a Python package which computes both stable and plunging geodesics in Kerr spacetime using the 
 analytic solutions to the geodesic equation derived in [@fujita] and 
-[@dyson]. These solutions are written in terms of elliptic integrals, which are 
+[@dyson]. It mirrors and builds upon much of the functionality of the `KerrGeodesics` [@kerrgeodesics] Mathematica library.
+Geodesic solutions are written in terms of elliptic integrals, which are 
 evaluated using `SciPy`. Users can construct a geodesic by providing the initial position and
 four-velocity, or by providing either the constants of motion or the Keplerian parameters described above. 
 `KerrGeoPy` also provides methods for computing the fundamental frequencies 
 and constants of motion associated with a given geodesic and implements the algorithm described 
-in [@stein] for finding the location of the last stable orbit orbit, known as the separatrix.
+in [@stein] for finding the location of the last stable orbit, known as the separatrix. The package also
+includes several methods for visualizing and animating geodesics.
 
 ![Example of an equatorial (left), spherical (center) and generic (right) orbit computed by `KerrGeoPy`](orbits.png)
 
@@ -85,9 +87,11 @@ researchers to build on in their own projects.
 
 Although other Python packages [@kerrgeodesicgw] with similar functionality do exist, they mostly rely on numerical 
 integration to compute geodesics. The analytic solutions used by `KerrGeoPy` have two main advantages
-over this approach. First, they are guaranteed to be numerically stable and can be quickly evaluated at
-any point in time. Second, they produce several useful intermediate terms which cannot easily be
-computed using numerical integration.
+over this approach. First, they can be much more numerically stable over long time periods and can be quickly evaluated at
+any point in time. Second, they produce several useful intermediate terms which are not calculated by other packages that rely on
+numerical integration. Modeling EMRIs typically requires long time-averages over the geodesic motion. Therefore,
+`KerrGeoPy`, with its analytic solutions and various orbital parametrizations, is specifically tuned to support 
+perturbative models of binary black holes and their gravitational waves.
 
 `KerrGeoPy` is a part of the [Black Hole Perturbation Toolkit](https://bhptoolkit.org). The source code
 is hosted on [Github](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy) and the package is
