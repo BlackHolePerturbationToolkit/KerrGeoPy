@@ -2,7 +2,7 @@
 title: '`KerrGeoPy`: A Python Package for Computing Timelike Geodesics in Kerr Spacetime'
 tags:
     - Python
-    - black holes 
+    - black holes
     - perturbation theory
     - gravitational waves
 authors:
@@ -45,13 +45,20 @@ Bound geodesics also possess fundamental frequencies since their radial, azimuth
 `KerrGeoPy` is a Python package which computes both stable and plunging geodesics in Kerr spacetime using the 
 analytic solutions to the geodesic equation derived in [@fujita] and 
 [@dyson]. It mirrors and builds upon much of the functionality of the `KerrGeodesics` [@kerrgeodesics] Mathematica library.
-Geodesic solutions are written in terms of elliptic integrals, which are 
+Geodesic solutions are written in terms of Legendre elliptic integrals, which are 
 evaluated using `SciPy`. Users can construct a geodesic by providing the initial position and
 four-velocity, or by providing either the constants of motion or the Keplerian parameters described above. 
-`KerrGeoPy` also provides methods for computing the fundamental frequencies 
-and constants of motion associated with a given geodesic and implements the algorithm described 
+
+`KerrGeoPy` provides methods for computing the four-velocity, fundamental frequencies, 
+and constants of motion associated with a given geodesic and also implements the algorithm described 
 in [@stein] for finding the location of the last stable orbit, known as the separatrix. The package also
 includes several methods for visualizing and animating geodesics.
+
+`KerrGeoPy` is a part of the [Black Hole Perturbation Toolkit](https://bhptoolkit.org). The source code
+is hosted on [Github](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy) and the package is
+distributed through both [PyPI](https://pypi.org/project/kerrgeopy/) and [conda-forge](https://anaconda.org/conda-forge/kerrgeopy).
+Automated unit tests are run using [Github Actions](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/actions/workflows/tests.yml) and
+comprehensive documentation is available on [Read the Docs](https://kerrgeopy.readthedocs.io/).
 
 ![Example of an equatorial (left), spherical (center) and generic (right) orbit computed by `KerrGeoPy`](orbits.png)
 
@@ -73,7 +80,7 @@ or post-Newtonian theory already exist. However, EMRIs are instead best
 described by black hole perturbation theory, and the EMRI waveform models that currently exist 
 are comparatively underdeveloped. In a perturbation theory model, the orbital trajectory is assumed to be a geodesic at 
 leading order. Higher order corrections are then computed by introducing the gravitational 
-field of the inspiralling object as a perturbation to the background spacetime of the massive black hole, 
+field of the inspiraling object as a perturbation to the background spacetime of the massive black hole, 
 expanded in powers of the mass ratio.
 
 In order to meet the accuracy requirements for LISA parameter estimation, EMRI waveform 
@@ -93,11 +100,7 @@ numerical integration. Modeling EMRIs typically requires long time-averages over
 `KerrGeoPy`, with its analytic solutions and various orbital parametrizations, is specifically tuned to support 
 perturbative models of binary black holes and their gravitational waves.
 
-`KerrGeoPy` is a part of the [Black Hole Perturbation Toolkit](https://bhptoolkit.org). The source code
-is hosted on [Github](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy) and the package is
-distributed through both [PyPI](https://pypi.org/project/kerrgeopy/) and [conda-forge](https://anaconda.org/conda-forge/kerrgeopy).
-Automated unit tests are run using [Github Actions](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/actions/workflows/tests.yml) and
-comprehensive documentation is available on [ReadTheDocs](https://kerrgeopy.readthedocs.io/).
+\newpage
 
 # Software Citations
 
