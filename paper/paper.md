@@ -24,9 +24,9 @@ bibliography: paper.bib
 # Summary
 
 In general relativity, the motion of a free falling test particle in a curved spacetime is 
-described by a geodesic - the generalization of a "straight line" path to a curved space.
-[comment: maybe we just say "...by a geodesic - the minimal path between two points in a curved space"] 
-The geodesics of Kerr spacetime are of particular interest in the field of black 
+described by a timelike geodesic - a path that extremizes the proper time experienced by the 
+particle. Intuitively, geodesics are analogous to straight line paths in flat spacetime.
+The timelike geodesics of Kerr spacetime are of particular interest in the field of black 
 hole perturbation theory because they describe the zeroth order motion of a small object 
 moving through the background spacetime of a much more massive spinning black hole. For this reason, computing
 geodesics is an important step in modeling the gravitational radiation emitted by an
@@ -42,7 +42,7 @@ initial conditions [@schmidt]. Alternatively, geodesics can be identified using 
 version of the parameters used to define a Keplerian orbit (eccentricity, semi-latus rectum, and inclination angle). 
 Bound geodesics also possess fundamental frequencies since their radial, azimuthal, and polar motions are periodic.
 
-`KerrGeoPy` is a Python package which computes both stable and plunging geodesics in Kerr spacetime using the 
+`KerrGeoPy` is a Python package which computes both stable and plunging timelike geodesics in Kerr spacetime using the 
 analytic solutions to the geodesic equation derived in [@fujita] and 
 [@dyson]. It mirrors and builds upon much of the functionality of the `KerrGeodesics` [@kerrgeodesics] Mathematica library.
 Geodesic solutions are written in terms of Legendre elliptic integrals, which are 
