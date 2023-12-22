@@ -24,9 +24,10 @@ bibliography: paper.bib
 # Summary
 
 In general relativity, the motion of a free-falling test particle in a curved spacetime is 
-described by a timelike geodesic - the minimal path between two points in space.
-The geodesics of Kerr spacetime are of particular interest in the field of black 
-hole perturbation theory, because they describe the zeroth-order motion of a small object 
+described by a timelike geodesic - the minimal path between two points in space. 
+Intuitively, geodesics are analogous to straight line paths in flat spacetime.
+The timelike geodesics of Kerr spacetime are of particular interest in the field of black 
+hole perturbation theory because they describe the zeroth order motion of a small object 
 moving through the background spacetime of a much more massive spinning black hole. For this reason, computing
 geodesics is an important step in modeling the gravitational radiation emitted by an
 extreme-mass-ratio inspiral (EMRI) - an astrophysical binary in which a stellar mass
