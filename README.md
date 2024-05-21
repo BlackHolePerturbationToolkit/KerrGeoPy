@@ -25,6 +25,10 @@ pip install kerrgeopy
 >
 > This library uses functions introduced in scipy 1.8, so it may also be necessary to update scipy by running `pip install scipy -U`, although in most cases this should be done automatically by pip. Certain plotting and animation functions also make use of features introduced in matplotlib 3.7 and rely on [ffmpeg](https://ffmpeg.org/download.html), which can be easily installed using [homebrew](https://formulae.brew.sh/formula/ffmpeg) or [anaconda](https://anaconda.org/conda-forge/ffmpeg).
 
+## Contributing
+
+For contribution guidelines, see [CONTRIBUTING](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/tree/main/CONTRIBUTING.md).
+
 ## Stable Bound Orbits
 
 KerrGeoPy computes orbits in Boyer-Lindquist coordinates $(t,r,\theta,\phi)$. Let $M$ to represent the mass of the primary body and let $J$ represent its angular momentum. Working in geometrized units where $G=c=1$, stable bound orbits are parametrized using the following variables:
