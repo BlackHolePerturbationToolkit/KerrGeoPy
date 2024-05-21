@@ -27,7 +27,7 @@ pip install kerrgeopy
 
 ## Contributing
 
-For contribution guidelines, see [CONTRIBUTING](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/tree/main/CONTRIBUTING.md).
+For contribution guidelines, see [CONTRIBUTING](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/blob/main/CONTRIBUTING.md).
 
 ## Stable Bound Orbits
 
