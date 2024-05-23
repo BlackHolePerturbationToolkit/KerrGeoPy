@@ -65,7 +65,7 @@ comprehensive documentation is available on [Read the Docs](https://kerrgeopy.re
 
 # Statement of Need
 
-EMRIs are expected to be a major source observable by the Laser Inteferometer Space 
+EMRIs are expected to be a major source observable by the Laser Interferometer Space 
 Antenna (LISA), a future space-based gravitational wave observatory consisting of a triangular 
 constellation of three satellites in orbit around the sun. LISA is an ESA-led mission 
 with significant contributions from NASA which is set to launch in the 2030s. It will
