@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="kerrgeopy",
-    version="0.9.1",
+    version="0.9.2",
     author="Seyong Park",
     description="Library for computing stable and plunging geodesics in Kerr spacetime",
     long_description=long_description,

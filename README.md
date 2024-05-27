@@ -4,7 +4,7 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/kerrgeopy.svg)](https://anaconda.org/conda-forge/kerrgeopy)
 [![Documentation Status](https://readthedocs.org/projects/kerrgeopy/badge/?version=latest)](https://kerrgeopy.readthedocs.io/en/latest/?badge=latest)
 [![GitHub License](https://img.shields.io/github/license/BlackHolePerturbationToolkit/KerrGeoPy)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/blob/main/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10126824.svg)](https://doi.org/10.5281/zenodo.10126824)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8417442.svg)](https://doi.org/10.5281/zenodo.8417442)
 
 # KerrGeoPy
 
