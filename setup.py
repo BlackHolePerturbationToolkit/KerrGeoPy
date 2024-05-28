@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="kerrgeopy",
-    version="0.9.2",
+    version="0.9.3",
     author="Seyong Park",
     description="Library for computing stable and plunging geodesics in Kerr spacetime",
     long_description=long_description,
@@ -16,7 +16,7 @@ setup(
     packages=setuptools.find_packages(exclude=["tests"]),
     classifiers=(
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
     ),
     install_requires=["scipy>=1.8","numpy","matplotlib>=3.7","tqdm"]
