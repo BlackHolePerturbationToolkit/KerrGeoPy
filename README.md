@@ -5,6 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/kerrgeopy/badge/?version=latest)](https://kerrgeopy.readthedocs.io/en/latest/?badge=latest)
 [![GitHub License](https://img.shields.io/github/license/BlackHolePerturbationToolkit/KerrGeoPy)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8417442.svg)](https://doi.org/10.5281/zenodo.8417442)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.06587/status.svg)](https://doi.org/10.21105/joss.06587)
 
 # KerrGeoPy
 
@@ -295,7 +296,22 @@ plt.ylabel(r"$\phi(\lambda)$")
     
 ![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_20_1.png)
     
-
+## Citation
+If you use this software, please cite our article in the Journal of Open Source Software.
+```
+@article{kerrgeopy, 
+doi = {10.21105/joss.06587}, 
+url = {https://doi.org/10.21105/joss.06587}, 
+year = {2024}, 
+publisher = {The Open Journal}, 
+volume = {9}, 
+number = {98}, 
+pages = {6587}, 
+author = {Seyong Park and Zachary Nasipak}, 
+title = {KerrGeoPy: A Python Package for Computing Timelike Geodesics in Kerr Spacetime}, 
+journal = {Journal of Open Source Software} 
+} 
+```
 ## Authors
 
 * Seyong Park
