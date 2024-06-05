@@ -6,6 +6,8 @@
 [![GitHub License](https://img.shields.io/github/license/BlackHolePerturbationToolkit/KerrGeoPy)](https://github.com/BlackHolePerturbationToolkit/KerrGeoPy/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8417442.svg)](https://doi.org/10.5281/zenodo.8417442)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06587/status.svg)](https://doi.org/10.21105/joss.06587)
+[![DOI](https://img.shields.io/badge/arXiv-2406.01413-B31B1B)](https://arxiv.org/abs/2406.01413)
+
 
 # KerrGeoPy
 
