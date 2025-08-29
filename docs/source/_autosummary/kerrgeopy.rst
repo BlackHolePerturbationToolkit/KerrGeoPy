@@ -33,6 +33,7 @@
    ~kerrgeopy.initial_conditions
    ~kerrgeopy.orbit
    ~kerrgeopy.plunge
+   ~kerrgeopy.resonance
    ~kerrgeopy.spacetime
    ~kerrgeopy.stable
    ~kerrgeopy.units

@@ -74,6 +74,7 @@ API Reference
    ~kerrgeopy.constants
    ~kerrgeopy.frequencies
    ~kerrgeopy.initial_conditions
+   ~kerrgeopy.resonance
    ~kerrgeopy.units
 
 Indices and tables

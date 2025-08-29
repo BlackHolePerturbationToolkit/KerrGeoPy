@@ -22,7 +22,7 @@ copyright = '2023, Seyong Park'
 author = 'Seyong Park'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9.3'
+release = '0.9.4'
 
 
 # -- General configuration ---------------------------------------------------

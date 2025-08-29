@@ -297,7 +297,58 @@ plt.ylabel(r"$\phi(\lambda)$")
 ```
     
 ![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_20_1.png)
-    
+
+## Find resonant orbits
+### Double resonance
+Use `rtheta_resonance`, `rphi_resonance` and `phitheta_resonance` to find the semi-latus rectum $p$ of the corresponding resonance by passing the ratio, $a$, $e$ and $x$.
+
+```python
+kg.rtheta_resonance(9/10, 0.9, 0.6, 0.3)
+kg.rphi_resonance(9/10, 0.9, 0.6, 0.3)
+kg.phitheta_resonance(11/10, 0.9, 0.6, 0.3)
+```
+
+> [!NOTE]
+> While $r$-$\theta$ ratios and $r$-$\phi$ ratios are always less than 1, $\phi$-$\theta$ ratios can be larger than 1 if it is prograde, otherwise it is less than 1. $r$-$\theta$ ratios and $r$-$\phi$ ratios are actually negative in retrograde cases, but we take their absolute values so that every ratios are positive.
+
+### Triple resonant orbits
+
+Consider the triple resonance condition:
+$$
+    n_r\omega_r=n_\theta\omega_\theta=n_\phi\omega_\phi
+$$
+where $n_r$, $n_\theta$ and $n_\phi$ are the rational modes of corresponding frequencies. One of the ways of finding triple resonant orbits is finding possible value of one mode using two other given modes, $a$ and $e$. The functions used for this are `tripleResonance_thetaMode`, `tripleResonance_phiMode` and `tripleResonance_rMode`. By default, these function is in progade case.
+
+For example, with $(a, e, x)=(0.9, 0.6)$:
+- Finding $n_\theta$ if $n_r=10$ and $n_\phi=8$ 
+```python
+kg.tripleResonance_thetaMode(10, 8, 0.9, 0.6)
+```
+- Finding $n_\phi$ if $n_r=10$ and $n_\theta=8$ 
+```python
+kg.tripleResonance_phiMode(10, 8, 0.9, 0.6)
+```
+- Finding $n_r$ if $n_\theta=20$ and $n_\theta=19$ 
+```python
+kg.tripleResonance_rMode(10, 8, 0.9, 0.6)
+```
+
+Another way is finding $(p, x)$ of with the given 3 resonant modes using `tripleResonance`.
+```python
+kg.tripleResonance(10, 8.3, 8, 0.9, 0.6)
+```
+where $(n_r,n_\theta,n_\phi)=(10, 8.3, 8)$
+> [!CAUTION]
+> When using this module, because of the machine precision and the divergence of frequency ratios near the separatrix, you should not choose $r$-$\phi$ ratio or $r$-$\theta$ ratio that is too small (typically choose $\geq 1/3$), otherwise the functions don't work (A warning is raised when that happens). Similarly, the chosen $\phi$-$\theta$ ratio shouldn't be too far from 1.
+
+### Frequency ratio at the polar limit and the equatorial limit
+While most of the functions in this package does not support these limit, this module need them to find triple resonant orbits. For this reason, the limits are treated separately with 3 different ratios for each cases:
+- `rtheta_frequencyRatio_polarLimit`
+- `rphi_frequencyRatio_polarLimit`
+- `phitheta_frequencyRatio_polarLimit`
+- `rtheta_frequencyRatio_equatorialLimit`
+- `rphi_frequencyRatio_equatorialLimit`
+- `phitheta_frequencyRatio_equatorialLimit`
 ## Citation
 If you use this software, please cite our article in the Journal of Open Source Software.
 ```

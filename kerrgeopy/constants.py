@@ -36,12 +36,16 @@ def stable_radial_roots(a, p, e, x, constants=None):
         constants = constants_of_motion(a, p, e, x)
     E, L, Q = constants
 
-    r1 = p / (1 - e)
+    r1 = p / (1 - e) if e !=1 else inf
     r2 = p / (1 + e)
-
-    A_plus_B = 2 / (1 - E**2) - r1 - r2
-    AB = a**2 * Q / (r1 * r2 * (1 - E**2))
-
+    
+    if e == 1:
+        A_plus_B = (L**2+Q)/2-r2
+        AB = a**2 * Q / (2*r2)
+    else:
+        A_plus_B = 2 / (1 - E**2) - r1 - r2
+        AB = a**2 * Q / (r1 * r2 * (1 - E**2))
+        
     r3 = (A_plus_B + sqrt(A_plus_B**2 - 4 * AB)) / 2
     r4 = AB / r3
 
@@ -133,11 +137,17 @@ def stable_polar_roots(a, p, e, x, constants=None):
     if constants is None:
         constants = constants_of_motion(a, p, e, x)
     E, L, Q = constants
-    epsilon0 = a**2 * (1 - E**2) / L**2
     z_minus = 1 - x**2
-    # z_plus = a**2*(1-E**2)/(L**2*epsilon0)+1/(epsilon0*(1-z_minus))
-    # simplified using definition of carter constant
-    z_plus = nan if a == 0 else 1 + 1 / (epsilon0 * (1 - z_minus))
+    if (a == 0) | (e == 1):
+        z_plus = inf
+    else:
+        if x == 0:
+            z_plus = Q/a**2/(1-E**2)
+        else:
+            epsilon0 = a**2 * (1 - E**2) / L**2
+            # z_plus = a**2*(1-E**2)/(L**2*epsilon0)+1/(epsilon0*(1-z_minus))
+            # simplified using definition of carter constant
+            z_plus = 1 + 1 / (epsilon0 * (1 - z_minus))
 
     return z_minus, z_plus
 
@@ -700,7 +710,7 @@ def is_stable(a, p, e, x):
     -------
     boolean
     """
-    if p > separatrix(a, e, x):
+    if p >= separatrix(a, e, x):
         return True
     return False
 
