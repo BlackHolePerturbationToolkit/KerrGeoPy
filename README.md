@@ -400,7 +400,7 @@ img.compute()
 Then using `image()` method, we can obtain the distorted image of the provided spheremap as a `PIL.Image`
 ```python
 from PIL import Image
-# image from https://github.com/podrapsky/BlackHoleImages/tree/main
+# image from https://sci.esa.int/s/ApPJaGA
 bg = Image.open("skymap.jpg")
 bg
 ```
