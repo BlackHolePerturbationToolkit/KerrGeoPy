@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- Project information -----------------------------------------------------
 
 project = 'KerrGeoPy'
-copyright = '2023, Seyong Park'
-author = 'Seyong Park'
+copyright = '2023, Seyong Park and contributors.'
+author = 'Seyong Park, Zach Nasipak, Jáchym Kohout, Vojtěch Witzany'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9.3'
+release = '0.10.0'
 
 
 # -- General configuration ---------------------------------------------------

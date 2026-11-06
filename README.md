@@ -11,7 +11,14 @@
 
 # KerrGeoPy
 
-KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) Mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies. See the [documentation](https://kerrgeopy.readthedocs.io/en/latest/) for more information.
+KerrGeoPy is a python implementation of the [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/) Mathematica library. It is intended for use in computing orbital trajectories for extreme-mass-ratio inspirals (EMRIs). It implements the analytical solutions for plunging orbits from [Dyson and van de Meent](https://arxiv.org/abs/2302.03704), as well as solutions for stable orbits from [Fujita and Hikida](https://arxiv.org/abs/0906.1420). The library also provides a set of methods for computing constants of motion and orbital frequencies.
+
+Additionally, analytical solutions for lightlike geodesics are provided. They are implemented from [Gralla and Lupsasca](https://arxiv.org/abs/1910.12881) with distant limit from [Podrápský](https://dspace.cuni.cz/handle/20.500.11956/193468). The library also includes a utility class for rendering the black hole's shadow on stellar background.
+
+See the [documentation](https://kerrgeopy.readthedocs.io/en/latest/) for more information.
+
+## Acknowledgements
+The work on lightlike geodesics was supported by the [Student Faculty Grants (SFG)](https://www.mff.cuni.cz/en/students/bc-mgr/sfg) program at the Faculty of Mathematics and Physics, Charles University.
 
 ## Installation
 
@@ -297,6 +304,112 @@ plt.ylabel(r"$\phi(\lambda)$")
 ```
     
 ![png](https://raw.githubusercontent.com/BlackHolePerturbationToolkit/KerrGeoPy/main/README_files/Getting%20Started_20_1.png)
+
+## Lightlike Orbits
+
+Lightlike orbits are parametrized using the spin parameter and two constants of motion:
+
+$a$ - spin of the primary body 
+<br>
+$\eta$ - Carter's constant per squared energy
+<br>
+$\ell$ - angular momentum per energy
+
+$$
+a = \frac{J}{M^2}, \quad\quad \eta = \frac{Q}{E^2}, \quad\quad \ell = \frac{L}{E}
+$$
+
+Construct a `LightOrbit` using the initial position and the initial momentum.
+```python
+orbit = kg.LightOrbit(0.9, (0, 10, pi/3, 0), (1.3, -1.0002785057472545, 0.007, 0.04))
+```
+The `LightOrbit` class has `lambda_x` attribute, specifying the Mino time of escape or capture. This gets updated after calling `trajectory()`
+```python
+t, r, theta, phi = orbit.trajectory()
+orbit.lambda_x
+```
+```np.float64(0.5713865020357436)```
+
+As with timelike orbits, the `plot()` method can be used to plot the orbit
+```python
+fig, ax = orbit.plot(0, 2.27, axes_limits=(-10, 10, -10, 10, -10, 10))
+```
+![png](README_files/LightOrbitPlot.png)
+
+Using the `trajectory()` method, we can compute the trajectory of the light ray as a function of Mino time $\lambda$.
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+time = np.linspace(0,2.27,200)
+
+plt.figure(figsize=(20,4))
+
+plt.subplot(1,4,1)
+plt.plot(time, t(time))
+plt.xlabel(r"$\lambda$")
+plt.ylabel(r"$t(\lambda)$")
+
+plt.subplot(1,4,2)
+plt.plot(time, r(time))
+plt.xlabel(r"$\lambda$")
+plt.ylabel(r"$r(\lambda)$")
+
+plt.subplot(1,4,3)
+plt.plot(time, theta(time))
+plt.xlabel(r"$\lambda$")
+plt.ylabel(r"$\theta(\lambda)$")
+
+plt.subplot(1,4,4)
+plt.plot(time, phi(time))
+plt.xlabel(r"$\lambda$")
+plt.ylabel(r"$\phi(\lambda)$")
+
+plt.show()
+```
+![png](README_files/LightOrbitComponentsPlot.png)
+
+## Distant Lightlike Orbits
+
+Distant lightlike orbits are parametrized using the spin parameter and Bardeen's coordinates:
+
+$a$ - spin of the primary body 
+<br>
+$\alpha, \beta$ - Bardeen's coordinates
+
+$$
+a = \frac{J}{M^2}, \quad\quad \alpha = -\frac{\ell}{\sin \theta_0}, \quad\quad \beta = \text{sgn } p^\theta_0 \sqrt{\eta + a^2 \cos^2 \theta_0 - \ell^2 \cot^2 \theta_0}
+$$
+
+Construct a `DistantLightOrbit` using the initial angular coordinates $(\theta, \phi)$ and Bardeen's coordinates.
+```python
+orbit = kg.DistantLightOrbit(0.9, pi/3, 0, -4, 4.5)
+```
+The class extends from `LightOrbit`, so the same methods are accessible.
+
+## Shadow of the Black Hole
+
+Using the `KerrImage` class, we can generate images of the black hole.
+
+First, create the image and compute the data
+```python
+from kerrgeopy import KerrImage
+img = KerrImage(0.9, pi/3, (1920, 1080), 40)
+img.compute()
+```
+Then using `image()` method, we can obtain the distorted image of the provided spheremap as a `PIL.Image`
+```python
+from PIL import Image
+# image from https://sci.esa.int/s/ApPJaGA
+bg = Image.open("skymap.jpg")
+bg
+```
+![png](README_files/skymap.png)
+```python
+img.image(bg=bg)
+```
+![png](README_files/shadow.png)
+
     
 ## Citation
 If you use this software, please cite our article in the Journal of Open Source Software.
@@ -315,6 +428,10 @@ journal = {Journal of Open Source Software}
 } 
 ```
 ## Authors
-
+Timelike geodesics
 * Seyong Park
 * Zach Nasipak
+
+Lightlike geodesics
+* Jáchym Kohout
+* Vojtěch Witzany

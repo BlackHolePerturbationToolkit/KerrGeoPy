@@ -9,13 +9,9 @@ from .constants import (
     stable_radial_roots,
 )
 from .frequencies import mino_frequencies, fundamental_frequencies
-from numpy import sin, cos, sqrt, pi
+from .plot_utils import is_visible, plot, animate
+from numpy import cos, pi
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Line3DCollection
-from matplotlib.animation import FuncAnimation
-from matplotlib.animation import FFMpegWriter
-from tqdm import tqdm
 
 
 class Orbit:
@@ -467,79 +463,22 @@ class Orbit:
         """
         if initial_phases is None:
             initial_phases = self.initial_phases
-        lambda_range = lambda1 - lambda0
-        num_pts = int(lambda_range * point_density)
-        time = np.linspace(lambda0, lambda1, num_pts)
+        trajectory = self.trajectory(initial_phases=initial_phases)
 
-        t, r, theta, phi = self.trajectory(initial_phases=initial_phases)
-
-        # compute trajectory in cartesian coordinates
-        trajectory_x = r(time) * sin(theta(time)) * cos(phi(time))
-        trajectory_y = r(time) * sin(theta(time)) * sin(phi(time))
-        trajectory_z = r(time) * cos(theta(time))
-        trajectory = np.column_stack((trajectory_x, trajectory_y, trajectory_z))
-
-        # create sphere with radius equal to event horizon radius
-        event_horizon = 1 + sqrt(1 - self.a**2)
-        u = np.linspace(0, 2 * np.pi, 50)
-        v = np.linspace(0, np.pi, 25)
-        x_sphere = event_horizon * np.outer(np.cos(u), np.sin(v))
-        y_sphere = event_horizon * np.outer(np.sin(u), np.sin(v))
-        z_sphere = event_horizon * np.outer(np.ones(np.size(u)), np.cos(v))
-
-        # replace z values for points behind the black hole with nan so they are not plotted
-        # https://matplotlib.org/stable/gallery/lines_bars_and_markers/masked_demo.html
-        visible = self.is_visible(trajectory, elevation, azimuth)
-        trajectory_z_visible = trajectory_z.copy()
-        trajectory_z_visible[~visible] = np.nan
-
-        # compute linewidths using exponential decay
-        decay = np.flip(0.1 + lw * np.exp(-(time - time[0]) / tau))
-
-        # https://stackoverflow.com/questions/19390895/matplotlib-plot-with-variable-line-width
-        points = np.array(
-            [
-                [[x, y, z]]
-                for x, y, z in zip(trajectory_x, trajectory_y, trajectory_z_visible)
-            ]
+        return plot(
+            self.a,
+            trajectory,
+            lambda0,
+            lambda1,
+            elevation,
+            azimuth,
+            grid,
+            axes,
+            lw,
+            color,
+            tau,
+            point_density,
         )
-        # create a segment connecting every pair of consecutive points
-        segments = np.concatenate([points[:-1], points[1:]], axis=1)
-        tail = Line3DCollection(segments, linewidth=decay, color=color)
-
-        fig = plt.figure()
-        ax = fig.add_subplot(projection="3d")
-
-        # plot black hole
-        ax.plot_surface(x_sphere, y_sphere, z_sphere, color="black")
-        # plot orbit
-        ax.add_collection(tail)
-        # plot smaller body
-        ax.scatter(
-            trajectory_x[-1], trajectory_y[-1], trajectory_z[-1], color="black", s=20
-        )
-
-        # set axis limits
-        x_values = np.concatenate((trajectory_x, x_sphere.flatten()))
-        y_values = np.concatenate((trajectory_y, y_sphere.flatten()))
-        z_values = np.concatenate((trajectory_z, z_sphere.flatten()))
-        ax.set_xlim([x_values.min(), x_values.max()])
-        ax.set_ylim([y_values.min(), y_values.max()])
-        ax.set_zlim([z_values.min(), z_values.max()])
-        # set viewing angle
-        ax.view_init(elevation, azimuth)
-        # set equal aspect ratio and orthogonal projection
-        ax.set_aspect("equal")
-        # https://matplotlib.org/stable/gallery/mplot3d/projections.html
-        ax.set_proj_type("ortho")
-
-        # turn off grid and axes if specified
-        if not grid:
-            ax.grid(False)
-        if not axes:
-            ax.axis("off")
-
-        return fig, ax
 
     def is_visible(self, points, elevation, azimuth):
         """Determines if a point is visible from a given viewing angle or obscured
@@ -561,31 +500,7 @@ class Orbit:
         np.array
             boolean array indicating whether each point is visible
         """
-        # compute event horizon radius
-        event_horizon = 1 + sqrt(1 - self.a**2)
-
-        # convert viewing angles to radians
-        elevation_rad = elevation * pi / 180
-        azimuth_rad = azimuth * pi / 180
-
-        # https://matplotlib.org/stable/api/toolkits/mplot3d/view_angles.html
-        view_plane_normal = [
-            cos(elevation_rad) * cos(azimuth_rad),
-            cos(elevation_rad) * sin(azimuth_rad),
-            sin(elevation_rad),
-        ]
-
-        normal_component = points.dot(view_plane_normal)
-        # compute the projection of each trajectory point onto the viewing plane
-        projection = points - np.transpose(
-            normal_component
-            * np.transpose(np.broadcast_to(view_plane_normal, (len(points), 3)))
-        )
-        # find points in front of the viewing plane or outside the event horizon when projected onto the viewing plane
-        return (
-            (normal_component >= 0)
-            | (np.linalg.norm(projection, axis=1) > event_horizon)
-        ) & (np.linalg.norm(points) > event_horizon)
+        return is_visible(self.a, points, elevation, azimuth)
 
     def animate(
         self,
@@ -662,219 +577,34 @@ class Orbit:
             if true, plots the components of the trajectory in addition
             to the trajectory itself, defaults to False
         """
-        lambda_range = lambda1 - lambda0
-        point_density = 240  # number of points per unit of mino time
-        num_pts = int(lambda_range * point_density)  # total number of points
-        time = np.linspace(lambda0, lambda1, num_pts)
-        speed_multiplier = int(speed * 8)
-        num_frames = int(num_pts / speed_multiplier)
-        # compute trajectory
-        t, r, theta, phi = self.trajectory(initial_phases)
-
-        fig = plt.figure(figsize=((18, 12) if plot_components else (12, 12)))
-        if plot_components:
-            ax_dict = fig.subplot_mosaic(
-                """
-            OOOOTT
-            OOOORR
-            OOOOΘΘ
-            OOOOΦΦ
-            """,
-                per_subplot_kw={
-                    "O": {"projection": "3d"},
-                    "T": {"facecolor": "none"},
-                    "R": {"facecolor": "none"},
-                    "Θ": {"facecolor": "none"},
-                    "Φ": {"facecolor": "none"},
-                },
-            )
-            ax = ax_dict["O"]
-
-            ax_dict["T"].set_ylabel("$t$")
-            ax_dict["R"].set_ylabel("$r$")
-            ax_dict["Θ"].set_ylabel(r"$\theta$")
-            ax_dict["Φ"].set_ylabel(r"$\phi$")
-            (t_plot,) = ax_dict["T"].plot(time, t(time))
-            (r_plot,) = ax_dict["R"].plot(time, r(time))
-            (theta_plot,) = ax_dict["Θ"].plot(time, theta(time))
-            (phi_plot,) = ax_dict["Φ"].plot(time, phi(time))
-            # add text with parameters and time
-            text = ax.text2D(
-                0.05,
-                0.95,
-                "",
-                transform=ax.transAxes,
-                fontsize=20,
-                bbox=dict(facecolor="none", pad=10.0),
-            )
-
+        if initial_phases is None:
+            initial_phases = self.initial_phases
+        trajectory = self.trajectory(initial_phases=initial_phases)
+        if self.stable:
+            txt = lambda t: fr"$a = {self.a}\quad p = {self.p}\quad e = {self.e}\quad x = {self.x:.3f}\quad \lambda = {t:.2f}$"
         else:
-            ax = fig.add_subplot(projection="3d")
+            txt = lambda t: fr"$a = {self.a}\quad E = {self.E:.3f}\quad L = {self.L:.3f}\quad Q = {self.Q:.3f}\quad \lambda = {t:.2f}$"
 
-        eh = 1 + sqrt(1 - self.a**2)  # event horizon radius
-
-        # compute trajectory in cartesian coordinates
-        trajectory_x = r(time) * sin(theta(time)) * cos(phi(time))
-        trajectory_y = r(time) * sin(theta(time)) * sin(phi(time))
-        trajectory_z = r(time) * cos(theta(time))
-        trajectory = np.column_stack((trajectory_x, trajectory_y, trajectory_z))
-
-        # create sphere with radius equal to event horizon radius
-        u = np.linspace(0, 2 * np.pi, 50)
-        v = np.linspace(0, np.pi, 25)
-        x_sphere = eh * np.outer(np.cos(u), np.sin(v))
-        y_sphere = eh * np.outer(np.sin(u), np.sin(v))
-        z_sphere = eh * np.outer(np.ones(np.size(u)), np.cos(v))
-
-        # plot black hole
-        black_hole_color = "#333" if background_color == "black" else "black"
-        ax.plot_surface(
-            x_sphere,
-            y_sphere,
-            z_sphere,
-            color=black_hole_color,
-            shade=(background_color == "black"),
-            zorder=0,
+        animate(
+            self.a,
+            trajectory,
+            filename,
+            lambda0,
+            lambda1,
+            elevation,
+            azimuth,
+            grid,
+            axes,
+            color,
+            tau,
+            tail_length,
+            lw,
+            azimuthal_pan,
+            elevation_pan,
+            roll,
+            speed,
+            background_color,
+            axis_limit,
+            plot_components,
+            txt,
         )
-        # create orbital tail
-        decay = np.flip(
-            0.1 + 0.9 * np.exp(-(time - time[0]) / tau)
-        )  # exponential decay
-        tail = Line3DCollection([], color=color, linewidths=lw, zorder=1)
-        ax.add_collection(tail)
-        # plot smaller body
-        body = ax.scatter([], [], [], c="black")
-
-        # set axis limits so that the black hole is centered
-        x_values = np.concatenate((trajectory_x, x_sphere.flatten()))
-        y_values = np.concatenate((trajectory_y, y_sphere.flatten()))
-        z_values = np.concatenate((trajectory_z, z_sphere.flatten()))
-        limit = abs(
-            max(
-                x_values.min(),
-                y_values.min(),
-                z_values.min(),
-                x_values.max(),
-                y_values.max(),
-                z_values.max(),
-                key=abs,
-            )
-        )
-        ax.set_xlim(-limit, limit)
-        ax.set_ylim(-limit, limit)
-        ax.set_zlim(-limit, limit)
-        # set equal aspect ratio and orthogonal projection
-        ax.set_aspect("equal")
-        # https://matplotlib.org/stable/gallery/mplot3d/projections.html
-        ax.set_proj_type("ortho")
-
-        # turn off grid and axes if specified
-        if not grid:
-            ax.grid(False)
-        if not axes:
-            ax.axis("off")
-
-        # remove margins
-        fig.tight_layout()
-
-        # set background color if specified
-        if background_color is not None:
-            fig.set_facecolor(background_color)
-            ax.set_facecolor(background_color)
-            # make the panes transparent so that the background color shows through the grid
-            ax.xaxis.pane.fill = False
-            ax.yaxis.pane.fill = False
-            ax.zaxis.pane.fill = False
-
-        # start progress bar
-        with tqdm(total=num_frames, ncols=80) as pbar:
-
-            def draw_frame(i, body, tail):
-                # update progress bar
-                pbar.update(1)
-
-                j = speed_multiplier * i
-                j0 = max(0, j - tail_length * point_density)
-                current_time = time[j]
-
-                # update camera angles
-                updated_azimuth = (
-                    azimuthal_pan(current_time)
-                    if azimuthal_pan is not None
-                    else azimuth
-                )
-                updated_elevation = (
-                    elevation_pan(current_time)
-                    if elevation_pan is not None
-                    else elevation
-                )
-                updated_roll = roll(current_time) if roll is not None else 0
-                ax.view_init(updated_elevation, updated_azimuth, updated_roll)
-
-                # update axis limits
-                if axis_limit is not None:
-                    updated_limit = axis_limit(current_time)
-                    ax.set_xlim(-updated_limit, updated_limit)
-                    ax.set_ylim(-updated_limit, updated_limit)
-                    ax.set_zlim(-updated_limit, updated_limit)
-
-                # filter out points behind the black hole
-                visible = self.is_visible(
-                    trajectory[j0:j], updated_elevation, updated_azimuth
-                )
-                trajectory_z_visible = trajectory_z[j0:j].copy()
-                trajectory_z_visible[~visible] = np.nan
-                # create segments connecting every consecutive pair of points
-                points = np.array(
-                    [
-                        [[x, y, z]]
-                        for x, y, z in zip(
-                            trajectory_x[j0:j], trajectory_y[j0:j], trajectory_z_visible
-                        )
-                    ]
-                )
-                segments = (
-                    np.concatenate([points[:-1], points[1:]], axis=1)
-                    if len(points) > 1
-                    else []
-                )
-                # update tail
-                tail.set_segments(segments)
-                tail.set_alpha(decay[-(j - j0) :])
-                # update body
-                body._offsets3d = (
-                    [trajectory_x[j]],
-                    [trajectory_y[j]],
-                    [trajectory_z[j]],
-                )
-
-                # update plots
-                if plot_components:
-                    t_plot.set_data(time[:j], t(time[:j]))
-                    r_plot.set_data(time[:j], r(time[:j]))
-                    theta_plot.set_data(time[:j], theta(time[:j]))
-                    phi_plot.set_data(time[:j], phi(time[:j]))
-                    # set text
-                    if self.stable:
-                        text.set_text(
-                            f"$a = {self.a}\quad p = {self.p}\quad e = {self.e}\quad x = {self.x:.3f}\quad \lambda = {current_time:.2f}$"
-                        )
-                    else:
-                        text.set_text(
-                            f"$a = {self.a}\quad E = {self.E:.3f}\quad L = {self.L:.3f}\quad Q = {self.Q:.3f}\quad \lambda = {current_time:.2f}$"
-                        )
-
-            # save to file
-            ani = FuncAnimation(fig, draw_frame, num_frames, fargs=(body, tail))
-            FFwriter = FFMpegWriter(fps=30)
-            # savefig overrides the facecolor so we need to set it again
-            if background_color is not None:
-                ani.save(
-                    filename,
-                    savefig_kwargs={"facecolor": background_color},
-                    writer=FFwriter,
-                )
-            else:
-                ani.save(filename, writer=FFwriter)
-            # close figure so it doesn't show up in notebook
-            plt.close(fig)

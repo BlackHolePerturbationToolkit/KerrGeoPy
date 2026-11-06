@@ -38,3 +38,23 @@ stable_orbit_times.txt - list of mino time values to test
 plunging_orbit_parameters_real.txt - list of orbital parameters (a,E,L,Q) for which the radial polynomial has all real roots
 plunging_orbit_parameters_complex.txt - list of orbital parameters (a,E,L,Q) for which the radial polynomial has complex roots
 four_velocity/trajectory{i}.txt - (u_t, u_r, u_theta, u_phi) evaluated at each time from stable_orbit_times.txt for the i-th orbit in stable_orbit_parameters.txt
+
+test_numerical_integration.py:
+
+This suite uses no data files. It is a self-contained, independent cross-check
+that does not rely on the closed-form solutions: it integrates the second-order
+geodesic equation directly with scipy.integrate.solve_ivp, and
+verifies that each KerrGeoPy trajectory reproduces the numerically integrated
+path starting from KerrGeoPy's own state at lambda = 0. Orbits are drawn from a
+seeded (reproducible) random generator spanning the parameter space:
+
+- stable bound orbits (a, p, e, x), including circular, equatorial and high spin;
+- plunging orbits (a, E, L, Q), compared along their exterior excursion;
+- null geodesics covering all four radial cases and both polar cases (ordinary
+  eta > 0 and vortical eta < 0).
+
+Each numerical integration is first checked for its own accuracy (conservation
+of E, L, Q and the four-velocity norm), so a mismatch is attributable to the
+closed-form solution rather than the integrator. For plunging and null orbits
+the comparison is restricted to the exterior region r > r_+, where a
+Boyer-Lindquist integrator is valid.
